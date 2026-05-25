@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rankings · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Type system — display matches "THE ORACLE" chiseled lettering,
+         condensed matches the "ARIZONA HIGH SCHOOL BASKETBALL" band */
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-glow: #a855f7;
+      --purple-dark: #3b0075;
+      --purple-muted: #4a1080;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-soft: #080808;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-logo .nav-mark {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+
+    .nav-logo span {
+      color: var(--purple-bright);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 8px 20px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--silver-light);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 120px 24px 60px;
+      overflow: hidden;
+    }
+
+    /* radial purple ambient behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(106,15,214,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* subtle lightning crack lines */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(135deg, transparent 48%, rgba(139,47,255,0.04) 49%, transparent 50%),
+        linear-gradient(45deg, transparent 60%, rgba(139,47,255,0.03) 61%, transparent 62%);
+      pointer-events: none;
+    }
+
+    .hero-logo {
+      width: min(640px, 92vw);
+      height: auto;
+      position: relative;
+      z-index: 2;
+      animation: logoIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      /* Drop the black PNG background into the page background */
+      mix-blend-mode: screen;
+      /* Soft radial mask so any residual edge feathers into the page */
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 58%, rgba(0,0,0,0.6) 75%, transparent 92%);
+              mask-image: radial-gradient(ellipse at center, #000 58%, rgba(0,0,0,0.6) 75%, transparent 92%);
+      filter: drop-shadow(0 0 60px rgba(139,47,255,0.45)) drop-shadow(0 0 120px rgba(106,15,214,0.3));
+    }
+
+    @keyframes logoIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .hero-tagline {
+      margin-top: 24px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(30px, 5.4vw, 58px);
+      letter-spacing: 5px;
+      text-align: center;
+      line-height: 1.1;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+
+    .hero-sub {
+      margin-top: 16px;
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .btn-primary {
+      padding: 14px 36px;
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 20px rgba(106,15,214,0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-bright);
+      box-shadow: 0 0 40px rgba(139,47,255,0.6);
+    }
+
+    .btn-outline {
+      padding: 14px 36px;
+      background: transparent;
+      color: var(--silver-light);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(192,192,192,0.3);
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--purple-bright);
+      color: var(--purple-bright);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent);
+      margin: 0;
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(34px, 4.2vw, 52px);
+      letter-spacing: 4px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 56px;
+    }
+
+    .about-text p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .about-text p strong {
+      color: var(--silver-light);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .stat-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-bright));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(139,47,255,0.4);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 46px;
+      letter-spacing: 3px;
+      color: var(--purple-bright);
+      text-shadow: 0 0 20px rgba(139,47,255,0.4);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ── WHAT WE COVER ── */
+    .coverage-section {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      border-bottom: 1px solid rgba(106,15,214,0.2);
+      padding: 96px 0;
+    }
+
+    .coverage-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+    }
+
+    .coverage-card {
+      background: #000;
+      padding: 40px 28px;
+      border: 1px solid rgba(255,255,255,0.04);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+      group: true;
+    }
+
+    .coverage-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-bright));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .coverage-card:hover {
+      border-color: rgba(139,47,255,0.25);
+      transform: translateY(-4px);
+    }
+
+    .coverage-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .coverage-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .coverage-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .coverage-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .coverage-arrow {
+      margin-top: auto;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .coverage-card:hover .coverage-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── NEWS FEED (live tweets) ── */
+    .feed-section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .feed-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      padding: 8px 16px;
+      border: 1px solid rgba(139,47,255,0.4);
+      background: rgba(106,15,214,0.08);
+    }
+
+    .feed-live::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff3b3b;
+      box-shadow: 0 0 12px #ff3b3b;
+      animation: livePulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* The script mounts tweet cards as children of #news-feed.
+       These styles work for a typical card structure:
+       <article class="tweet-card">
+         <header>
+           <img class="tweet-avatar" />
+           <div class="tweet-author">
+             <span class="tweet-name"></span>
+             <span class="tweet-handle"></span>
+           </div>
+           <time class="tweet-time"></time>
+         </header>
+         <p class="tweet-body"></p>
+         <footer class="tweet-meta"> ... </footer>
+       </article>
+    */
+    #tweet-feed {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(139,47,255,0.15);
+      border: 1px solid rgba(139,47,255,0.2);
+      min-height: 320px;
+      position: relative;
+    }
+
+    .tweet-card {
+      background: var(--black-card);
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: background 0.2s;
+      min-height: 200px;
+    }
+
+    .tweet-card:hover {
+      background: #15101e;
+    }
+
+    .tweet-card header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tweet-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple-bright));
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(139,47,255,0.3);
+    }
+
+    .tweet-author {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .tweet-name {
+      font-family: var(--font-condensed);
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tweet-handle {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .tweet-time {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      flex-shrink: 0;
+    }
+
+    .tweet-body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      color: #ccc;
+      flex: 1;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .tweet-body a {
+      color: var(--purple-bright);
+      text-decoration: none;
+    }
+
+    .tweet-body a:hover {
+      text-decoration: underline;
+    }
+
+    .tweet-meta {
+      display: flex;
+      gap: 20px;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 12px;
+    }
+
+    .tweet-meta span strong {
+      color: var(--silver-light);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    /* Empty / loading state */
+    .feed-empty {
+      grid-column: 1 / -1;
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--black-card);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── MISSION ── */
+    .mission-section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .mission-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+
+    .mission-body p {
+      font-size: 18px;
+      line-height: 1.85;
+      color: #999;
+      margin-bottom: 28px;
+    }
+
+    .mission-body p:first-child {
+      font-size: 22px;
+      color: #ccc;
+      font-weight: 300;
+    }
+
+    .mission-body strong {
+      color: var(--silver-light);
+    }
+
+    /* ── COMING SOON BANNER ── */
+    .launch-banner {
+      background: linear-gradient(135deg, rgba(106,15,214,0.15), rgba(0,0,0,0) 60%);
+      border: 1px solid rgba(139,47,255,0.3);
+      padding: 40px 48px;
+      max-width: 1200px;
+      margin: 0 auto 96px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+
+    .launch-text h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .launch-text p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .launch-badge {
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      white-space: nowrap;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      box-shadow: 0 0 20px rgba(106,15,214,0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(106,15,214,0.5); }
+      50% { box-shadow: 0 0 40px rgba(139,47,255,0.8); }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .footer-brand span {
+      color: var(--purple-bright);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--purple-bright);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #444;
+      letter-spacing: 1px;
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+      animation: fadeUp 1s 1s both;
+    }
+
+    .scroll-indicator span {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .scroll-dot {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(139,47,255,0.8), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      section { padding: 64px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .coverage-grid { grid-template-columns: 1fr 1fr; }
+      .feed-section { padding: 64px 24px; }
+      #rankings { padding: 64px 24px !important; }
+      .filter-row { grid-template-columns: 1fr 1fr !important; }
+      .mission-section { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
+      .mission-sidebar { position: static; }
+      .launch-banner { flex-direction: column; align-items: flex-start; margin: 0 24px 64px; padding: 32px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+
+    @media (max-width: 600px) {
+      .coverage-grid { grid-template-columns: 1fr; }
+      .filter-row { grid-template-columns: 1fr !important; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      .hero-cta { flex-direction: column; align-items: center; }
+    }
+  </style>
+
+  <style>
+    /* Rankings page additions */
+    .nav-links a.active {
+      color: var(--silver-light);
+    }
+    .nav-links a.active::after {
+      transform: scaleX(1);
+    }
+    .rankings-hero {
+      padding: 140px 48px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .rankings-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .rankings-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 76px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .rankings-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .rankings-hero p {
+      margin-top: 22px;
+      max-width: 720px;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #aaa;
+    }
+    @media (max-width: 900px) {
+      .rankings-hero { padding: 110px 24px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html" class="active">Rankings</a></li>
+      <li><a href="index.html#articles">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="index.html#transfers">Transfer News</a></li>
+      <li><a href="index.html#news">News</a></li>
+    </ul>
+  </nav>
+
+  <header class="rankings-hero">
+    <p class="hero-eyebrow">Rankings · 2025–26 Season</p>
+    <h1>The <em>Climb</em>,<br/>Tracked.</h1>
+    <p>
+      How my personal Arizona team rankings shifted week-over-week through the 2025–26 season.
+      Press play to watch the standings race, or scrub the timeline to land on any specific week.
+      Filter by conference and adjust how many teams are shown at once.
+    </p>
+  </header>
+
+  <main style="max-width:1200px;margin:0 auto;padding:24px 48px 96px;">
+    <div style="margin-top:24px;">
+      <div style="margin-top:48px;background:var(--black-card);border:1px solid rgba(106,15,214,0.2);padding:32px;">
+      
+<style>
+  #rw{font-family:var(--font-condensed);user-select:none;}
+  .rb{padding:7px 16px;border:0.5px solid rgba(106,15,214,0.3);border-radius:2px;background:transparent;color:var(--silver-light);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:background .15s;}
+  .rb:hover{background:rgba(106,15,214,0.12);}
+  .rb.on{background:var(--purple);color:#fff;border-color:var(--purple-bright);}
+  .cb{padding:4px 10px;border:0.5px solid rgba(106,15,214,0.3);border-radius:2px;background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;transition:all .15s;}
+  .cb.on{background:var(--purple);color:#fff;border-color:var(--purple-bright);}
+</style>
+<div id="rw" style="padding:1rem 0;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+    <div style="display:flex;gap:6px;">
+      <button class="cb on" data-conf="all">All</button>
+      <button class="cb" data-conf="6A">6A</button>
+      <button class="cb" data-conf="5A">5A</button>
+      <button class="cb" data-conf="4A">4A</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:12px;color:var(--text-muted);">Show top</span>
+      <input type="range" min="5" max="36" value="10" step="1" id="tn" style="width:80px;"/>
+      <span style="font-size:12px;font-weight:500;min-width:24px;" id="tnl">10</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+    <button class="rb on" id="pb"><span style="font-size:11px;">&#9654;</span> Play</button>
+    <button class="rb" id="rst"><span style="font-size:13px;">&#8634;</span> Reset</button>
+    <input type="range" min="0" max="12" value="0" step="1" id="scr" style="flex:1;min-width:100px;"/>
+    <span style="font-size:13px;font-weight:500;color:var(--silver-light);min-width:70px;text-align:right;" id="dl">Oct 23</span>
+  </div>
+  <div id="rc" style="position:relative;width:100%;"></div>
+</div>
+<script>
+const LC={
+  "ALA - QC": "#102841",
+  "Apollo": "#323f4c",
+  "Arcadia": "#ee3b33",
+  "Basha": "#004a2c",
+  "Brophy Prep": "#690d11",
+  "Cactus Shadows": "#010940",
+  "Campo Verde": "#144733",
+  "Canyon View": "#0c4c91",
+  "Carl Hayden": "#fcb937",
+  "Casteel": "#1d2842",
+  "Centennial": "#080f53",
+  "Central": "#530b09",
+  "Chandler": "#102388",
+  "Chaparral": "#9d8424",
+  "Cienega": "#9d664f",
+  "Deer Valley": "#11248c",
+  "Desert Edge": "#c25911",
+  "Desert Mountain": "#c4043f",
+  "Desert Vista": "#01014c",
+  "Dysart": "#eb1f24",
+  "Gilbert": "#f1b619",
+  "Hamilton": "#701a2c",
+  "Highland": "#005f61",
+  "Higley": "#07255a",
+  "Horizon": "#f8c209",
+  "Ironwood": "#ed3c45",
+  "Liberty": "#e30c29",
+  "Maryvale": "#fdb813",
+  "Mesa": "#462e8d",
+  "Mica Mountain": "#99bbda",
+  "Millennium": "#713990",
+  "Mountain Pointe": "#742438",
+  "Notre Dame": "#532d6d",
+  "Perry": "#001249",
+  "Pinnacle": "#061943",
+  "Red Mountain": "#e51a38",
+  "Saguaro": "#fcd21b",
+  "Sahuaro": "#e91b2e",
+  "Sandra Day O'Connor": "#274192",
+  "St. Mary's": "#026231",
+  "Sunnyslope": "#056b43",
+  "Tucson": "#e21f29",
+  "Verrado": "#e3bb5b",
+  "West Point": "#b60a1c",
+  "Westview": "#6a86b2",
+  "Willow Canyon": "#17244c"
+};
+const LOGOS={
+  "ALA - QC": "assets/team-logos/ala%20-%20qc.png",
+  "Apollo": "assets/team-logos/apollo.png",
+  "Arcadia": "assets/team-logos/arcadia.png",
+  "Basha": "assets/team-logos/basha.png",
+  "Brophy Prep": "assets/team-logos/brophy.png",
+  "Cactus Shadows": "assets/team-logos/cactus%20shadows.png",
+  "Campo Verde": "assets/team-logos/campo%20verde.png",
+  "Canyon View": "assets/team-logos/canyon%20view.png",
+  "Carl Hayden": "assets/team-logos/carl%20hayden.png",
+  "Casteel": "assets/team-logos/casteel.png",
+  "Centennial": "assets/team-logos/centennial.png",
+  "Central": "assets/team-logos/central.png",
+  "Chandler": "assets/team-logos/chandler.png",
+  "Chaparral": "assets/team-logos/chaparral.png",
+  "Cienega": "assets/team-logos/cienega.png",
+  "Deer Valley": "assets/team-logos/deer%20valley.png",
+  "Desert Edge": "assets/team-logos/desert%20edge.png",
+  "Desert Mountain": "assets/team-logos/desert%20mountain.png",
+  "Desert Vista": "assets/team-logos/desert%20vista.png",
+  "Dysart": "assets/team-logos/dysart.png",
+  "Gilbert": "assets/team-logos/gilbert.png",
+  "Hamilton": "assets/team-logos/hamilton.png",
+  "Highland": "assets/team-logos/highland.png",
+  "Higley": "assets/team-logos/higley.png",
+  "Horizon": "assets/team-logos/horizon.png",
+  "Ironwood": "assets/team-logos/ironwood.png",
+  "Liberty": "assets/team-logos/liberty.png",
+  "Maryvale": "assets/team-logos/maryvale.png",
+  "Mesa": "assets/team-logos/mesa.png",
+  "Mica Mountain": "assets/team-logos/mica%20mountain.png",
+  "Millennium": "assets/team-logos/millennium.png",
+  "Mountain Pointe": "assets/team-logos/mountain%20pointe.png",
+  "Notre Dame": "assets/team-logos/notre%20dame.png",
+  "Perry": "assets/team-logos/perry.png",
+  "Pinnacle": "assets/team-logos/pinnacle.png",
+  "Red Mountain": "assets/team-logos/red%20mountain.png",
+  "Saguaro": "assets/team-logos/saguaro.png",
+  "Sahuaro": "assets/team-logos/sahuaro.png",
+  "Sandra Day O'Connor": "assets/team-logos/sandra%20day%20o'connor.png",
+  "St. Mary's": "assets/team-logos/st.%20mary's.png",
+  "Sunnyslope": "assets/team-logos/sunnyslope.png",
+  "Tucson": "assets/team-logos/tucson.png",
+  "Verrado": "assets/team-logos/verrado.png",
+  "West Point": "assets/team-logos/west%20point.png",
+  "Westview": "assets/team-logos/westview.png",
+  "Willow Canyon": "assets/team-logos/willow%20canyon.png"
+};
+const RAW=[
+  {rank:1,school:"Millennium",conf:"6A",date:"10/23/2025"},{rank:2,school:"Sunnyslope",conf:"6A",date:"10/23/2025"},{rank:3,school:"Basha",conf:"6A",date:"10/23/2025"},{rank:4,school:"St. Mary's",conf:"4A",date:"10/23/2025"},{rank:5,school:"Highland",conf:"6A",date:"10/23/2025"},{rank:6,school:"Higley",conf:"6A",date:"10/23/2025"},{rank:7,school:"Central",conf:"5A",date:"10/23/2025"},{rank:8,school:"Mesa",conf:"6A",date:"10/23/2025"},{rank:9,school:"Brophy Prep",conf:"6A",date:"10/23/2025"},{rank:10,school:"Deer Valley",conf:"4A",date:"10/23/2025"},{rank:11,school:"Perry",conf:"6A",date:"10/23/2025"},{rank:12,school:"Sandra Day O'Connor",conf:"6A",date:"10/23/2025"},{rank:13,school:"Chandler",conf:"6A",date:"10/23/2025"},{rank:14,school:"Willow Canyon",conf:"5A",date:"10/23/2025"},{rank:15,school:"Liberty",conf:"6A",date:"10/23/2025"},{rank:16,school:"Mountain Pointe",conf:"5A",date:"10/23/2025"},{rank:17,school:"Centennial",conf:"5A",date:"10/23/2025"},{rank:18,school:"Pinnacle",conf:"6A",date:"10/23/2025"},{rank:19,school:"Ironwood",conf:"5A",date:"10/23/2025"},{rank:20,school:"Cactus Shadows",conf:"4A",date:"10/23/2025"},
+  {rank:1,school:"Millennium",conf:"6A",date:"10/25/2025"},{rank:2,school:"Sunnyslope",conf:"6A",date:"10/25/2025"},{rank:3,school:"Basha",conf:"6A",date:"10/25/2025"},{rank:4,school:"St. Mary's",conf:"4A",date:"10/25/2025"},{rank:5,school:"Higley",conf:"6A",date:"10/25/2025"},{rank:6,school:"Highland",conf:"6A",date:"10/25/2025"},{rank:7,school:"Central",conf:"5A",date:"10/25/2025"},{rank:8,school:"Deer Valley",conf:"4A",date:"10/25/2025"},{rank:9,school:"Brophy Prep",conf:"6A",date:"10/25/2025"},{rank:10,school:"Mesa",conf:"6A",date:"10/25/2025"},{rank:11,school:"Chandler",conf:"6A",date:"10/25/2025"},{rank:12,school:"Perry",conf:"6A",date:"10/25/2025"},{rank:13,school:"Sandra Day O'Connor",conf:"6A",date:"10/25/2025"},{rank:14,school:"Willow Canyon",conf:"5A",date:"10/25/2025"},{rank:15,school:"Liberty",conf:"6A",date:"10/25/2025"},{rank:16,school:"Mountain Pointe",conf:"5A",date:"10/25/2025"},{rank:17,school:"Carl Hayden",conf:"5A",date:"10/25/2025"},{rank:18,school:"Centennial",conf:"5A",date:"10/25/2025"},{rank:19,school:"Pinnacle",conf:"6A",date:"10/25/2025"},{rank:20,school:"Ironwood",conf:"5A",date:"10/25/2025"},{rank:21,school:"Cactus Shadows",conf:"4A",date:"10/25/2025"},{rank:22,school:"Apollo",conf:"6A",date:"10/25/2025"},{rank:23,school:"Arcadia",conf:"4A",date:"10/25/2025"},{rank:24,school:"Hamilton",conf:"6A",date:"10/25/2025"},{rank:25,school:"Casteel",conf:"6A",date:"10/25/2025"},{rank:26,school:"West Point",conf:"6A",date:"10/25/2025"},{rank:27,school:"Saguaro",conf:"4A",date:"10/25/2025"},{rank:28,school:"Gilbert",conf:"6A",date:"10/25/2025"},{rank:29,school:"Tucson",conf:"6A",date:"10/25/2025"},{rank:30,school:"Dysart",conf:"4A",date:"10/25/2025"},{rank:31,school:"Verrado",conf:"5A",date:"10/25/2025"},{rank:32,school:"Mica Mountain",conf:"4A",date:"10/25/2025"},
+  {rank:1,school:"Millennium",conf:"6A",date:"12/10/2025"},{rank:2,school:"Sunnyslope",conf:"6A",date:"12/10/2025"},{rank:3,school:"St. Mary's",conf:"4A",date:"12/10/2025"},{rank:4,school:"Basha",conf:"6A",date:"12/10/2025"},{rank:5,school:"Mesa",conf:"6A",date:"12/10/2025"},{rank:6,school:"Highland",conf:"6A",date:"12/10/2025"},{rank:7,school:"Central",conf:"5A",date:"12/10/2025"},{rank:8,school:"Perry",conf:"6A",date:"12/10/2025"},{rank:9,school:"Sandra Day O'Connor",conf:"6A",date:"12/10/2025"},{rank:10,school:"Willow Canyon",conf:"5A",date:"12/10/2025"},{rank:11,school:"Brophy Prep",conf:"6A",date:"12/10/2025"},{rank:12,school:"Higley",conf:"6A",date:"12/10/2025"},{rank:13,school:"Arcadia",conf:"4A",date:"12/10/2025"},{rank:14,school:"Chandler",conf:"6A",date:"12/10/2025"},{rank:15,school:"Mountain Pointe",conf:"5A",date:"12/10/2025"},{rank:16,school:"Deer Valley",conf:"4A",date:"12/10/2025"},{rank:17,school:"Centennial",conf:"5A",date:"12/10/2025"},{rank:18,school:"Pinnacle",conf:"6A",date:"12/10/2025"},{rank:19,school:"Liberty",conf:"6A",date:"12/10/2025"},{rank:20,school:"Cactus Shadows",conf:"4A",date:"12/10/2025"},{rank:21,school:"Campo Verde",conf:"5A",date:"12/10/2025"},{rank:22,school:"Casteel",conf:"6A",date:"12/10/2025"},{rank:23,school:"Hamilton",conf:"6A",date:"12/10/2025"},{rank:24,school:"Ironwood",conf:"5A",date:"12/10/2025"},{rank:25,school:"Saguaro",conf:"4A",date:"12/10/2025"},{rank:26,school:"Desert Vista",conf:"6A",date:"12/10/2025"},{rank:27,school:"Maryvale",conf:"6A",date:"12/10/2025"},{rank:28,school:"Carl Hayden",conf:"5A",date:"12/10/2025"},{rank:29,school:"Apollo",conf:"6A",date:"12/10/2025"},{rank:30,school:"West Point",conf:"6A",date:"12/10/2025"},{rank:31,school:"Westview",conf:"4A",date:"12/10/2025"},{rank:32,school:"Horizon",conf:"5A",date:"12/10/2025"},{rank:33,school:"Notre Dame",conf:"5A",date:"12/10/2025"},{rank:34,school:"Verrado",conf:"5A",date:"12/10/2025"},{rank:35,school:"Chaparral",conf:"5A",date:"12/10/2025"},{rank:36,school:"Dysart",conf:"4A",date:"12/10/2025"},
+  {rank:1,school:"Millennium",conf:"6A",date:"12/14/2025"},{rank:2,school:"Sunnyslope",conf:"6A",date:"12/14/2025"},{rank:3,school:"St. Mary's",conf:"4A",date:"12/14/2025"},{rank:4,school:"Mesa",conf:"6A",date:"12/14/2025"},{rank:5,school:"Highland",conf:"6A",date:"12/14/2025"},{rank:6,school:"Basha",conf:"6A",date:"12/14/2025"},{rank:7,school:"Central",conf:"5A",date:"12/14/2025"},{rank:8,school:"Perry",conf:"6A",date:"12/14/2025"},{rank:9,school:"Sandra Day O'Connor",conf:"6A",date:"12/14/2025"},{rank:10,school:"Willow Canyon",conf:"5A",date:"12/14/2025"},{rank:11,school:"Brophy Prep",conf:"6A",date:"12/14/2025"},{rank:12,school:"Higley",conf:"6A",date:"12/14/2025"},{rank:13,school:"Arcadia",conf:"4A",date:"12/14/2025"},{rank:14,school:"Chandler",conf:"6A",date:"12/14/2025"},{rank:15,school:"Mountain Pointe",conf:"5A",date:"12/14/2025"},{rank:16,school:"Deer Valley",conf:"4A",date:"12/14/2025"},{rank:17,school:"Centennial",conf:"5A",date:"12/14/2025"},{rank:18,school:"Pinnacle",conf:"6A",date:"12/14/2025"},{rank:19,school:"Liberty",conf:"6A",date:"12/14/2025"},{rank:20,school:"Saguaro",conf:"4A",date:"12/14/2025"},{rank:21,school:"Cactus Shadows",conf:"4A",date:"12/14/2025"},{rank:22,school:"Campo Verde",conf:"5A",date:"12/14/2025"},{rank:23,school:"Hamilton",conf:"6A",date:"12/14/2025"},{rank:24,school:"Casteel",conf:"6A",date:"12/14/2025"},{rank:25,school:"Maryvale",conf:"6A",date:"12/14/2025"},{rank:26,school:"Chaparral",conf:"5A",date:"12/14/2025"},{rank:27,school:"Apollo",conf:"6A",date:"12/14/2025"},{rank:28,school:"West Point",conf:"6A",date:"12/14/2025"},{rank:29,school:"Westview",conf:"4A",date:"12/14/2025"},{rank:30,school:"Horizon",conf:"5A",date:"12/14/2025"},{rank:31,school:"Ironwood",conf:"5A",date:"12/14/2025"},{rank:32,school:"Carl Hayden",conf:"5A",date:"12/14/2025"},{rank:33,school:"Desert Vista",conf:"6A",date:"12/14/2025"},{rank:34,school:"Desert Edge",conf:"5A",date:"12/14/2025"},{rank:35,school:"Verrado",conf:"5A",date:"12/14/2025"},{rank:36,school:"Canyon View",conf:"5A",date:"12/14/2025"},
+  {rank:1,school:"Millennium",conf:"6A",date:"12/20/2025"},{rank:2,school:"Sunnyslope",conf:"6A",date:"12/20/2025"},{rank:3,school:"St. Mary's",conf:"4A",date:"12/20/2025"},{rank:4,school:"Mesa",conf:"6A",date:"12/20/2025"},{rank:5,school:"Highland",conf:"6A",date:"12/20/2025"},{rank:6,school:"Basha",conf:"6A",date:"12/20/2025"},{rank:7,school:"Central",conf:"5A",date:"12/20/2025"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"12/20/2025"},{rank:9,school:"Willow Canyon",conf:"5A",date:"12/20/2025"},{rank:10,school:"Higley",conf:"6A",date:"12/20/2025"},{rank:11,school:"Perry",conf:"6A",date:"12/20/2025"},{rank:12,school:"Brophy Prep",conf:"6A",date:"12/20/2025"},{rank:13,school:"Arcadia",conf:"4A",date:"12/20/2025"},{rank:14,school:"Chandler",conf:"6A",date:"12/20/2025"},{rank:15,school:"Centennial",conf:"5A",date:"12/20/2025"},{rank:16,school:"Campo Verde",conf:"5A",date:"12/20/2025"},{rank:17,school:"Mountain Pointe",conf:"5A",date:"12/20/2025"},{rank:18,school:"Deer Valley",conf:"4A",date:"12/20/2025"},{rank:19,school:"Liberty",conf:"6A",date:"12/20/2025"},{rank:20,school:"Pinnacle",conf:"6A",date:"12/20/2025"},{rank:21,school:"Saguaro",conf:"4A",date:"12/20/2025"},{rank:22,school:"Cactus Shadows",conf:"4A",date:"12/20/2025"},{rank:23,school:"Hamilton",conf:"6A",date:"12/20/2025"},{rank:24,school:"Maryvale",conf:"6A",date:"12/20/2025"},{rank:25,school:"Casteel",conf:"6A",date:"12/20/2025"},{rank:26,school:"Chaparral",conf:"5A",date:"12/20/2025"},{rank:27,school:"Westview",conf:"4A",date:"12/20/2025"},{rank:28,school:"West Point",conf:"6A",date:"12/20/2025"},{rank:29,school:"Apollo",conf:"6A",date:"12/20/2025"},{rank:30,school:"Horizon",conf:"5A",date:"12/20/2025"},{rank:31,school:"Carl Hayden",conf:"5A",date:"12/20/2025"},{rank:32,school:"Ironwood",conf:"5A",date:"12/20/2025"},{rank:33,school:"Desert Vista",conf:"6A",date:"12/20/2025"},{rank:34,school:"Verrado",conf:"5A",date:"12/20/2025"},{rank:35,school:"Canyon View",conf:"5A",date:"12/20/2025"},{rank:36,school:"Desert Edge",conf:"5A",date:"12/20/2025"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"1/4/2026"},{rank:2,school:"Millennium",conf:"6A",date:"1/4/2026"},{rank:3,school:"St. Mary's",conf:"4A",date:"1/4/2026"},{rank:4,school:"Mesa",conf:"6A",date:"1/4/2026"},{rank:5,school:"Highland",conf:"6A",date:"1/4/2026"},{rank:6,school:"Basha",conf:"6A",date:"1/4/2026"},{rank:7,school:"Central",conf:"5A",date:"1/4/2026"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"1/4/2026"},{rank:9,school:"Willow Canyon",conf:"5A",date:"1/4/2026"},{rank:10,school:"Brophy Prep",conf:"6A",date:"1/4/2026"},{rank:11,school:"Chandler",conf:"6A",date:"1/4/2026"},{rank:12,school:"Centennial",conf:"5A",date:"1/4/2026"},{rank:13,school:"Arcadia",conf:"4A",date:"1/4/2026"},{rank:14,school:"Liberty",conf:"6A",date:"1/4/2026"},{rank:15,school:"Pinnacle",conf:"6A",date:"1/4/2026"},{rank:16,school:"Perry",conf:"6A",date:"1/4/2026"},{rank:17,school:"Higley",conf:"6A",date:"1/4/2026"},{rank:18,school:"Saguaro",conf:"4A",date:"1/4/2026"},{rank:19,school:"Casteel",conf:"6A",date:"1/4/2026"},{rank:20,school:"Deer Valley",conf:"4A",date:"1/4/2026"},{rank:21,school:"Campo Verde",conf:"5A",date:"1/4/2026"},{rank:22,school:"Mountain Pointe",conf:"5A",date:"1/4/2026"},{rank:23,school:"Cactus Shadows",conf:"4A",date:"1/4/2026"},{rank:24,school:"Maryvale",conf:"6A",date:"1/4/2026"},{rank:25,school:"Hamilton",conf:"6A",date:"1/4/2026"},{rank:26,school:"West Point",conf:"6A",date:"1/4/2026"},{rank:27,school:"Cienega",conf:"5A",date:"1/4/2026"},{rank:28,school:"Chaparral",conf:"5A",date:"1/4/2026"},{rank:29,school:"Westview",conf:"4A",date:"1/4/2026"},{rank:30,school:"Horizon",conf:"5A",date:"1/4/2026"},{rank:31,school:"Ironwood",conf:"5A",date:"1/4/2026"},{rank:32,school:"Carl Hayden",conf:"5A",date:"1/4/2026"},{rank:33,school:"Desert Vista",conf:"5A",date:"1/4/2026"},{rank:34,school:"Apollo",conf:"6A",date:"1/4/2026"},{rank:35,school:"Verrado",conf:"5A",date:"1/4/2026"},{rank:36,school:"Canyon View",conf:"5A",date:"1/4/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"1/12/2026"},{rank:2,school:"Millennium",conf:"6A",date:"1/12/2026"},{rank:3,school:"Mesa",conf:"6A",date:"1/12/2026"},{rank:4,school:"St. Mary's",conf:"4A",date:"1/12/2026"},{rank:5,school:"Highland",conf:"6A",date:"1/12/2026"},{rank:6,school:"Basha",conf:"6A",date:"1/12/2026"},{rank:7,school:"Central",conf:"5A",date:"1/12/2026"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"1/12/2026"},{rank:9,school:"Brophy Prep",conf:"6A",date:"1/12/2026"},{rank:10,school:"Willow Canyon",conf:"5A",date:"1/12/2026"},{rank:11,school:"Casteel",conf:"6A",date:"1/12/2026"},{rank:12,school:"Arcadia",conf:"4A",date:"1/12/2026"},{rank:13,school:"Chandler",conf:"6A",date:"1/12/2026"},{rank:14,school:"Centennial",conf:"5A",date:"1/12/2026"},{rank:15,school:"Pinnacle",conf:"6A",date:"1/12/2026"},{rank:16,school:"Liberty",conf:"6A",date:"1/12/2026"},{rank:17,school:"Perry",conf:"6A",date:"1/12/2026"},{rank:18,school:"Higley",conf:"6A",date:"1/12/2026"},{rank:19,school:"Deer Valley",conf:"4A",date:"1/12/2026"},{rank:20,school:"Campo Verde",conf:"5A",date:"1/12/2026"},{rank:21,school:"Mountain Pointe",conf:"5A",date:"1/12/2026"},{rank:22,school:"Cactus Shadows",conf:"4A",date:"1/12/2026"},{rank:23,school:"Saguaro",conf:"4A",date:"1/12/2026"},{rank:24,school:"Hamilton",conf:"6A",date:"1/12/2026"},{rank:25,school:"Maryvale",conf:"6A",date:"1/12/2026"},{rank:26,school:"West Point",conf:"6A",date:"1/12/2026"},{rank:27,school:"Cienega",conf:"5A",date:"1/12/2026"},{rank:28,school:"Chaparral",conf:"5A",date:"1/12/2026"},{rank:29,school:"Westview",conf:"4A",date:"1/12/2026"},{rank:30,school:"Horizon",conf:"5A",date:"1/12/2026"},{rank:31,school:"Ironwood",conf:"5A",date:"1/12/2026"},{rank:32,school:"Carl Hayden",conf:"5A",date:"1/12/2026"},{rank:33,school:"Desert Vista",conf:"5A",date:"1/12/2026"},{rank:34,school:"Apollo",conf:"6A",date:"1/12/2026"},{rank:35,school:"Verrado",conf:"5A",date:"1/12/2026"},{rank:36,school:"Canyon View",conf:"5A",date:"1/12/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"1/19/2026"},{rank:2,school:"Millennium",conf:"6A",date:"1/19/2026"},{rank:3,school:"Mesa",conf:"6A",date:"1/19/2026"},{rank:4,school:"St. Mary's",conf:"4A",date:"1/19/2026"},{rank:5,school:"Highland",conf:"6A",date:"1/19/2026"},{rank:6,school:"Basha",conf:"6A",date:"1/19/2026"},{rank:7,school:"Central",conf:"5A",date:"1/19/2026"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"1/19/2026"},{rank:9,school:"Brophy Prep",conf:"6A",date:"1/19/2026"},{rank:10,school:"Willow Canyon",conf:"5A",date:"1/19/2026"},{rank:11,school:"Casteel",conf:"6A",date:"1/19/2026"},{rank:12,school:"Arcadia",conf:"4A",date:"1/19/2026"},{rank:13,school:"Chandler",conf:"6A",date:"1/19/2026"},{rank:14,school:"Centennial",conf:"5A",date:"1/19/2026"},{rank:15,school:"Pinnacle",conf:"6A",date:"1/19/2026"},{rank:16,school:"Perry",conf:"6A",date:"1/19/2026"},{rank:17,school:"Deer Valley",conf:"4A",date:"1/19/2026"},{rank:18,school:"Liberty",conf:"6A",date:"1/19/2026"},{rank:19,school:"Higley",conf:"6A",date:"1/19/2026"},{rank:20,school:"Campo Verde",conf:"5A",date:"1/19/2026"},{rank:21,school:"Mountain Pointe",conf:"5A",date:"1/19/2026"},{rank:22,school:"Cactus Shadows",conf:"4A",date:"1/19/2026"},{rank:23,school:"Hamilton",conf:"6A",date:"1/19/2026"},{rank:24,school:"Saguaro",conf:"4A",date:"1/19/2026"},{rank:25,school:"West Point",conf:"6A",date:"1/19/2026"},{rank:26,school:"Cienega",conf:"5A",date:"1/19/2026"},{rank:27,school:"Desert Vista",conf:"6A",date:"1/19/2026"},{rank:28,school:"Tucson",conf:"6A",date:"1/19/2026"},{rank:29,school:"Maryvale",conf:"6A",date:"1/19/2026"},{rank:30,school:"Westview",conf:"4A",date:"1/19/2026"},{rank:31,school:"Verrado",conf:"5A",date:"1/19/2026"},{rank:32,school:"Ironwood",conf:"5A",date:"1/19/2026"},{rank:33,school:"Notre Dame",conf:"5A",date:"1/19/2026"},{rank:34,school:"Chaparral",conf:"5A",date:"1/19/2026"},{rank:35,school:"Desert Mountain",conf:"5A",date:"1/19/2026"},{rank:36,school:"Dysart",conf:"4A",date:"1/19/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"1/26/2026"},{rank:2,school:"Millennium",conf:"6A",date:"1/26/2026"},{rank:3,school:"Mesa",conf:"6A",date:"1/26/2026"},{rank:4,school:"St. Mary's",conf:"4A",date:"1/26/2026"},{rank:5,school:"Highland",conf:"6A",date:"1/26/2026"},{rank:6,school:"Basha",conf:"6A",date:"1/26/2026"},{rank:7,school:"Central",conf:"5A",date:"1/26/2026"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"1/26/2026"},{rank:9,school:"Brophy Prep",conf:"6A",date:"1/26/2026"},{rank:10,school:"Willow Canyon",conf:"5A",date:"1/26/2026"},{rank:11,school:"Casteel",conf:"6A",date:"1/26/2026"},{rank:12,school:"Chandler",conf:"6A",date:"1/26/2026"},{rank:13,school:"Arcadia",conf:"4A",date:"1/26/2026"},{rank:14,school:"Pinnacle",conf:"6A",date:"1/26/2026"},{rank:15,school:"Deer Valley",conf:"4A",date:"1/26/2026"},{rank:16,school:"Campo Verde",conf:"5A",date:"1/26/2026"},{rank:17,school:"Mountain Pointe",conf:"5A",date:"1/26/2026"},{rank:18,school:"Higley",conf:"6A",date:"1/26/2026"},{rank:19,school:"Centennial",conf:"5A",date:"1/26/2026"},{rank:20,school:"Liberty",conf:"6A",date:"1/26/2026"},{rank:21,school:"Ironwood",conf:"5A",date:"1/26/2026"},{rank:22,school:"West Point",conf:"6A",date:"1/26/2026"},{rank:23,school:"Perry",conf:"6A",date:"1/26/2026"},{rank:24,school:"Cactus Shadows",conf:"4A",date:"1/26/2026"},{rank:25,school:"Hamilton",conf:"6A",date:"1/26/2026"},{rank:26,school:"Cienega",conf:"5A",date:"1/26/2026"},{rank:27,school:"Saguaro",conf:"4A",date:"1/26/2026"},{rank:28,school:"Verrado",conf:"5A",date:"1/26/2026"},{rank:29,school:"Canyon View",conf:"5A",date:"1/26/2026"},{rank:30,school:"Desert Vista",conf:"6A",date:"1/26/2026"},{rank:31,school:"Tucson",conf:"6A",date:"1/26/2026"},{rank:32,school:"Westview",conf:"4A",date:"1/26/2026"},{rank:33,school:"Maryvale",conf:"6A",date:"1/26/2026"},{rank:34,school:"Notre Dame",conf:"5A",date:"1/26/2026"},{rank:35,school:"Desert Mountain",conf:"5A",date:"1/26/2026"},{rank:36,school:"Dysart",conf:"4A",date:"1/26/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"2/3/2026"},{rank:2,school:"Millennium",conf:"6A",date:"2/3/2026"},{rank:3,school:"St. Mary's",conf:"4A",date:"2/3/2026"},{rank:4,school:"Mesa",conf:"6A",date:"2/3/2026"},{rank:5,school:"Highland",conf:"6A",date:"2/3/2026"},{rank:6,school:"Central",conf:"5A",date:"2/3/2026"},{rank:7,school:"Sandra Day O'Connor",conf:"6A",date:"2/3/2026"},{rank:8,school:"Brophy Prep",conf:"6A",date:"2/3/2026"},{rank:9,school:"Basha",conf:"6A",date:"2/3/2026"},{rank:10,school:"Chandler",conf:"6A",date:"2/3/2026"},{rank:11,school:"Willow Canyon",conf:"5A",date:"2/3/2026"},{rank:12,school:"Campo Verde",conf:"5A",date:"2/3/2026"},{rank:13,school:"Casteel",conf:"6A",date:"2/3/2026"},{rank:14,school:"Deer Valley",conf:"4A",date:"2/3/2026"},{rank:15,school:"Arcadia",conf:"4A",date:"2/3/2026"},{rank:16,school:"Liberty",conf:"6A",date:"2/3/2026"},{rank:17,school:"Pinnacle",conf:"6A",date:"2/3/2026"},{rank:18,school:"Perry",conf:"6A",date:"2/3/2026"},{rank:19,school:"Higley",conf:"6A",date:"2/3/2026"},{rank:20,school:"Mountain Pointe",conf:"5A",date:"2/3/2026"},{rank:21,school:"Ironwood",conf:"5A",date:"2/3/2026"},{rank:22,school:"Cactus Shadows",conf:"4A",date:"2/3/2026"},{rank:23,school:"Centennial",conf:"5A",date:"2/3/2026"},{rank:24,school:"Hamilton",conf:"6A",date:"2/3/2026"},{rank:25,school:"West Point",conf:"6A",date:"2/3/2026"},{rank:26,school:"Desert Vista",conf:"6A",date:"2/3/2026"},{rank:27,school:"Saguaro",conf:"4A",date:"2/3/2026"},{rank:28,school:"Verrado",conf:"5A",date:"2/3/2026"},{rank:29,school:"Cienega",conf:"5A",date:"2/3/2026"},{rank:30,school:"Canyon View",conf:"5A",date:"2/3/2026"},{rank:31,school:"Westview",conf:"4A",date:"2/3/2026"},{rank:32,school:"Red Mountain",conf:"6A",date:"2/3/2026"},{rank:33,school:"Tucson",conf:"6A",date:"2/3/2026"},{rank:34,school:"Sahuaro",conf:"4A",date:"2/3/2026"},{rank:35,school:"Maryvale",conf:"6A",date:"2/3/2026"},{rank:36,school:"Dysart",conf:"4A",date:"2/3/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"2/10/2026"},{rank:2,school:"Millennium",conf:"6A",date:"2/10/2026"},{rank:3,school:"St. Mary's",conf:"4A",date:"2/10/2026"},{rank:4,school:"Mesa",conf:"6A",date:"2/10/2026"},{rank:5,school:"Highland",conf:"6A",date:"2/10/2026"},{rank:6,school:"Basha",conf:"6A",date:"2/10/2026"},{rank:7,school:"Brophy Prep",conf:"6A",date:"2/10/2026"},{rank:8,school:"Central",conf:"5A",date:"2/10/2026"},{rank:9,school:"Sandra Day O'Connor",conf:"6A",date:"2/10/2026"},{rank:10,school:"Chandler",conf:"6A",date:"2/10/2026"},{rank:11,school:"Willow Canyon",conf:"5A",date:"2/10/2026"},{rank:12,school:"Pinnacle",conf:"6A",date:"2/10/2026"},{rank:13,school:"Perry",conf:"6A",date:"2/10/2026"},{rank:14,school:"Liberty",conf:"6A",date:"2/10/2026"},{rank:15,school:"Casteel",conf:"6A",date:"2/10/2026"},{rank:16,school:"Deer Valley",conf:"4A",date:"2/10/2026"},{rank:17,school:"Arcadia",conf:"4A",date:"2/10/2026"},{rank:18,school:"Higley",conf:"6A",date:"2/10/2026"},{rank:19,school:"Campo Verde",conf:"5A",date:"2/10/2026"},{rank:20,school:"Mountain Pointe",conf:"5A",date:"2/10/2026"},{rank:21,school:"Ironwood",conf:"5A",date:"2/10/2026"},{rank:22,school:"Centennial",conf:"5A",date:"2/10/2026"},{rank:23,school:"Cactus Shadows",conf:"4A",date:"2/10/2026"},{rank:24,school:"Hamilton",conf:"6A",date:"2/10/2026"},{rank:25,school:"West Point",conf:"6A",date:"2/10/2026"},{rank:26,school:"Desert Vista",conf:"6A",date:"2/10/2026"},{rank:27,school:"Verrado",conf:"5A",date:"2/10/2026"},{rank:28,school:"Canyon View",conf:"5A",date:"2/10/2026"},{rank:29,school:"Saguaro",conf:"4A",date:"2/10/2026"},{rank:30,school:"Cienega",conf:"5A",date:"2/10/2026"},{rank:31,school:"Westview",conf:"4A",date:"2/10/2026"},{rank:32,school:"Red Mountain",conf:"6A",date:"2/10/2026"},{rank:33,school:"Tucson",conf:"6A",date:"2/10/2026"},{rank:34,school:"Sahuaro",conf:"4A",date:"2/10/2026"},{rank:35,school:"Maryvale",conf:"6A",date:"2/10/2026"},{rank:36,school:"Dysart",conf:"4A",date:"2/10/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"2/12/2026"},{rank:2,school:"Millennium",conf:"6A",date:"2/12/2026"},{rank:3,school:"St. Mary's",conf:"4A",date:"2/12/2026"},{rank:4,school:"Mesa",conf:"6A",date:"2/12/2026"},{rank:5,school:"Highland",conf:"6A",date:"2/12/2026"},{rank:6,school:"Basha",conf:"6A",date:"2/12/2026"},{rank:7,school:"Brophy Prep",conf:"6A",date:"2/12/2026"},{rank:8,school:"Central",conf:"5A",date:"2/12/2026"},{rank:9,school:"Sandra Day O'Connor",conf:"6A",date:"2/12/2026"},{rank:10,school:"Chandler",conf:"6A",date:"2/12/2026"},{rank:11,school:"Perry",conf:"6A",date:"2/12/2026"},{rank:12,school:"Willow Canyon",conf:"5A",date:"2/12/2026"},{rank:13,school:"Liberty",conf:"6A",date:"2/12/2026"},{rank:14,school:"Pinnacle",conf:"6A",date:"2/12/2026"},{rank:15,school:"Higley",conf:"6A",date:"2/12/2026"},{rank:16,school:"Casteel",conf:"6A",date:"2/12/2026"},{rank:17,school:"Deer Valley",conf:"4A",date:"2/12/2026"},{rank:18,school:"Arcadia",conf:"4A",date:"2/12/2026"},{rank:19,school:"Campo Verde",conf:"5A",date:"2/12/2026"},{rank:20,school:"Verrado",conf:"5A",date:"2/12/2026"},{rank:21,school:"Centennial",conf:"5A",date:"2/12/2026"},{rank:22,school:"Mountain Pointe",conf:"5A",date:"2/12/2026"},{rank:23,school:"Ironwood",conf:"5A",date:"2/12/2026"},{rank:24,school:"Cactus Shadows",conf:"4A",date:"2/12/2026"},{rank:25,school:"Hamilton",conf:"6A",date:"2/12/2026"},{rank:26,school:"West Point",conf:"6A",date:"2/12/2026"},{rank:27,school:"Canyon View",conf:"5A",date:"2/12/2026"},{rank:28,school:"Desert Vista",conf:"6A",date:"2/12/2026"},{rank:29,school:"Saguaro",conf:"4A",date:"2/12/2026"},{rank:30,school:"Sahuaro",conf:"4A",date:"2/12/2026"},{rank:31,school:"Cienega",conf:"5A",date:"2/12/2026"},{rank:32,school:"Westview",conf:"4A",date:"2/12/2026"},{rank:33,school:"Red Mountain",conf:"6A",date:"2/12/2026"},{rank:34,school:"Tucson",conf:"6A",date:"2/12/2026"},{rank:35,school:"Maryvale",conf:"6A",date:"2/12/2026"},{rank:36,school:"Carl Hayden",conf:"5A",date:"2/12/2026"},
+  {rank:1,school:"Sunnyslope",conf:"6A",date:"3/8/2026"},{rank:2,school:"St. Mary's",conf:"4A",date:"3/8/2026"},{rank:3,school:"Millennium",conf:"6A",date:"3/8/2026"},{rank:4,school:"Basha",conf:"6A",date:"3/8/2026"},{rank:5,school:"Highland",conf:"6A",date:"3/8/2026"},{rank:6,school:"Brophy Prep",conf:"6A",date:"3/8/2026"},{rank:7,school:"Central",conf:"5A",date:"3/8/2026"},{rank:8,school:"Sandra Day O'Connor",conf:"6A",date:"3/8/2026"},{rank:9,school:"Liberty",conf:"6A",date:"3/8/2026"},{rank:10,school:"Mesa",conf:"6A",date:"3/8/2026"},{rank:11,school:"Perry",conf:"6A",date:"3/8/2026"},{rank:12,school:"Willow Canyon",conf:"5A",date:"3/8/2026"},{rank:13,school:"Arcadia",conf:"4A",date:"3/8/2026"},{rank:14,school:"Chandler",conf:"6A",date:"3/8/2026"},{rank:15,school:"Higley",conf:"6A",date:"3/8/2026"},{rank:16,school:"Pinnacle",conf:"6A",date:"3/8/2026"},{rank:17,school:"Casteel",conf:"6A",date:"3/8/2026"},{rank:18,school:"Deer Valley",conf:"4A",date:"3/8/2026"},{rank:19,school:"Mountain Pointe",conf:"5A",date:"3/8/2026"},{rank:20,school:"Campo Verde",conf:"5A",date:"3/8/2026"},{rank:21,school:"Cactus Shadows",conf:"4A",date:"3/8/2026"},{rank:22,school:"Ironwood",conf:"5A",date:"3/8/2026"},{rank:23,school:"Saguaro",conf:"4A",date:"3/8/2026"},{rank:24,school:"Tucson",conf:"6A",date:"3/8/2026"},{rank:25,school:"Centennial",conf:"5A",date:"3/8/2026"},{rank:26,school:"Verrado",conf:"5A",date:"3/8/2026"},{rank:27,school:"West Point",conf:"6A",date:"3/8/2026"},{rank:28,school:"Hamilton",conf:"6A",date:"3/8/2026"},{rank:29,school:"Canyon View",conf:"5A",date:"3/8/2026"},{rank:30,school:"ALA - QC",conf:"4A",date:"3/8/2026"},{rank:31,school:"Red Mountain",conf:"6A",date:"3/8/2026"},{rank:32,school:"Notre Dame",conf:"5A",date:"3/8/2026"}
+];
+
+const DATES=[...new Set(RAW.map(r=>r.date))].sort((a,b)=>new Date(a)-new Date(b));
+function fd(d){const dt=new Date(d+' 12:00');return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+
+let conf='all',topN=10,step=0,playing=false,timer=null;
+const BH=42,BG=6,LW=42,LBW=130,RW=30,DUR=800;
+const cont=document.getElementById('rc');
+
+function getColor(s){return LC[s]||'#534AB7';}
+
+function mkLogo(school,color){
+  const w=document.createElement('div');
+  w.style.cssText=`width:${LW}px;height:${LW}px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#0a0a0a;border:1.5px solid ${color}80;box-shadow:0 0 12px ${color}33;`;
+  if(LOGOS[school]){
+    const img=document.createElement('img');
+    img.src=LOGOS[school];
+    img.style.cssText='width:100%;height:100%;object-fit:contain;padding:2px;';
+    img.onerror=()=>{w.removeChild(img);w.style.color=color;w.style.fontSize='12px';w.style.fontWeight='500';w.textContent=school.charAt(0);};
+    w.appendChild(img);
+  } else {
+    w.style.color=color;w.style.fontSize='12px';w.style.fontWeight='500';w.textContent=school.charAt(0);
+  }
+  return w;
+}
+
+function getFrame(s){
+  const src=conf==='all'?RAW:RAW.filter(r=>r.conf===conf);
+  const sorted=src.filter(r=>r.date===DATES[s]).sort((a,b)=>a.rank-b.rank);
+  // Dedupe by school (keep highest-ranked occurrence) — source data has
+  // duplicate school entries on some dates that would otherwise collide.
+  const seen=new Set(),out=[];
+  for(const r of sorted){if(seen.has(r.school))continue;seen.add(r.school);out.push(r);}
+  return out.slice(0,topN);
+}
+
+function initChart(){
+  cont.innerHTML='';
+  cont.style.cssText=`position:relative;width:100%;height:${(BH+BG)*topN+20}px;`;
+  const frame=getFrame(step);
+  frame.forEach((d,i)=>{
+    const color=getColor(d.school);
+    const pct=Math.max(5,((topN+1-d.rank)/(topN+1))*100);
+    const row=document.createElement('div');
+    row.dataset.school=d.school;
+    row.style.cssText=`position:absolute;left:0;right:0;top:${i*(BH+BG)}px;height:${BH}px;display:flex;align-items:center;gap:8px;transition:top ${DUR}ms cubic-bezier(.4,0,.2,1);`;
+    const rk=document.createElement('div');
+    rk.style.cssText=`width:${RW}px;text-align:center;font-size:12px;font-weight:500;color:var(--text-muted);flex-shrink:0;`;
+    rk.textContent='#'+d.rank;
+    const logo=mkLogo(d.school,color);
+    const lbl=document.createElement('div');
+    lbl.style.cssText=`width:${LBW}px;font-size:12px;font-weight:500;color:var(--silver-light);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+    lbl.textContent=d.school;
+    const bw=document.createElement('div');
+    bw.style.cssText='flex:1;height:100%;';
+    const bar=document.createElement('div');
+    bar.className='rb-bar';
+    bar.style.cssText=`height:100%;width:${pct}%;background:${color};border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width ${DUR}ms cubic-bezier(.4,0,.2,1);box-sizing:border-box;`;
+    const badge=document.createElement('span');
+    badge.style.cssText='font-size:11px;font-weight:500;color:rgba(255,255,255,0.9);';
+    badge.textContent=d.conf;
+    bar.appendChild(badge);bw.appendChild(bar);
+    row.appendChild(rk);row.appendChild(logo);row.appendChild(lbl);row.appendChild(bw);
+    cont.appendChild(row);
+  });
+  document.getElementById('dl').textContent=fd(DATES[step]);
+  document.getElementById('scr').value=step;
+}
+
+function updateChart(s){
+  step=s;
+  document.getElementById('scr').value=s;
+  document.getElementById('dl').textContent=fd(DATES[s]);
+  const frame=getFrame(s);
+  const inF=new Set(frame.map(d=>d.school));
+  const rows={};
+  cont.querySelectorAll('[data-school]').forEach(el=>rows[el.dataset.school]=el);
+  frame.forEach((d,i)=>{
+    const color=getColor(d.school);
+    const pct=Math.max(5,((topN+1-d.rank)/(topN+1))*100);
+    const top=i*(BH+BG);
+    if(rows[d.school]){
+      const row=rows[d.school];
+      row.style.top=top+'px';row.style.opacity='1';
+      row.querySelector('div').textContent='#'+d.rank;
+      row.querySelector('.rb-bar').style.width=pct+'%';
+      row.querySelector('.rb-bar').style.background=color;
+    } else {
+      const row=document.createElement('div');
+      row.dataset.school=d.school;
+      row.style.cssText=`position:absolute;left:0;right:0;top:${top}px;height:${BH}px;display:flex;align-items:center;gap:8px;transition:top ${DUR}ms cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0;`;
+      const rk=document.createElement('div');
+      rk.style.cssText=`width:${RW}px;text-align:center;font-size:12px;font-weight:500;color:var(--text-muted);flex-shrink:0;`;
+      rk.textContent='#'+d.rank;
+      const logo=mkLogo(d.school,color);
+      const lbl=document.createElement('div');
+      lbl.style.cssText=`width:${LBW}px;font-size:12px;font-weight:500;color:var(--silver-light);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+      lbl.textContent=d.school;
+      const bw=document.createElement('div');bw.style.cssText='flex:1;height:100%;';
+      const bar=document.createElement('div');bar.className='rb-bar';
+      bar.style.cssText=`height:100%;width:0%;background:${color};border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width ${DUR}ms cubic-bezier(.4,0,.2,1);box-sizing:border-box;`;
+      const badge=document.createElement('span');badge.style.cssText='font-size:11px;font-weight:500;color:rgba(255,255,255,0.9);';badge.textContent=d.conf;
+      bar.appendChild(badge);bw.appendChild(bar);
+      row.appendChild(rk);row.appendChild(logo);row.appendChild(lbl);row.appendChild(bw);
+      cont.appendChild(row);
+      requestAnimationFrame(()=>{row.style.opacity='1';bar.style.width=pct+'%';});
+    }
+  });
+  Object.keys(rows).forEach(school=>{
+    if(!inF.has(school)){rows[school].style.opacity='0';setTimeout(()=>{if(rows[school].parentNode)rows[school].parentNode.removeChild(rows[school]);},DUR);}
+  });
+  cont.style.height=(BH+BG)*topN+20+'px';
+}
+
+function stepFwd(){if(step<DATES.length-1){updateChart(step+1);}else{stopPlay();}}
+function startPlay(){
+  playing=true;const b=document.getElementById('pb');
+  b.innerHTML='<span style="font-size:11px;">&#10074;&#10074;</span> Pause';b.classList.add('on');
+  if(step===DATES.length-1)updateChart(0);
+  timer=setInterval(stepFwd,DUR+400);
+}
+function stopPlay(){
+  playing=false;clearInterval(timer);
+  const b=document.getElementById('pb');b.innerHTML='<span style="font-size:11px;">&#9654;</span> Play';b.classList.remove('on');
+}
+
+document.getElementById('pb').addEventListener('click',()=>playing?stopPlay():startPlay());
+document.getElementById('rst').addEventListener('click',()=>{stopPlay();step=0;initChart();});
+document.getElementById('scr').addEventListener('input',e=>{stopPlay();updateChart(parseInt(e.target.value));});
+document.querySelectorAll('.cb').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.cb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+    conf=btn.dataset.conf;stopPlay();step=0;initChart();
+  });
+});
+document.getElementById('tn').addEventListener('input',e=>{
+  topN=parseInt(e.target.value);document.getElementById('tnl').textContent=topN;
+  stopPlay();step=0;initChart();
+});
+
+initChart();
+</script>
+
+    </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="index.html#articles">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="index.html#transfers">Transfers</a></li>
+      <li><a href="index.html#news">News</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+</body>
+</html>

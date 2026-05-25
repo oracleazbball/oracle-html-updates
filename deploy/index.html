@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Oracle | Arizona High School Basketball</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Type system — display matches "THE ORACLE" chiseled lettering,
+         condensed matches the "ARIZONA HIGH SCHOOL BASKETBALL" band */
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-glow: #a855f7;
+      --purple-dark: #3b0075;
+      --purple-muted: #4a1080;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-soft: #080808;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-logo .nav-mark {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+
+    .nav-logo span {
+      color: var(--purple-bright);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 8px 20px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--silver-light);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 120px 24px 60px;
+      overflow: hidden;
+    }
+
+    /* radial purple ambient behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(106,15,214,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* subtle lightning crack lines */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(135deg, transparent 48%, rgba(139,47,255,0.04) 49%, transparent 50%),
+        linear-gradient(45deg, transparent 60%, rgba(139,47,255,0.03) 61%, transparent 62%);
+      pointer-events: none;
+    }
+
+    .hero-logo {
+      width: min(640px, 92vw);
+      height: auto;
+      position: relative;
+      z-index: 2;
+      animation: logoIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      /* Drop the black PNG background into the page background */
+      mix-blend-mode: screen;
+      /* Soft radial mask so any residual edge feathers into the page */
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 58%, rgba(0,0,0,0.6) 75%, transparent 92%);
+              mask-image: radial-gradient(ellipse at center, #000 58%, rgba(0,0,0,0.6) 75%, transparent 92%);
+      filter: drop-shadow(0 0 60px rgba(139,47,255,0.45)) drop-shadow(0 0 120px rgba(106,15,214,0.3));
+    }
+
+    @keyframes logoIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .hero-tagline {
+      margin-top: 24px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(30px, 5.4vw, 58px);
+      letter-spacing: 5px;
+      text-align: center;
+      line-height: 1.1;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+
+    .hero-sub {
+      margin-top: 16px;
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .btn-primary {
+      padding: 14px 36px;
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 20px rgba(106,15,214,0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-bright);
+      box-shadow: 0 0 40px rgba(139,47,255,0.6);
+    }
+
+    .btn-outline {
+      padding: 14px 36px;
+      background: transparent;
+      color: var(--silver-light);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(192,192,192,0.3);
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--purple-bright);
+      color: var(--purple-bright);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent);
+      margin: 0;
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(34px, 4.2vw, 52px);
+      letter-spacing: 4px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 56px;
+    }
+
+    .about-text p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .about-text p strong {
+      color: var(--silver-light);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .stat-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-bright));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(139,47,255,0.4);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 46px;
+      letter-spacing: 3px;
+      color: var(--purple-bright);
+      text-shadow: 0 0 20px rgba(139,47,255,0.4);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ── WHAT WE COVER ── */
+    .coverage-section {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      border-bottom: 1px solid rgba(106,15,214,0.2);
+      padding: 96px 0;
+    }
+
+    .coverage-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+    }
+
+    .coverage-card {
+      background: #000;
+      padding: 40px 28px;
+      border: 1px solid rgba(255,255,255,0.04);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+      group: true;
+    }
+
+    .coverage-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-bright));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .coverage-card:hover {
+      border-color: rgba(139,47,255,0.25);
+      transform: translateY(-4px);
+    }
+
+    .coverage-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .coverage-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .coverage-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .coverage-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .coverage-arrow {
+      margin-top: auto;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .coverage-card:hover .coverage-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── NEWS FEED (live tweets) ── */
+    .feed-section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .feed-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      padding: 8px 16px;
+      border: 1px solid rgba(139,47,255,0.4);
+      background: rgba(106,15,214,0.08);
+    }
+
+    .feed-live::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff3b3b;
+      box-shadow: 0 0 12px #ff3b3b;
+      animation: livePulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* The script mounts tweet cards as children of #news-feed.
+       These styles work for a typical card structure:
+       <article class="tweet-card">
+         <header>
+           <img class="tweet-avatar" />
+           <div class="tweet-author">
+             <span class="tweet-name"></span>
+             <span class="tweet-handle"></span>
+           </div>
+           <time class="tweet-time"></time>
+         </header>
+         <p class="tweet-body"></p>
+         <footer class="tweet-meta"> ... </footer>
+       </article>
+    */
+    #tweet-feed {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(139,47,255,0.15);
+      border: 1px solid rgba(139,47,255,0.2);
+      min-height: 320px;
+      position: relative;
+    }
+
+    .tweet-card {
+      background: var(--black-card);
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: background 0.2s;
+      min-height: 200px;
+    }
+
+    .tweet-card:hover {
+      background: #15101e;
+    }
+
+    .tweet-card header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tweet-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple-bright));
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(139,47,255,0.3);
+    }
+
+    .tweet-author {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .tweet-name {
+      font-family: var(--font-condensed);
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tweet-handle {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .tweet-time {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      flex-shrink: 0;
+    }
+
+    .tweet-body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      color: #ccc;
+      flex: 1;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .tweet-body a {
+      color: var(--purple-bright);
+      text-decoration: none;
+    }
+
+    .tweet-body a:hover {
+      text-decoration: underline;
+    }
+
+    .tweet-meta {
+      display: flex;
+      gap: 20px;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 12px;
+    }
+
+    .tweet-meta span strong {
+      color: var(--silver-light);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    /* Empty / loading state */
+    .feed-empty {
+      grid-column: 1 / -1;
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--black-card);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── MISSION ── */
+    .mission-section {
+      padding: 96px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .mission-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+
+    .mission-body p {
+      font-size: 18px;
+      line-height: 1.85;
+      color: #999;
+      margin-bottom: 28px;
+    }
+
+    .mission-body p:first-child {
+      font-size: 22px;
+      color: #ccc;
+      font-weight: 300;
+    }
+
+    .mission-body strong {
+      color: var(--silver-light);
+    }
+
+    /* ── COMING SOON BANNER ── */
+    .launch-banner {
+      background: linear-gradient(135deg, rgba(106,15,214,0.15), rgba(0,0,0,0) 60%);
+      border: 1px solid rgba(139,47,255,0.3);
+      padding: 40px 48px;
+      max-width: 1200px;
+      margin: 0 auto 96px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+
+    .launch-text h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .launch-text p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .launch-badge {
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      white-space: nowrap;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      box-shadow: 0 0 20px rgba(106,15,214,0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(106,15,214,0.5); }
+      50% { box-shadow: 0 0 40px rgba(139,47,255,0.8); }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+
+    .footer-brand span {
+      color: var(--purple-bright);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--purple-bright);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #444;
+      letter-spacing: 1px;
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+      animation: fadeUp 1s 1s both;
+    }
+
+    .scroll-indicator span {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .scroll-dot {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(139,47,255,0.8), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      section { padding: 64px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .coverage-grid { grid-template-columns: 1fr 1fr; }
+      .feed-section { padding: 64px 24px; }
+      #rankings { padding: 64px 24px !important; }
+      .filter-row { grid-template-columns: 1fr 1fr !important; }
+      .mission-section { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
+      .mission-sidebar { position: static; }
+      .launch-banner { flex-direction: column; align-items: flex-start; margin: 0 24px 64px; padding: 32px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+
+    @media (max-width: 600px) {
+      .coverage-grid { grid-template-columns: 1fr; }
+      .filter-row { grid-template-columns: 1fr !important; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      .hero-cta { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="#articles">Articles</a></li>
+      <li><a href="#podcasts">Podcasts</a></li>
+      <li><a href="#transfers">Transfer News</a></li>
+      <li><a href="#news">News</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <img src="assets/oracle-logo.png"
+         alt="The Oracle — Arizona High School Basketball"
+         class="hero-logo" />
+    <h1 class="hero-tagline">Arizona's <em>Eye</em> on the Game</h1>
+    <p class="hero-sub">The definitive source for Arizona high school basketball</p>
+    <div class="hero-cta">
+      <a href="#about" class="btn-primary">Explore</a>
+      <a href="#coverage" class="btn-outline">What We Cover</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label">About the Oracle</p>
+    <h2 class="section-title">Arizona Ball.<br>Nothing Else.</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          <strong>The Oracle is Arizona's most dedicated hub for high school basketball.</strong> Built by fans, analysts, and obsessives who believe the state's talent deserves real coverage — not an afterthought.
+        </p>
+        <p>
+          We dig deeper than the box score. From statewide player rankings and team breakdowns to transfer news updates and original audio, everything here is built around one mission: <strong>shine a light on Arizona's next generation of hoopers.</strong>
+        </p>
+        <p>
+          Whether you're a player looking to get noticed, a parent tracking the scene, a coach doing your homework, or just a die-hard fan — The Oracle is your source.
+        </p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-number">6A–1A</div>
+          <div class="stat-label">All Divisions Covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">AZ</div>
+          <div class="stat-label">State-Wide Focus</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">360°</div>
+          <div class="stat-label">Stats, Film & Analysis</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Transfer News & Updates</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- COVERAGE GRID -->
+  <div class="coverage-section" id="coverage">
+    <div class="coverage-inner">
+      <p class="section-label">What We Cover</p>
+      <h2 class="section-title">Five Pillars.<br>One Platform.</h2>
+      <div class="coverage-grid">
+
+        <a href="rankings.html" class="coverage-card">
+          <div class="coverage-icon">🏆</div>
+          <div class="coverage-name">Rankings</div>
+          <div class="coverage-desc">Original statewide player and team rankings built on real film study and stats — not recruiting hype.</div>
+          <div class="coverage-arrow">Explore →</div>
+        </a>
+
+        <a href="#articles" class="coverage-card">
+          <div class="coverage-icon">✍️</div>
+          <div class="coverage-name">Articles</div>
+          <div class="coverage-desc">In-depth features, breakdowns, game recaps, and player profiles written by people who watch every play.</div>
+          <div class="coverage-arrow">Read →</div>
+        </a>
+
+        <a href="#podcasts" class="coverage-card">
+          <div class="coverage-icon">🎙️</div>
+          <div class="coverage-name">Podcasts</div>
+          <div class="coverage-desc">Audio coverage including player interviews, season previews, and roundtable discussions on Arizona ball.</div>
+          <div class="coverage-arrow">Listen →</div>
+        </a>
+
+        <a href="#transfers" class="coverage-card">
+          <div class="coverage-icon">🔄</div>
+          <div class="coverage-name">Transfer News</div>
+          <div class="coverage-desc">The fastest transfer news tracker in Arizona. Know where players are landing before anyone else.</div>
+          <div class="coverage-arrow">Follow →</div>
+        </a>
+
+        <a href="#news" class="coverage-card">
+          <div class="coverage-icon">📡</div>
+          <div class="coverage-name">News Feed</div>
+          <div class="coverage-desc">Aggregated Arizona high school basketball headlines — everything happening across the state in one place.</div>
+          <div class="coverage-arrow">Browse →</div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="divider"></div>
+
+  <!-- NEWS FEED -->
+  <section class="feed-section" id="news">
+    <p class="section-label">Live Feed</p>
+    <h2 class="section-title">Latest from<br>AZ Hoops</h2>
+
+    <!-- FILTERS -->
+    <div style="
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    " class="filter-row">
+
+      <!-- Keyword Search -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-family: var(--font-condensed); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);">Keyword</label>
+        <input id="filter-keyword" type="text" placeholder="e.g. Adan Diggs" style="
+          background: var(--black-card);
+          border: 1px solid rgba(106,15,214,0.3);
+          color: var(--silver-light);
+          font-family: var(--font-body);
+          font-size: 14px;
+          padding: 12px 16px;
+          outline: none;
+          width: 100%;
+          box-sizing: border-box;
+          transition: border-color 0.2s;
+        " onfocus="this.style.borderColor='rgba(139,47,255,0.7)'" onblur="this.style.borderColor='rgba(106,15,214,0.3)'" />
+      </div>
+
+      <!-- Username Filter -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-family: var(--font-condensed); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);">Username</label>
+        <input id="filter-username" type="text" placeholder="e.g. GreggRosenberg1" style="
+          background: var(--black-card);
+          border: 1px solid rgba(106,15,214,0.3);
+          color: var(--silver-light);
+          font-family: var(--font-body);
+          font-size: 14px;
+          padding: 12px 16px;
+          outline: none;
+          width: 100%;
+          box-sizing: border-box;
+          transition: border-color 0.2s;
+        " onfocus="this.style.borderColor='rgba(139,47,255,0.7)'" onblur="this.style.borderColor='rgba(106,15,214,0.3)'" />
+      </div>
+
+      <!-- Team Dropdown -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-family: var(--font-condensed); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);">Team</label>
+        <select id="filter-team" style="
+          background: var(--black-card);
+          border: 1px solid rgba(106,15,214,0.3);
+          color: var(--silver-light);
+          font-family: var(--font-body);
+          font-size: 14px;
+          padding: 12px 16px;
+          outline: none;
+          width: 100%;
+          box-sizing: border-box;
+          cursor: pointer;
+          transition: border-color 0.2s;
+          appearance: none;
+        " onfocus="this.style.borderColor='rgba(139,47,255,0.7)'" onblur="this.style.borderColor='rgba(106,15,214,0.3)'">
+          <option value="">All Teams</option>
+        </select>
+      </div>
+
+      <!-- Player Search -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-family: var(--font-condensed); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);">Player</label>
+        <input id="filter-player" type="text" placeholder="e.g. Cruz Kazmierski" style="
+          background: var(--black-card);
+          border: 1px solid rgba(106,15,214,0.3);
+          color: var(--silver-light);
+          font-family: var(--font-body);
+          font-size: 14px;
+          padding: 12px 16px;
+          outline: none;
+          width: 100%;
+          box-sizing: border-box;
+          transition: border-color 0.2s;
+        " onfocus="this.style.borderColor='rgba(139,47,255,0.7)'" onblur="this.style.borderColor='rgba(106,15,214,0.3)'" />
+      </div>
+
+      <!-- Search Button -->
+      <button onclick="applyFilters()" style="
+        padding: 12px 32px;
+        background: var(--purple);
+        color: #fff;
+        font-family: var(--font-condensed);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+        transition: background 0.2s;
+        white-space: nowrap;
+        height: 46px;
+      " onmouseover="this.style.background='var(--purple-bright)'" onmouseout="this.style.background='var(--purple)'">
+        Search
+      </button>
+
+    </div>
+
+    <!-- Active filters display -->
+    <div id="active-filters" style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;"></div>
+
+    <!-- Clear filters -->
+    <div style="margin-top: 12px;">
+      <button onclick="clearFilters()" style="
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-family: var(--font-condensed);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s;
+      " onmouseover="this.style.color='var(--purple-bright)'" onmouseout="this.style.color='var(--text-muted)'">
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- Results count -->
+    <div id="results-count" style="margin-top: 24px; font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);"></div>
+
+    <!-- Tweet Feed -->
+    <div id="tweet-feed" style="margin-top: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px; font-size: 14px;">Loading feed…</div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MISSION -->
+  <div class="mission-section">
+    <div class="mission-sidebar">
+      <p class="section-label">Our Mission</p>
+      <h2 class="section-title" style="font-size: 48px;">Why the Oracle Exists</h2>
+    </div>
+    <div class="mission-body">
+      <p>Arizona produces elite basketball talent every single year. But too much of it goes unnoticed — buried under national recruiting noise, ignored by mainstream outlets, or reduced to a box score and nothing more.</p>
+      <p>
+        <strong>The Oracle changes that.</strong> This is a platform built to give Arizona high school basketball the serious, sustained attention it deserves. We're tracking every significant player in the state, every team worth watching, and every story worth telling.
+      </p>
+      <p>
+        The name says it all. An oracle sees what others miss. We're here to surface the players who will make headlines before they do, call the teams that will go deep in the playoffs, and give the Arizona basketball community a home base that feels as serious as the game itself.
+      </p>
+      <p>This is just the beginning. Rankings drop first. Articles follow. The podcast is coming. And the transfer news never stops.</p>
+    </div>
+  </div>
+
+  <!-- COMING SOON BANNER -->
+  <div class="launch-banner">
+    <div class="launch-text">
+      <h3>Full Launch Coming Soon</h3>
+      <p>Rankings, articles, podcasts, and transfer news — all dropping in the coming weeks. Stay locked in.</p>
+    </div>
+    <div class="launch-badge">Coming Soon</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="#articles">Articles</a></li>
+      <li><a href="#podcasts">Podcasts</a></li>
+      <li><a href="#transfers">Transfers</a></li>
+      <li><a href="#news">News</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <!-- ── LIVE TWEET FEED ── -->
+  <script>
+    // Load teams into dropdown on page load
+    async function loadTeams() {
+      try {
+        const response = await fetch("https://oracle-api-7q4wz.ondigitalocean.app/teams");
+        const teams = await response.json();
+        const select = document.getElementById("filter-team");
+
+        teams.forEach(team => {
+          const option = document.createElement("option");
+          option.value = team.school;
+          option.textContent = `${team.school} ${team.mascot} (${team.conference})`;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        console.log("Could not load teams:", err);
+      }
+    }
+
+    // Build query string from active filters
+    function buildQueryString() {
+      const keyword = document.getElementById("filter-keyword").value.trim();
+      const username = document.getElementById("filter-username").value.trim();
+      const team = document.getElementById("filter-team").value.trim();
+      const player = document.getElementById("filter-player").value.trim();
+
+      const params = new URLSearchParams();
+      if (keyword) params.append("keyword", keyword);
+      if (username) params.append("username", username);
+      if (team) params.append("team", team);
+      if (player) params.append("player", player);
+
+      return params.toString();
+    }
+
+    // Show active filter tags
+    function showActiveFilters() {
+      const keyword = document.getElementById("filter-keyword").value.trim();
+      const username = document.getElementById("filter-username").value.trim();
+      const team = document.getElementById("filter-team").value.trim();
+      const player = document.getElementById("filter-player").value.trim();
+
+      const container = document.getElementById("active-filters");
+      container.innerHTML = "";
+
+      const filters = [];
+      if (keyword) filters.push({ label: "Keyword", value: keyword });
+      if (username) filters.push({ label: "User", value: username });
+      if (team) filters.push({ label: "Team", value: team });
+      if (player) filters.push({ label: "Player", value: player });
+
+      filters.forEach(f => {
+        container.innerHTML += `
+          <div style="
+            background: rgba(106,15,214,0.2);
+            border: 1px solid rgba(139,47,255,0.3);
+            padding: 6px 14px;
+            font-family: var(--font-condensed);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--purple-bright);
+          ">
+            ${f.label}: ${f.value}
+          </div>
+        `;
+      });
+    }
+
+    // Apply filters and reload feed
+    async function applyFilters() {
+      const queryString = buildQueryString();
+      showActiveFilters();
+      await loadTweets(queryString);
+    }
+
+    // Clear all filters
+    function clearFilters() {
+      document.getElementById("filter-keyword").value = "";
+      document.getElementById("filter-username").value = "";
+      document.getElementById("filter-team").value = "";
+      document.getElementById("filter-player").value = "";
+      document.getElementById("active-filters").innerHTML = "";
+      document.getElementById("results-count").textContent = "";
+      loadTweets();
+    }
+
+    // Load tweets with optional filters
+    async function loadTweets(queryString = "") {
+      const feed = document.getElementById("tweet-feed");
+      feed.innerHTML = `<div style="color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px; font-size: 14px;">Loading…</div>`;
+
+      try {
+        const url = queryString
+          ? `https://oracle-api-7q4wz.ondigitalocean.app/tweets?${queryString}`
+          : `https://oracle-api-7q4wz.ondigitalocean.app/tweets`;
+
+        const response = await fetch(url);
+        const tweets = await response.json();
+
+        // Update results count
+        document.getElementById("results-count").textContent =
+          `${tweets.length} result${tweets.length !== 1 ? "s" : ""}`;
+
+        if (tweets.length === 0) {
+          feed.innerHTML = `<div style="color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px; font-size: 14px;">No tweets found for that filter.</div>`;
+          return;
+        }
+
+        feed.innerHTML = tweets.map(tweet => {
+          const content = tweet.content.replace(/`/g, "'").replace(/\$/g, '&#36;');
+          const displayName = tweet.display_name.replace(/`/g, "'");
+          const initial = displayName.charAt(0);
+          const date = new Date(tweet.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+          const images = tweet.media_urls
+            .filter(url => !url.includes('.mp4'))
+            .map(url => `<img src="${url}" style="max-width: 100%; max-height: 300px; border-radius: 4px; object-fit: cover; border: 1px solid rgba(106,15,214,0.2);" />`)
+            .join('');
+
+          const videos = tweet.media_urls
+            .filter(url => url.includes('.mp4'))
+            .map(url => `
+              <a href="${tweet.url}" target="_blank" style="
+                display: inline-block;
+                padding: 10px 20px;
+                background: rgba(106,15,214,0.2);
+                border: 1px solid rgba(139,47,255,0.3);
+                color: var(--purple-bright);
+                font-family: var(--font-condensed);
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                border-radius: 2px;
+              ">▶ Watch Video on X</a>
+            `)
+            .join('');
+
+          const media = tweet.media_urls && tweet.media_urls.length > 0
+            ? `<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">${images}${videos}</div>`
+            : '';
+
+          return `
+            <div style="
+              background: var(--black-card);
+              border: 1px solid rgba(106,15,214,0.2);
+              padding: 28px 32px;
+              transition: border-color 0.2s;
+              position: relative;
+              overflow: hidden;
+            " onmouseover="this.style.borderColor='rgba(139,47,255,0.4)'"
+               onmouseout="this.style.borderColor='rgba(106,15,214,0.2)'">
+
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="
+                    width: 40px; height: 40px;
+                    background: linear-gradient(135deg, var(--purple), var(--purple-bright));
+                    border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-family: var(--font-display);
+                    font-size: 16px; font-weight: 900;
+                    color: white;
+                  ">${initial}</div>
+                  <div>
+                    <div style="font-family: var(--font-condensed); font-weight: 700; font-size: 15px; letter-spacing: 1px; color: var(--silver-light);">${displayName}</div>
+                    <div style="font-size: 12px; color: var(--purple-bright); letter-spacing: 1px;">@${tweet.username}</div>
+                  </div>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px; text-transform: uppercase;">${date}</div>
+              </div>
+
+              <p style="font-family: var(--font-body); font-size: 15px; line-height: 1.7; color: #ccc; margin-bottom: 16px;">${content}</p>
+
+              ${media}
+
+              <div style="display: flex; align-items: center; gap: 24px;">
+                <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px;">♥ ${tweet.likes}</span>
+                <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px;">🔁 ${tweet.retweets}</span>
+                <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px;">💬 ${tweet.replies}</span>
+                <a href="${tweet.url}" target="_blank" rel="noopener" style="
+                  margin-left: auto;
+                  font-family: var(--font-condensed);
+                  font-size: 12px;
+                  font-weight: 700;
+                  letter-spacing: 2px;
+                  text-transform: uppercase;
+                  color: var(--purple-bright);
+                  text-decoration: none;
+                  opacity: 0.7;
+                  transition: opacity 0.2s;
+                " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">View on X →</a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        feed.innerHTML = `
+          <div style="color: var(--text-muted); font-family: var(--font-condensed); letter-spacing: 2px; font-size: 14px;">
+            Could not load feed. Make sure the API is running.
+          </div>`;
+      }
+    }
+
+    // Allow Enter key to trigger search from any filter input
+    document.addEventListener('DOMContentLoaded', () => {
+      ['filter-keyword', 'filter-username', 'filter-player'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
+      });
+      const teamSel = document.getElementById('filter-team');
+      if (teamSel) teamSel.addEventListener('change', applyFilters);
+    });
+
+    // Initialize on page load
+    loadTeams();
+    loadTweets();
+    setInterval(loadTweets, 300000);
+  </script>
+
+</body>
+</html>
