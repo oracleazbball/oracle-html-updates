@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transfer News · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-glow: #a855f7;
+      --purple-dark: #3b0075;
+      --purple-muted: #4a1080;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-soft: #080808;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 20px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 20px; right: 20px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent);
+      margin: 0;
+    }
+
+    .section-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 12px;
+    }
+
+    /* ── HERO ── */
+    .tr-hero {
+      padding: 140px 48px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .tr-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .tr-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 76px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .tr-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .tr-hero p {
+      margin-top: 22px;
+      max-width: 720px;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #aaa;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 48px 96px;
+    }
+
+    /* ── FILTERS ── */
+    .filter-row {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+    .filter-field { display: flex; flex-direction: column; gap: 8px; }
+    .filter-field label {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .filter-field input,
+    .filter-field select {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 12px 16px;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .filter-field select { cursor: pointer; }
+    .filter-field input:focus,
+    .filter-field select:focus { border-color: rgba(139,47,255,0.7); }
+    .filter-btn {
+      padding: 12px 32px;
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: background 0.2s;
+      white-space: nowrap;
+      height: 46px;
+    }
+    .filter-btn:hover { background: var(--purple-bright); }
+    .clear-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 12px;
+      transition: color 0.2s;
+    }
+    .clear-btn:hover { color: var(--purple-bright); }
+    .results-count {
+      margin-top: 24px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── TRANSFER GRID ── */
+    .transfer-grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .transfer-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .transfer-card:hover {
+      border-color: rgba(139,47,255,0.45);
+      transform: translateY(-3px);
+    }
+
+    .tc-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .tc-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+      line-height: 1.1;
+    }
+    .tc-meta {
+      margin-top: 8px;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+    }
+    .tc-meta .dot { color: rgba(139,47,255,0.5); }
+
+    .tc-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .grad-badge {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+      background: var(--purple);
+      padding: 5px 12px;
+      white-space: nowrap;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    }
+    .star-badge {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: #ffd24a;
+      white-space: nowrap;
+    }
+    .frosh-badge {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      border: 1px solid rgba(139,47,255,0.4);
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    /* the move: from → to */
+    .tc-move {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 18px;
+    }
+    .tc-team {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .tc-team.tc-to { flex-direction: row-reverse; text-align: right; }
+    .tc-logo {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      border: 1.5px solid rgba(139,47,255,0.5);
+      box-shadow: 0 0 12px rgba(139,47,255,0.2);
+    }
+    .tc-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+    .tc-logo .monogram {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 20px;
+      color: #fff;
+    }
+    .tc-team-text { min-width: 0; }
+    .tc-team-label {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .tc-team-name {
+      font-family: var(--font-condensed);
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tc-arrow {
+      font-size: 22px;
+      color: var(--purple-bright);
+      text-shadow: 0 0 12px rgba(139,47,255,0.6);
+      flex-shrink: 0;
+    }
+
+    .feed-empty {
+      grid-column: 1 / -1;
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .tr-hero { padding: 110px 24px 8px; }
+      main { padding: 24px 24px 64px; }
+      .filter-row { grid-template-columns: 1fr 1fr; }
+      .transfer-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+    @media (max-width: 560px) {
+      .filter-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="index.html#articles">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html" class="active">Transfer News</a></li>
+      <li><a href="index.html#news">News</a></li>
+    </ul>
+  </nav>
+
+  <header class="tr-hero">
+    <p class="hero-eyebrow">Transfer News · 2025–26 Season</p>
+    <h1>The <em>Movement</em>,<br/>Tracked.</h1>
+    <p>
+      Every transfer across Arizona high school basketball — who's leaving, where they're landing,
+      and what it means for the season ahead. Filter by grad year, team, or search a specific player.
+    </p>
+  </header>
+
+  <main>
+    <!-- FILTERS -->
+    <div class="filter-row">
+      <div class="filter-field">
+        <label for="filter-year">Grad Year</label>
+        <select id="filter-year"><option value="">All Years</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-team">Team</label>
+        <select id="filter-team"><option value="">All Teams</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-player">Player</label>
+        <input id="filter-player" type="text" placeholder="Search by name…" />
+      </div>
+      <button class="filter-btn" onclick="applyFilters()">Search</button>
+    </div>
+
+    <div>
+      <button class="clear-btn" onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <div class="results-count" id="results-count"></div>
+
+    <div class="transfer-grid" id="transfer-grid">
+      <div class="feed-empty">Loading transfers…</div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="index.html#articles">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfers</a></li>
+      <li><a href="index.html#news">News</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    // ── Supabase config (anon public key — safe for frontend; table is RLS read-only) ──
+    const SUPABASE_URL = "https://vwfhurjqtczfopjasceo.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Zmh1cmpxdGN6Zm9wamFzY2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5MDcsImV4cCI6MjA5NTI5ODkwN30.DV1f8Mqi9gPS9vPSwco1-Auvnb2b3xXta8Ai-5vVWYU";
+
+    // ── Team logo + color resolution ──
+    const LOGO_FILES = ["ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day o'connor","st. mary's","sunnyslope","tucson","verrado","west point","westview","willow canyon"];
+
+    const TEAM_COLORS = {
+      "ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"
+    };
+
+    const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    // Build normalized lookups
+    const LOGO_MAP = {};
+    LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/" + encodeURIComponent(f) + ".png"; });
+    const COLOR_MAP = {};
+    Object.entries(TEAM_COLORS).forEach(([k, v]) => { COLOR_MAP[norm(k)] = v; });
+
+    function resolveTeam(name) {
+      const n = norm(name);
+      if (!n) return { logo: null, color: null };
+      let logoKey = LOGO_MAP[n] ? n : null;
+      let colorKey = COLOR_MAP[n] ? n : null;
+      if (!logoKey) {
+        for (const k of Object.keys(LOGO_MAP)) {
+          if (n.startsWith(k) || k.startsWith(n)) { logoKey = k; break; }
+        }
+      }
+      if (!colorKey) {
+        for (const k of Object.keys(COLOR_MAP)) {
+          if (n.startsWith(k) || k.startsWith(n)) { colorKey = k; break; }
+        }
+      }
+      return {
+        logo: logoKey ? LOGO_MAP[logoKey] : null,
+        color: colorKey ? COLOR_MAP[colorKey] : null
+      };
+    }
+
+    function escapeHtml(s) {
+      return (s == null ? "" : String(s))
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function teamBlock(name, side) {
+      const { logo, color } = resolveTeam(name);
+      const glow = color || "#8b2fff";
+      const ring = `border-color:${glow}cc;box-shadow:0 0 12px ${glow}55;`;
+      const inner = logo
+        ? `<img src="${logo}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.parentNode.innerHTML='<span class=&quot;monogram&quot;>${escapeHtml((name||'?').charAt(0))}</span>';" />`
+        : `<span class="monogram">${escapeHtml((name || "?").charAt(0))}</span>`;
+      const label = side === "from" ? "From" : "To";
+      return `
+        <div class="tc-team tc-${side === 'from' ? 'from' : 'to'}">
+          <div class="tc-logo" style="${ring}">${inner}</div>
+          <div class="tc-team-text">
+            <div class="tc-team-label">${label}</div>
+            <div class="tc-team-name">${escapeHtml(name || "—")}</div>
+          </div>
+        </div>`;
+    }
+
+    let ALL = [];
+
+    function sortTransfers(rows) {
+      return rows.slice().sort((a, b) => {
+        const t = (a.new_team || "").localeCompare(b.new_team || "", undefined, { sensitivity: "base" });
+        if (t !== 0) return t;
+        const gy = (Number(a.grad_year) || 9999) - (Number(b.grad_year) || 9999);
+        if (gy !== 0) return gy;
+        const fa = (a.player_name || "").trim().split(/\s+/)[0];
+        const fb = (b.player_name || "").trim().split(/\s+/)[0];
+        return fa.localeCompare(fb, undefined, { sensitivity: "base" });
+      });
+    }
+
+    function renderCards(rows) {
+      const grid = document.getElementById("transfer-grid");
+      document.getElementById("results-count").textContent =
+        `${rows.length} transfer${rows.length !== 1 ? "s" : ""}`;
+
+      if (!rows.length) {
+        grid.innerHTML = `<div class="feed-empty">No transfers match those filters.</div>`;
+        return;
+      }
+
+      grid.innerHTML = rows.map(r => {
+        const meta = [];
+        if (r.position) meta.push(escapeHtml(r.position));
+        if (r.height) meta.push(escapeHtml(r.height));
+        const metaHtml = meta.join(' <span class="dot">·</span> ');
+
+        const badges = [];
+        if (r.grad_year) badges.push(`<div class="grad-badge">Class of ${escapeHtml(r.grad_year)}</div>`);
+        if (r.star_rating != null && r.star_rating !== "") badges.push(`<div class="star-badge">${escapeHtml(r.star_rating)}★</div>`);
+        if (r.is_freshman === true) badges.push(`<div class="frosh-badge">Freshman</div>`);
+
+        return `
+          <div class="transfer-card">
+            <div class="tc-top">
+              <div>
+                <div class="tc-name">${escapeHtml(r.player_name || "Unknown Player")}</div>
+                ${metaHtml ? `<div class="tc-meta">${metaHtml}</div>` : ""}
+              </div>
+              <div class="tc-badges">${badges.join("")}</div>
+            </div>
+            <div class="tc-move">
+              ${teamBlock(r.former_team, "from")}
+              <div class="tc-arrow">→</div>
+              ${teamBlock(r.new_team, "to")}
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    function populateFilters(rows) {
+      // Grad years ascending
+      const years = [...new Set(rows.map(r => r.grad_year).filter(Boolean))].sort((a, b) => Number(a) - Number(b));
+      const yearSel = document.getElementById("filter-year");
+      years.forEach(y => {
+        const o = document.createElement("option");
+        o.value = y; o.textContent = "Class of " + y;
+        yearSel.appendChild(o);
+      });
+
+      // Teams (both former + new) alphabetical
+      const teams = [...new Set(rows.flatMap(r => [r.former_team, r.new_team]).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      const teamSel = document.getElementById("filter-team");
+      teams.forEach(t => {
+        const o = document.createElement("option");
+        o.value = t; o.textContent = t;
+        teamSel.appendChild(o);
+      });
+    }
+
+    function applyFilters() {
+      const year = document.getElementById("filter-year").value;
+      const team = document.getElementById("filter-team").value;
+      const player = document.getElementById("filter-player").value.trim().toLowerCase();
+
+      let rows = ALL;
+      if (year) rows = rows.filter(r => String(r.grad_year) === String(year));
+      if (team) rows = rows.filter(r => r.former_team === team || r.new_team === team);
+      if (player) rows = rows.filter(r => (r.player_name || "").toLowerCase().includes(player));
+
+      renderCards(sortTransfers(rows));
+    }
+
+    function clearFilters() {
+      document.getElementById("filter-year").value = "";
+      document.getElementById("filter-team").value = "";
+      document.getElementById("filter-player").value = "";
+      renderCards(sortTransfers(ALL));
+    }
+
+    async function loadTransfers() {
+      const grid = document.getElementById("transfer-grid");
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/transfers?select=*`, {
+          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        ALL = await res.json();
+
+        if (!Array.isArray(ALL) || ALL.length === 0) {
+          grid.innerHTML = `<div class="feed-empty">No transfers posted yet. Check back soon.</div>`;
+          document.getElementById("results-count").textContent = "0 transfers";
+          return;
+        }
+
+        populateFilters(ALL);
+        renderCards(sortTransfers(ALL));
+      } catch (err) {
+        console.error("Transfer load failed:", err);
+        grid.innerHTML = `<div class="feed-empty">Could not load transfers. Please try again later.</div>`;
+      }
+    }
+
+    // Enter to search; dropdowns auto-apply
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("filter-player").addEventListener("keydown", e => { if (e.key === "Enter") applyFilters(); });
+      document.getElementById("filter-year").addEventListener("change", applyFilters);
+      document.getElementById("filter-team").addEventListener("change", applyFilters);
+    });
+
+    loadTransfers();
+  </script>
+
+</body>
+</html>
