@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rosters · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-glow: #a855f7;
+      --purple-dark: #3b0075;
+      --purple-muted: #4a1080;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-soft: #080808;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+      /* turnover status colors */
+      --ret: #3fb968;
+      --in: #8b2fff;
+      --grad: #8a8a8a;
+      --out: #e5484d;
+      --frosh: #3aa0ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 18px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 18px; right: 18px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    .section-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 12px;
+    }
+
+    /* ── HERO ── */
+    .ro-hero {
+      padding: 140px 48px 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .ro-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .ro-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 76px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .ro-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .ro-hero p {
+      margin-top: 22px;
+      max-width: 760px;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #aaa;
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 48px 96px;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      margin-top: 8px;
+    }
+    .ctrl-field { display: flex; flex-direction: column; gap: 8px; flex: 1 1 180px; min-width: 0; }
+    .season-field { flex: 0 0 auto; }
+    .ctrl-field label {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .ctrl-field select,
+    .ctrl-field input {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 14px;
+      height: 46px;
+      padding: 0 16px;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .ctrl-field select { cursor: pointer; }
+    .ctrl-field select:focus,
+    .ctrl-field input:focus { border-color: rgba(139,47,255,0.7); }
+
+    /* season segmented control */
+    .season-toggle {
+      display: flex;
+      border: 1px solid rgba(106,15,214,0.3);
+      height: 46px;
+      background: var(--black-card);
+    }
+    .season-toggle button {
+      flex: 0 0 auto;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 18px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .season-toggle button + button { border-left: 1px solid rgba(106,15,214,0.3); }
+    .season-toggle button.active {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    /* ── SUMMARY BAR ── */
+    .summary {
+      display: flex;
+      gap: 2px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+      border: 1px solid rgba(106,15,214,0.2);
+    }
+    .summary-chip {
+      flex: 1;
+      min-width: 140px;
+      background: var(--black-card);
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .summary-chip::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background: var(--accent, var(--purple-bright));
+    }
+    .summary-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 38px;
+      line-height: 1;
+      color: var(--accent, var(--silver-light));
+    }
+    .summary-lbl {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+    .summary-team-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .summary-team-logo {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 1.5px solid rgba(139,47,255,0.5);
+      box-shadow: 0 0 16px rgba(139,47,255,0.25);
+      flex-shrink: 0;
+    }
+    .summary-team-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+    .summary-team-logo .monogram { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: #fff; }
+    .summary-team-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .summary-team-season {
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-top: 2px;
+    }
+
+    /* ── PANELS (balanced masonry) ── */
+    .panels {
+      margin-top: 28px;
+      column-count: 2;
+      column-gap: 16px;
+    }
+    .panel {
+      background: var(--black-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      display: block;
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+      margin-bottom: 16px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-top: 3px solid var(--accent);
+    }
+    .panel-title {
+      font-family: var(--font-condensed);
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-title .swatch {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .panel-count {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+    }
+    .panel-body { display: flex; flex-direction: column; }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+    .player-row:last-child { border-bottom: none; }
+    .player-row:hover { background: rgba(139,47,255,0.06); }
+    .pr-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .pr-main { min-width: 0; }
+    .pr-name {
+      font-family: var(--font-condensed);
+      font-size: 17px;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pr-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pr-move {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #bbb;
+    }
+    .pr-move-logo {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 1px solid var(--accent);
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .pr-move-logo img { width: 100%; height: 100%; object-fit: contain; padding: 1px; }
+    .pr-move-logo .monogram { font-size: 9px; font-family: var(--font-display); font-weight: 900; color: #fff; }
+    .pr-tag {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 9px;
+      white-space: nowrap;
+    }
+    .panel-empty {
+      padding: 32px 22px;
+      text-align: center;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* current-season single roster */
+    .roster-single {
+      margin-top: 28px;
+      background: var(--black-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-top: 3px solid var(--purple-bright);
+    }
+    .roster-single .panel-body {
+      display: block;
+      column-count: 2;
+      column-gap: 0;
+      column-rule: 1px solid rgba(255,255,255,0.05);
+    }
+    .roster-single .player-row {
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .state-msg {
+      margin-top: 40px;
+      padding: 70px 24px;
+      text-align: center;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .ro-hero { padding: 110px 24px 8px; }
+      main { padding: 24px 24px 64px; }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .season-field { grid-column: 1 / -1; }
+      .panels { column-count: 1; }
+      .roster-single .panel-body { column-count: 1; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+    @media (max-width: 560px) {
+      .controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html" class="active">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  </nav>
+
+  <header class="ro-hero">
+    <p class="hero-eyebrow">Rosters · Turnover View</p>
+    <h1>The <em>Roster</em>,<br/>Projected.</h1>
+    <p>
+      Every team's roster, current and projected. See who's returning, who's coming in via transfer,
+      who's graduating, and who's moving on — the full turnover picture for any program in the state.
+    </p>
+  </header>
+
+  <main>
+    <div class="controls">
+      <div class="ctrl-field">
+        <label for="sel-team">Team</label>
+        <select id="sel-team"><option value="">Loading teams…</option></select>
+      </div>
+      <div class="ctrl-field season-field">
+        <label>Season</label>
+        <div class="season-toggle">
+          <button id="btn-2526" data-view="current">25-26</button>
+          <button id="btn-offseason" class="active" data-view="offseason">Offseason Changes</button>
+          <button id="btn-projected" data-view="projected">Projected</button>
+        </div>
+      </div>
+      <div class="ctrl-field">
+        <label for="sel-position">Position</label>
+        <select id="sel-position"><option value="">All</option><option>Guard</option><option>Forward</option><option>Center</option></select>
+      </div>
+      <div class="ctrl-field">
+        <label for="sel-player">Player</label>
+        <input id="sel-player" type="text" placeholder="Search by name…" />
+      </div>
+    </div>
+
+    <div id="roster-content">
+      <div class="state-msg">Select a team to view its roster.</div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    const API = "https://oracle-api-7q4wz.ondigitalocean.app";
+    const DEFAULT_TEAM = "Basha";
+
+    // ── Team logo + color resolution (shared with transfers page) ──
+    const LOGO_FILES = ["ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day o'connor","st. mary's","sunnyslope","tucson","verrado","west point","westview","willow canyon"];
+    const TEAM_COLORS = {"ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"};
+    const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/" + encodeURIComponent(f) + ".png"; });
+    const COLOR_MAP = {}; Object.entries(TEAM_COLORS).forEach(([k, v]) => { COLOR_MAP[norm(k)] = v; });
+    function resolveTeam(name) {
+      const n = norm(name);
+      if (!n) return { logo: null, color: null };
+      let lk = LOGO_MAP[n] ? n : null, ck = COLOR_MAP[n] ? n : null;
+      if (!lk) for (const k of Object.keys(LOGO_MAP)) { if (n.startsWith(k) || k.startsWith(n)) { lk = k; break; } }
+      if (!ck) for (const k of Object.keys(COLOR_MAP)) { if (n.startsWith(k) || k.startsWith(n)) { ck = k; break; } }
+      return { logo: lk ? LOGO_MAP[lk] : null, color: ck ? COLOR_MAP[ck] : null };
+    }
+
+    const esc = s => (s == null ? "" : String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    function normPos(p) {
+      const u = (p || "").toUpperCase();
+      if (u.includes("CENTER") || u === "C") return "Center";
+      if (u.includes("GUARD") || (/G/.test(u) && !/F/.test(u))) return "Guard";
+      if (u.includes("FORWARD") || /F/.test(u)) return "Forward";
+      return p || "";
+    }
+
+    // State
+    let VIEW = "offseason";          // "current" | "offseason" | "projected"
+    let LAST_DATA = null;            // raw API response cached so filters don't refetch
+    const apiSeasonFor = v => (v === "current" ? "current" : "projected");
+    const isFreshman = p => (p.status || "").toLowerCase() === "freshman";
+
+    // Class seniority rank — 0 = closest to graduating (Senior), ascending down the classes.
+    function gradeRank(grade) {
+      const g = (grade || "").toLowerCase().replace(/[^a-z]/g, "");
+      if (g.startsWith("sr") || g.startsWith("sen")) return 0;
+      if (g.startsWith("jr") || g.startsWith("jun")) return 1;
+      if (g.startsWith("so") || g.startsWith("soph")) return 2;
+      if (g.startsWith("fr") || g.startsWith("fresh")) return 3;
+      return 4;
+    }
+
+    // ── small team-logo chip for moves ──
+    function moveChip(teamName, accent) {
+      const { logo } = resolveTeam(teamName);
+      const inner = logo
+        ? `<img src="${logo}" alt="" onerror="this.parentNode.innerHTML='<span class=&quot;monogram&quot;>${esc((teamName||'?').charAt(0))}</span>'" />`
+        : `<span class="monogram">${esc((teamName || "?").charAt(0))}</span>`;
+      return `<span class="pr-move-logo" style="border-color:${accent}">${inner}</span>`;
+    }
+
+    function playerRow(p, opts = {}) {
+      const num = (p.jersey_number != null && p.jersey_number !== "") ? "#" + esc(p.jersey_number) : "";
+      const metaBits = [];
+      if (p.grade) metaBits.push(esc(p.grade));
+      if (p.position) metaBits.push(esc(p.position));
+      if (p.height) metaBits.push(esc(p.height));
+      let moveHtml = "";
+      if (opts.from && p.former_team) moveHtml = `<span class="pr-move">${moveChip(p.former_team, opts.accent)} from ${esc(p.former_team)}</span>`;
+      if (opts.to && p.new_team)     moveHtml = `<span class="pr-move">${moveChip(p.new_team, opts.accent)} to ${esc(p.new_team)}</span>`;
+      const meta = metaBits.join(" · ");
+      const rowStyle = opts.accent ? ` style="--accent:${opts.accent}"` : "";
+      return `
+        <div class="player-row"${rowStyle}>
+          <div class="pr-num">${num}</div>
+          <div class="pr-main">
+            <div class="pr-name">${esc(p.player_name || "—")}</div>
+            <div class="pr-meta">${meta}${moveHtml ? ` <span style="color:rgba(139,47,255,0.4)">·</span> ${moveHtml}` : ""}</div>
+          </div>
+          ${opts.tag ? `<div class="pr-tag">${opts.tag}</div>` : "<div></div>"}
+        </div>`;
+    }
+
+    function filterPlayers(arr) {
+      const pos = document.getElementById("sel-position").value;
+      const q = document.getElementById("sel-player").value.trim().toLowerCase();
+      return (arr || []).filter(p => {
+        if (pos && normPos(p.position) !== pos) return false;
+        if (q && !(p.player_name || "").toLowerCase().includes(q)) return false;
+        return true;
+      });
+    }
+
+    function panel(title, accentVar, players, opts) {
+      // Compact header-only card when the bucket is empty — avoids tall "None" boxes
+      if (!players.length) {
+        return `
+        <div class="panel panel--empty" style="--accent:var(${accentVar})">
+          <div class="panel-head">
+            <div class="panel-title"><span class="swatch"></span>${title}</div>
+            <div class="panel-count">0</div>
+          </div>
+        </div>`;
+      }
+      const rows = players.map(p => playerRow(p, opts)).join("");
+      return `
+        <div class="panel" style="--accent:var(${accentVar})">
+          <div class="panel-head">
+            <div class="panel-title"><span class="swatch"></span>${title}</div>
+            <div class="panel-count">${players.length}</div>
+          </div>
+          <div class="panel-body">${rows}</div>
+        </div>`;
+    }
+
+    function teamHeader(name, seasonText) {
+      const { logo } = resolveTeam(name);
+      const inner = logo
+        ? `<img src="${logo}" alt="${esc(name)}" onerror="this.parentNode.innerHTML='<span class=&quot;monogram&quot;>${esc((name||'?').charAt(0))}</span>'" />`
+        : `<span class="monogram">${esc((name || "?").charAt(0))}</span>`;
+      return `
+        <div class="summary-team-head">
+          <div class="summary-team-logo">${inner}</div>
+          <div>
+            <div class="summary-team-name">${esc(name)}</div>
+            <div class="summary-team-season">${esc(seasonText)}</div>
+          </div>
+        </div>`;
+    }
+
+    function render() {
+      const wrap = document.getElementById("roster-content");
+      const data = LAST_DATA;
+      if (!data) return;
+
+      // ── 25-26 (last season's actual roster) ──
+      if (VIEW === "current") {
+        const roster = filterPlayers(data.roster || []);
+        if (!(data.roster || []).length) {
+          wrap.innerHTML = teamHeader(data.team, data.season || "2025-26") +
+            `<div class="state-msg">No 25-26 roster on file for this team yet.</div>`;
+          return;
+        }
+        wrap.innerHTML =
+          teamHeader(data.team, data.season || "2025-26") +
+          `<div class="summary">
+            <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${roster.length}</div><div class="summary-lbl">Players${roster.length !== (data.roster||[]).length ? " (filtered)" : ""}</div></div>
+          </div>` +
+          `<div class="roster-single">
+            <div class="panel-head"><div class="panel-title"><span class="swatch"></span>Roster</div><div class="panel-count">${roster.length}</div></div>
+            <div class="panel-body">${roster.length ? roster.map(p => playerRow(p)).join("") : `<div class="panel-empty">No players match your filters</div>`}</div>
+          </div>`;
+        return;
+      }
+
+      // shared projected buckets
+      const returningRaw = data.returning || [];
+      const transfersRaw = (data.transfers_in || []).filter(p => !isFreshman(p));
+      const freshmenRaw  = (data.transfers_in || []).filter(isFreshman);
+      const gradRaw       = data.graduated || [];
+      const outRaw        = data.transferred_out || [];
+      const hasAny = returningRaw.length || (data.transfers_in||[]).length || gradRaw.length || outRaw.length;
+
+      // ── PROJECTED (full 26-27 roster, alphabetical) ──
+      if (VIEW === "projected") {
+        if (!hasAny) {
+          wrap.innerHTML = teamHeader(data.team, "2026-27 (Projected)") +
+            `<div class="state-msg">No projected roster data for this team yet.</div>`;
+          return;
+        }
+        // everyone on the team next year = returning + transfers + freshmen
+        const tagFor = p => {
+          if (isFreshman(p)) return { tag: "Freshman", color: "var(--frosh)" };
+          if (p.__origin === "transfer") return { tag: "Transfer", color: "var(--in)" };
+          return { tag: "Returning", color: "var(--ret)" };
+        };
+        const combined = [
+          ...returningRaw.map(p => ({ ...p, __origin: "returning" })),
+          ...transfersRaw.map(p => ({ ...p, __origin: "transfer" })),
+          ...freshmenRaw.map(p => ({ ...p, __origin: "freshman" }))
+        ];
+        const rows = filterPlayers(combined)
+          .sort((a, b) => {
+            const gr = gradeRank(a.grade) - gradeRank(b.grade);
+            if (gr !== 0) return gr;
+            return (a.player_name || "").localeCompare(b.player_name || "", undefined, { sensitivity: "base" });
+          });
+
+        wrap.innerHTML =
+          teamHeader(data.team, "2026-27 (Projected)") +
+          `<div class="summary">
+            <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${rows.length}</div><div class="summary-lbl">Projected Players${rows.length !== combined.length ? " (filtered)" : ""}</div></div>
+            <div class="summary-chip" style="--accent:var(--ret)"><div class="summary-num">${returningRaw.length}</div><div class="summary-lbl">Returning</div></div>
+            <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${transfersRaw.length}</div><div class="summary-lbl">Transfers In</div></div>
+            <div class="summary-chip" style="--accent:var(--frosh)"><div class="summary-num">${freshmenRaw.length}</div><div class="summary-lbl">Freshmen</div></div>
+          </div>` +
+          `<div class="roster-single">
+            <div class="panel-head"><div class="panel-title"><span class="swatch"></span>Projected Roster</div><div class="panel-count">${rows.length}</div></div>
+            <div class="panel-body">${rows.length
+              ? rows.map(p => {
+                  const t = tagFor(p);
+                  const opts = { tag: t.tag, accent: t.color };
+                  if (p.__origin === "transfer") opts.from = true;
+                  return playerRow(p, opts);
+                }).join("")
+              : `<div class="panel-empty">No players match your filters</div>`}</div>
+          </div>`;
+        return;
+      }
+
+      // ── OFFSEASON CHANGES (turnover panels) ──
+      if (!hasAny) {
+        wrap.innerHTML = teamHeader(data.team, data.season || "Offseason") +
+          `<div class="state-msg">No offseason data for this team yet.</div>`;
+        return;
+      }
+      const returning = filterPlayers(returningRaw);
+      const incoming  = filterPlayers(transfersRaw);
+      const freshmen  = filterPlayers(freshmenRaw);
+      const grad       = filterPlayers(gradRaw);
+      const out        = filterPlayers(outRaw);
+
+      wrap.innerHTML =
+        teamHeader(data.team, data.season || "Offseason Changes") +
+        `<div class="summary">
+          <div class="summary-chip" style="--accent:var(--ret)"><div class="summary-num">${returningRaw.length}</div><div class="summary-lbl">Returning</div></div>
+          <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${transfersRaw.length}</div><div class="summary-lbl">Transfers In</div></div>
+          <div class="summary-chip" style="--accent:var(--frosh)"><div class="summary-num">${freshmenRaw.length}</div><div class="summary-lbl">Incoming Freshmen</div></div>
+          <div class="summary-chip" style="--accent:var(--grad)"><div class="summary-num">${gradRaw.length}</div><div class="summary-lbl">Graduating</div></div>
+          <div class="summary-chip" style="--accent:var(--out)"><div class="summary-num">${outRaw.length}</div><div class="summary-lbl">Transferred Out</div></div>
+        </div>` +
+        `<div class="panels">
+          ${panel("Returning", "--ret", returning, { tag: "Returning", accent: "var(--ret)" })}
+          ${panel("Transfers In", "--in", incoming, { tag: "In", from: true, accent: "var(--in)" })}
+          ${panel("Incoming Freshmen", "--frosh", freshmen, { tag: "Frosh", accent: "var(--frosh)" })}
+          ${panel("Graduating", "--grad", grad, { tag: "Grad", accent: "var(--grad)" })}
+          ${panel("Transferred Out", "--out", out, { tag: "Out", to: true, accent: "var(--out)" })}
+        </div>`;
+    }
+
+    async function loadRoster() {
+      const team = document.getElementById("sel-team").value;
+      if (!team) return;
+      const wrap = document.getElementById("roster-content");
+      wrap.innerHTML = `<div class="state-msg">Loading ${esc(team)}…</div>`;
+      try {
+        const res = await fetch(`${API}/roster?team=${encodeURIComponent(team)}&season=${apiSeasonFor(VIEW)}`);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        LAST_DATA = await res.json();
+        render();
+      } catch (e) {
+        console.error("Roster load failed:", e);
+        wrap.innerHTML = `<div class="state-msg">Could not load roster. Please try again later.</div>`;
+      }
+    }
+
+    async function loadTeams() {
+      const sel = document.getElementById("sel-team");
+      try {
+        const res = await fetch(`${API}/teams`);
+        const teams = await res.json();
+        // group by conference, descending (6A → 1A)
+        const order = ["6A","5A","4A","3A","2A","1A"];
+        const byConf = {};
+        teams.forEach(t => { (byConf[t.conference] = byConf[t.conference] || []).push(t); });
+        const confs = Object.keys(byConf).sort((a,b) => {
+          const ia = order.indexOf(a), ib = order.indexOf(b);
+          return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+        });
+        sel.innerHTML = "";
+        confs.forEach(conf => {
+          const og = document.createElement("optgroup");
+          og.label = conf || "Other";
+          byConf[conf]
+            .sort((a, b) => (a.school || "").localeCompare(b.school || ""))
+            .forEach(t => {
+              const o = document.createElement("option");
+              o.value = t.school; o.textContent = t.school + (t.mascot ? ` (${t.mascot})` : "");
+              og.appendChild(o);
+            });
+          sel.appendChild(og);
+        });
+        // default selection
+        const opts = [...sel.options];
+        const def = opts.find(o => o.value === DEFAULT_TEAM) || opts[0];
+        if (def) sel.value = def.value;
+        loadRoster();
+      } catch (e) {
+        console.error("Teams load failed:", e);
+        sel.innerHTML = `<option value="${DEFAULT_TEAM}">${DEFAULT_TEAM}</option>`;
+        sel.value = DEFAULT_TEAM;
+        loadRoster();
+      }
+    }
+
+    // events
+    document.getElementById("sel-team").addEventListener("change", loadRoster);
+    document.getElementById("sel-position").addEventListener("change", render);
+    document.getElementById("sel-player").addEventListener("input", render);
+    document.querySelectorAll(".season-toggle button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const prevApi = apiSeasonFor(VIEW);
+        document.querySelectorAll(".season-toggle button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        VIEW = btn.dataset.view;
+        // If only the view changed but the API season is the same (offseason <-> projected),
+        // re-render from cache instead of refetching.
+        if (apiSeasonFor(VIEW) === prevApi && LAST_DATA) render();
+        else loadRoster();
+      });
+    });
+
+    loadTeams();
+  </script>
+
+</body>
+</html>

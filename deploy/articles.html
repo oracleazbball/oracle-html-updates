@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Articles · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-dark: #3b0075;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 18px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 18px; right: 18px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .ar-hero {
+      padding: 140px 48px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .ar-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .ar-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 76px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .ar-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .ar-hero p {
+      margin-top: 22px;
+      max-width: 720px;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #aaa;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 48px 96px;
+    }
+
+    /* ── TAG FILTER BAR ── */
+    .tag-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 32px;
+    }
+    .tag-chip {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .tag-chip:hover { color: var(--silver-light); border-color: rgba(139,47,255,0.6); }
+    .tag-chip.active { color: #fff; background: var(--purple); border-color: var(--purple); }
+
+    /* ── ARTICLE GRID ── */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    /* first card spans wide as a feature */
+    .article-grid .feature {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+    }
+    .article-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .article-card:hover { border-color: rgba(139,47,255,0.45); transform: translateY(-4px); }
+    .card-cover {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--purple-dark), #15101e);
+      display: block;
+    }
+    .feature .card-cover { height: 100%; aspect-ratio: auto; min-height: 320px; }
+    .card-cover-fallback {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--purple-dark), #15101e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 40px;
+      color: rgba(139,47,255,0.5);
+      letter-spacing: 4px;
+    }
+    .feature .card-cover-fallback { height: 100%; aspect-ratio: auto; min-height: 320px; }
+    .card-body {
+      padding: 24px 26px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .card-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+      color: var(--silver-light);
+    }
+    .feature .card-title { font-size: 34px; }
+    .card-excerpt {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #aaa;
+      flex: 1;
+    }
+    .card-meta {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    .state-msg {
+      grid-column: 1 / -1;
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .ar-hero { padding: 110px 24px 8px; }
+      main { padding: 24px 24px 64px; }
+      .article-grid { grid-template-columns: 1fr 1fr; }
+      .article-grid .feature { grid-template-columns: 1fr; }
+      .feature .card-cover, .feature .card-cover-fallback { min-height: 220px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+    @media (max-width: 600px) {
+      .article-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html" class="active">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  </nav>
+
+  <header class="ar-hero">
+    <p class="hero-eyebrow">Articles</p>
+    <h1>The <em>Word</em>,<br/>On the Game.</h1>
+    <p>
+      Player analysis and profiles, game recaps, team breakdowns, and everything in between —
+      written for people who live and breathe Arizona high school basketball.
+    </p>
+  </header>
+
+  <main>
+    <div class="tag-bar" id="tag-bar"></div>
+    <div class="article-grid" id="article-grid">
+      <div class="state-msg">Loading articles…</div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    const API = "https://oracle-api-7q4wz.ondigitalocean.app";
+    let ALL = [];
+    let activeTag = "";
+
+    const esc = s => (s == null ? "" : String(s))
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    function fmtDate(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d)) return "";
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function coverHtml(a, feature) {
+      if (a.cover_image) {
+        return `<img class="card-cover" src="${esc(a.cover_image)}" alt="" loading="lazy"
+                 onerror="this.outerHTML='<div class=\\'card-cover-fallback\\'>THE ORACLE</div>'" />`;
+      }
+      return `<div class="card-cover-fallback">THE ORACLE</div>`;
+    }
+
+    function cardHtml(a, feature) {
+      const tags = (a.tags || []).slice(0, 3)
+        .map(t => `<span class="card-tag">${esc(t)}</span>`).join("");
+      const meta = [a.author, fmtDate(a.published_at)].filter(Boolean).map(esc).join(" · ");
+      const body = `
+        <div class="card-body">
+          ${tags ? `<div class="card-tags">${tags}</div>` : ""}
+          <div class="card-title">${esc(a.title)}</div>
+          ${a.excerpt ? `<div class="card-excerpt">${esc(a.excerpt)}</div>` : "<div class='card-excerpt'></div>"}
+          <div class="card-meta">${meta || "&nbsp;"}</div>
+        </div>`;
+      return `<a class="article-card${feature ? " feature" : ""}" href="article.html?slug=${encodeURIComponent(a.slug)}">
+        ${coverHtml(a, feature)}
+        ${body}
+      </a>`;
+    }
+
+    function render() {
+      const grid = document.getElementById("article-grid");
+      let rows = ALL;
+      if (activeTag) rows = rows.filter(a => (a.tags || []).includes(activeTag));
+
+      if (!rows.length) {
+        grid.innerHTML = `<div class="state-msg">${ALL.length ? "No articles with that tag." : "No articles published yet. Check back soon."}</div>`;
+        return;
+      }
+      grid.innerHTML = rows.map((a, i) => cardHtml(a, i === 0 && !activeTag)).join("");
+    }
+
+    function renderTags() {
+      const bar = document.getElementById("tag-bar");
+      const tags = [...new Set(ALL.flatMap(a => a.tags || []))].sort((a,b) => a.localeCompare(b));
+      if (!tags.length) { bar.innerHTML = ""; return; }
+      const chip = (label, val) =>
+        `<div class="tag-chip${activeTag === val ? " active" : ""}" data-tag="${esc(val)}">${esc(label)}</div>`;
+      bar.innerHTML = chip("All", "") + tags.map(t => chip(t, t)).join("");
+      bar.querySelectorAll(".tag-chip").forEach(c => {
+        c.addEventListener("click", () => { activeTag = c.dataset.tag; renderTags(); render(); });
+      });
+    }
+
+    async function load() {
+      const grid = document.getElementById("article-grid");
+      try {
+        const res = await fetch(`${API}/articles`);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        ALL = await res.json();
+        if (!Array.isArray(ALL)) ALL = [];
+        renderTags();
+        render();
+      } catch (e) {
+        console.warn("Articles load failed:", e);
+        grid.innerHTML = `<div class="state-msg">Could not load articles. Please try again later.</div>`;
+      }
+    }
+
+    load();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-dark: #3b0075;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106, 15, 214, 0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 18px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 18px; right: 18px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── ARTICLE ── */
+    .article-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 130px 24px 96px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--purple-bright); }
+
+    .article-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .article-tag {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+    }
+    .article-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(34px, 5.5vw, 56px);
+      line-height: 1.12;
+      letter-spacing: 1px;
+      color: var(--silver-light);
+    }
+    .article-meta {
+      margin-top: 18px;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-meta .dot { color: rgba(139,47,255,0.5); }
+    .article-cover {
+      width: 100%;
+      margin: 36px 0;
+      border: 1px solid rgba(106,15,214,0.3);
+      display: block;
+    }
+    .article-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,47,255,0.6), transparent);
+      margin: 36px 0;
+    }
+
+    /* ── RENDERED MARKDOWN BODY ── */
+    .article-body { font-size: 18px; line-height: 1.8; color: #d8d8d8; }
+    .article-body > *:first-child { margin-top: 0; }
+    .article-body h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: 0.5px;
+      color: var(--silver-light);
+      margin: 44px 0 16px;
+      line-height: 1.2;
+    }
+    .article-body h3 {
+      font-family: var(--font-condensed);
+      font-size: 24px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin: 36px 0 14px;
+    }
+    .article-body p { margin: 0 0 22px; }
+    .article-body a { color: var(--purple-bright); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: #b07bff; }
+    .article-body strong { color: var(--silver-light); font-weight: 600; }
+    .article-body ul, .article-body ol { margin: 0 0 22px; padding-left: 26px; }
+    .article-body li { margin-bottom: 8px; }
+    .article-body blockquote {
+      border-left: 3px solid var(--purple-bright);
+      background: rgba(139,47,255,0.06);
+      margin: 0 0 24px;
+      padding: 14px 24px;
+      color: #c8c8c8;
+      font-style: italic;
+    }
+    .article-body img { max-width: 100%; height: auto; margin: 12px 0 24px; border: 1px solid rgba(106,15,214,0.3); }
+    .article-body hr { border: none; height: 1px; background: rgba(139,47,255,0.25); margin: 36px 0; }
+    .article-body code {
+      background: #15101e;
+      border: 1px solid rgba(139,47,255,0.2);
+      padding: 2px 7px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+
+    .state-msg {
+      padding: 90px 24px;
+      text-align: center;
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .article-wrap { padding: 110px 22px 64px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html" class="active">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  </nav>
+
+  <article class="article-wrap">
+    <a class="back-link" href="articles.html">← All Articles</a>
+    <div id="article-content">
+      <div class="state-msg">Loading…</div>
+    </div>
+  </article>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    const API = "https://oracle-api-7q4wz.ondigitalocean.app";
+
+    const esc = s => (s == null ? "" : String(s))
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    function fmtDate(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d)) return "";
+      return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+
+    function getSlug() {
+      return new URLSearchParams(location.search).get("slug") || "";
+    }
+
+    function renderArticle(a) {
+      document.title = a.title + " · The Oracle";
+      const tags = (a.tags || []).map(t => `<span class="article-tag">${esc(t)}</span>`).join("");
+      const meta = [a.author, fmtDate(a.published_at)].filter(Boolean).map(esc).join(' <span class="dot">·</span> ');
+      const cover = a.cover_image
+        ? `<img class="article-cover" src="${esc(a.cover_image)}" alt="" onerror="this.style.display='none'" />`
+        : "";
+
+      // Markdown → sanitized HTML
+      const rawHtml = marked.parse(a.body_markdown || "", { breaks: true });
+      const safeHtml = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target', 'rel'] });
+
+      document.getElementById("article-content").innerHTML = `
+        ${tags ? `<div class="article-tags">${tags}</div>` : ""}
+        <h1 class="article-title">${esc(a.title)}</h1>
+        <div class="article-meta">${meta}</div>
+        ${cover}
+        <div class="article-divider"></div>
+        <div class="article-body">${safeHtml}</div>
+      `;
+    }
+
+    async function load() {
+      const slug = getSlug();
+      const box = document.getElementById("article-content");
+      if (!slug) { box.innerHTML = `<div class="state-msg">No article specified.</div>`; return; }
+      try {
+        const res = await fetch(`${API}/article?slug=${encodeURIComponent(slug)}`);
+        if (res.status === 404) { box.innerHTML = `<div class="state-msg">Article not found.</div>`; return; }
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const a = await res.json();
+        renderArticle(a);
+      } catch (e) {
+        console.warn("Article load failed:", e);
+        box.innerHTML = `<div class="state-msg">Could not load this article. Please try again later.</div>`;
+      }
+    }
+
+    load();
+  </script>
+
+</body>
+</html>
