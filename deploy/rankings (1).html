@@ -515,50 +515,61 @@
     }
 
     // ── fetch + load ──
-    const PROXIES = [
-      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-      url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    ];
+    const SHEET_URL = SHEET_CSV_URL;
 
-    async function fetchWithTimeout(url, ms = 5000) {
+    async function fetchWithTimeout(url, ms = 7000) {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), ms);
       try {
         const res = await fetch(url, { signal: ctrl.signal });
         clearTimeout(timer);
         return res;
-      } catch (e) {
-        clearTimeout(timer);
-        throw e;
-      }
+      } catch (e) { clearTimeout(timer); throw e; }
+    }
+
+    async function tryFetch(url) {
+      // Strategy 1: direct (works when Google allows it)
+      try {
+        const res = await fetchWithTimeout(url, 5000);
+        if (res.ok) { const t = await res.text(); if (t.includes(',')) return t; }
+      } catch(_) {}
+
+      // Strategy 2: corsproxy.io (returns raw text)
+      try {
+        const res = await fetchWithTimeout(`https://corsproxy.io/?url=${encodeURIComponent(url)}`, 7000);
+        if (res.ok) { const t = await res.text(); if (t.includes(',')) return t; }
+      } catch(_) {}
+
+      // Strategy 3: allorigins (returns JSON wrapper)
+      try {
+        const res = await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, 7000);
+        if (res.ok) {
+          const j = await res.json();
+          if (j.contents && j.contents.includes(',')) return j.contents;
+        }
+      } catch(_) {}
+
+      // Strategy 4: jsonp-style via allorigins raw
+      try {
+        const res = await fetchWithTimeout(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, 7000);
+        if (res.ok) { const t = await res.text(); if (t.includes(',')) return t; }
+      } catch(_) {}
+
+      throw new Error("All fetch strategies failed");
     }
 
     async function load() {
       document.getElementById("rank-date").textContent = "Loading…";
-      let lastErr;
-      for (const proxyFn of PROXIES) {
-        try {
-          const proxyUrl = proxyFn(SHEET_CSV_URL);
-          const res = await fetchWithTimeout(proxyUrl, 6000);
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          const text = await res.text();
-          // corsproxy.io returns raw CSV; allorigins wraps in JSON
-          let csv = text;
-          if (text.trim().startsWith('{')) {
-            try { csv = JSON.parse(text).contents || ""; } catch(_) { csv = text; }
-          }
-          const teams = parseCSV(csv);
-          if (!teams.length) throw new Error("Empty CSV");
-          render(teams);
-          return;
-        } catch (e) {
-          console.warn("Proxy attempt failed:", e.message);
-          lastErr = e;
-        }
+      try {
+        const csv = await tryFetch(SHEET_URL);
+        const teams = parseCSV(csv);
+        if (!teams.length) throw new Error("Empty or unparseable CSV");
+        render(teams);
+      } catch (e) {
+        console.warn("Rankings load failed:", e.message);
+        document.getElementById("rank-date").textContent = "Could not load";
+        document.getElementById("rank-list").innerHTML = `<div style="padding:60px 0;text-align:center;font-family:var(--font-condensed);letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);">Could not load rankings. Please try again later.</div>`;
       }
-      // all proxies failed — show graceful error
-      document.getElementById("rank-date").textContent = "Could not load";
-      document.getElementById("rank-list").innerHTML = `<div style="padding:60px 0;text-align:center;font-family:var(--font-condensed);letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);">Could not load rankings. Please try again later.</div>`;
     }
 
     load();
