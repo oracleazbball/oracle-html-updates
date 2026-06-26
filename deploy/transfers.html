@@ -438,6 +438,88 @@
     .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
 
     /* ── RESPONSIVE ── */
+
+    /* ── COMBOBOX ── */
+    .combobox-wrap { position: relative; width: 100%; }
+    .combobox-input {
+      width: 100%;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 0 32px 0 16px;
+      outline: none;
+      box-sizing: border-box;
+      height: 46px;
+      transition: border-color 0.2s;
+    }
+    .combobox-input:focus { border-color: rgba(139,47,255,0.7); }
+    .combobox-clear {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); cursor: pointer;
+      font-size: 16px; line-height: 1;
+      background: none; border: none; padding: 4px;
+      display: none;
+    }
+    .combobox-clear:hover { color: var(--silver-light); }
+    .combobox-drop {
+      display: none; position: absolute;
+      top: 100%; left: 0; right: 0; z-index: 300;
+      background: var(--black-card);
+      border: 1px solid rgba(139,47,255,0.4);
+      border-top: none;
+      max-height: 260px; overflow-y: auto;
+      list-style: none; padding: 0; margin: 0;
+    }
+    .combobox-drop::-webkit-scrollbar { width: 4px; }
+    .combobox-drop::-webkit-scrollbar-thumb { background: rgba(139,47,255,0.4); }
+    .combobox-option {
+      padding: 10px 16px;
+      font-family: var(--font-body); font-size: 14px;
+      color: var(--silver-light); cursor: pointer;
+      transition: background 0.1s;
+    }
+    .combobox-option:hover, .combobox-option.cb-hi { background: rgba(139,47,255,0.15); }
+    .combobox-group-hd {
+      padding: 6px 16px 4px;
+      font-family: var(--font-condensed); font-size: 11px;
+      font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--purple-bright);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      pointer-events: none;
+    }
+    .combobox-empty {
+      padding: 12px 16px; font-size: 13px;
+      color: var(--text-muted); pointer-events: none;
+    }
+    .section-divider {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0 8px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+    }
+    .section-divider::before, .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(139,47,255,0.4), transparent);
+    }
+    .section-divider::after {
+      background: linear-gradient(270deg, rgba(139,47,255,0.4), transparent);
+    }
+    .section-divider.fresh { color: #3fb968; }
+    .section-divider.fresh::before { background: linear-gradient(90deg, rgba(63,185,104,0.4), transparent); }
+    .section-divider.fresh::after { background: linear-gradient(270deg, rgba(63,185,104,0.4), transparent); }
+
     @media (max-width: 900px) {
       nav { padding: 0 24px; }
       .nav-links { display: none; }
@@ -462,7 +544,7 @@
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html" class="active">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -470,11 +552,11 @@
   </nav>
 
   <header class="tr-hero">
-    <p class="hero-eyebrow">Transfer Tracker · 2025–26 Season</p>
+    <p class="hero-eyebrow">Transfer Tracker · 2026–27 Season</p>
     <h1>The <em>Movement</em>,<br/>Tracked.</h1>
     <p>
-      Every transfer across Arizona high school basketball — who's leaving, where they're landing,
-      and what it means for the season ahead. Filter by grad year, team, or search a specific player.
+      Every transfer and notable incoming freshman across Arizona high school basketball — who's leaving, where they're landing,
+      and what it means for the season ahead. Filter by grad year, team, position, or search a specific player.
     </p>
   </header>
 
@@ -483,11 +565,16 @@
     <div class="filter-row">
       <div class="filter-field">
         <label for="filter-year">Grad Year</label>
-        <select id="filter-year"><option value="">All Years</option></select>
+        <select id="filter-year" style="height:46px;"><option value="">All Years</option></select>
       </div>
       <div class="filter-field">
         <label for="filter-team">Team</label>
-        <select id="filter-team"><option value="">All Teams</option></select>
+        <div class="combobox-wrap">
+          <input type="text" class="combobox-input" id="filter-team-text" placeholder="All Teams" autocomplete="off" />
+          <button class="combobox-clear" id="filter-team-clear">×</button>
+          <ul class="combobox-drop" id="filter-team-drop"></ul>
+          <input type="hidden" id="filter-team" />
+        </div>
       </div>
       <div class="filter-field">
         <label for="filter-position">Position</label>
@@ -516,7 +603,7 @@
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -525,12 +612,82 @@
   </footer>
 
   <script>
+    // ── Combobox helper ──
+    function Combobox(inpId, hidId, dropId, clrId, onPick) {
+      const inp = document.getElementById(inpId);
+      const hid = document.getElementById(hidId);
+      const drop = document.getElementById(dropId);
+      const clr = document.getElementById(clrId);
+      if (!inp||!hid||!drop||!clr) return {};
+      let allOpts = [], hilIdx = -1;
+      function rebuild() {
+        const q = inp.value.trim().toLowerCase();
+        const filtered = q ? allOpts.filter(o => o.label.toLowerCase().includes(q)||(o.group||'').toLowerCase().includes(q)) : allOpts;
+        if (!filtered.length) { drop.innerHTML='<li class="combobox-empty">No results</li>'; hilIdx=-1; return; }
+        let html='', lastG=null;
+        filtered.forEach(o => {
+          if (o.group && o.group!==lastG) { html+=`<li class="combobox-group-hd">${o.group}</li>`; lastG=o.group; }
+          html+=`<li class="combobox-option" data-value="${o.value.replace(/"/g,'&quot;')}">${o.label}</li>`;
+        });
+        drop.innerHTML=html; hilIdx=-1;
+        drop.querySelectorAll('.combobox-option').forEach(li =>
+          li.addEventListener('mousedown', e => { e.preventDefault(); pick(li.dataset.value, li.textContent); }));
+      }
+      function open() { rebuild(); drop.style.display='block'; }
+      function close() { drop.style.display='none'; }
+      function pick(val, label) {
+        hid.value=val; inp.value=val?label.trim():'';
+        clr.style.display=val?'inline':'none';
+        close(); hid.dispatchEvent(new Event('change'));
+        if(onPick) onPick(val);
+      }
+      inp.addEventListener('focus', open);
+      inp.addEventListener('input', () => { open(); if(!inp.value.trim()) pick('',''); });
+      inp.addEventListener('blur', () => setTimeout(close, 180));
+      inp.addEventListener('keydown', e => {
+        const opts=[...drop.querySelectorAll('.combobox-option')];
+        if(e.key==='ArrowDown'){e.preventDefault();hilIdx=Math.min(hilIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='ArrowUp'){e.preventDefault();hilIdx=Math.max(hilIdx-1,0);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='Enter'){
+          e.preventDefault();
+          if(hilIdx>=0){
+            // arrow-key selection — pick highlighted
+            const o=opts[hilIdx]; if(o) pick(o.dataset.value,o.textContent);
+          } else {
+            // no highlight — fuzzy match typed text against all options
+            const q=inp.value.trim().toLowerCase();
+            if(q){
+              const exact=allOpts.find(o=>o.label.toLowerCase()===q);
+              const starts=allOpts.find(o=>o.label.toLowerCase().startsWith(q));
+              const contains=allOpts.find(o=>o.label.toLowerCase().includes(q));
+              const match=exact||starts||contains;
+              if(match) pick(match.value, match.label);
+              else { hid.value=''; } // no match — clear hidden, search all
+            } else {
+              pick('',''); // empty — clear filter
+            }
+          }
+          // trigger the search action
+          hid.dispatchEvent(new Event('change'));
+          if(onPick) onPick(hid.value);
+        }
+        else if(e.key==='Escape')close();
+      });
+      clr.addEventListener('mousedown', e => { e.preventDefault(); pick('',''); inp.focus(); });
+      return {
+        setOptions(opts) { allOpts=opts; },
+        setValue(val,lbl) { pick(val||'', lbl||val||''); },
+        getValue() { return hid.value; },
+        clear() { pick('',''); }
+      };
+    }
+
     // ── Supabase config (anon public key — safe for frontend; table is RLS read-only) ──
     const SUPABASE_URL = "https://vwfhurjqtczfopjasceo.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Zmh1cmpxdGN6Zm9wamFzY2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5MDcsImV4cCI6MjA5NTI5ODkwN30.DV1f8Mqi9gPS9vPSwco1-Auvnb2b3xXta8Ai-5vVWYU";
 
     // ── Team logo + color resolution ──
-    const LOGO_FILES = ["ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day o'connor","st. mary's","sunnyslope","tucson","verrado","west point","westview","willow canyon"];
+    const LOGO_FILES = ["agua fria","alchesay","alhambra","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus","cactus shadows","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler","chandler prep","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale","glendale prep","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon","horizon honors","independence","ironwood","ironwood ridge","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon/university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","st. mary's","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day o'connor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe","tempe prep","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma"];
 
     const TEAM_COLORS = {
       "ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"
@@ -605,24 +762,24 @@
     function renderCards(rows) {
       const grid = document.getElementById("transfer-grid");
       document.getElementById("results-count").textContent =
-        `${rows.length} transfer${rows.length !== 1 ? "s" : ""}`;
+        `${rows.length} player${rows.length !== 1 ? "s" : ""}`;
 
       if (!rows.length) {
         grid.innerHTML = `<div class="feed-empty">No transfers match those filters.</div>`;
         return;
       }
 
-      grid.innerHTML = rows.map(r => {
+      const transfers = rows.filter(r => !r.is_freshman);
+      const freshmen  = rows.filter(r => r.is_freshman === true);
+
+      function buildCard(r) {
         const meta = [];
         if (r.position) meta.push(escapeHtml(r.position));
         if (r.height) meta.push(escapeHtml(r.height));
         const metaHtml = meta.join(' <span class="dot">·</span> ');
-
         const badges = [];
         if (r.grad_year) badges.push(`<div class="grad-badge">Class of ${escapeHtml(r.grad_year)}</div>`);
         if (r.star_rating != null && r.star_rating !== "") badges.push(`<div class="star-badge">${escapeHtml(r.star_rating)}★</div>`);
-        if (r.is_freshman === true) badges.push(`<div class="frosh-badge">Freshman</div>`);
-
         return `
           <div class="transfer-card">
             <div class="tc-top">
@@ -633,12 +790,27 @@
               <div class="tc-badges">${badges.join("")}</div>
             </div>
             <div class="tc-move">
-              ${teamBlock(r.former_team, "from")}
-              <div class="tc-arrow">→</div>
-              ${teamBlock(r.new_team, "to")}
+              ${r.is_freshman
+                ? `<div class="tc-label" style="color:var(--text-muted);font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;">Incoming</div>
+                   ${teamBlock(r.new_team, "to")}`
+                : `${teamBlock(r.former_team, "from")}
+                   <div class="tc-arrow">→</div>
+                   ${teamBlock(r.new_team, "to")}`
+              }
             </div>
           </div>`;
-      }).join("");
+      }
+
+      let html = "";
+      if (transfers.length) {
+        html += `<div class="section-divider"><span>Transfers · ${transfers.length}</span></div>`;
+        html += transfers.map(buildCard).join("");
+      }
+      if (freshmen.length) {
+        html += `<div class="section-divider fresh"><span>Incoming Freshmen · ${freshmen.length}</span></div>`;
+        html += freshmen.map(buildCard).join("");
+      }
+      grid.innerHTML = html;
     }
 
     function populateFilters(rows) {
@@ -651,15 +823,10 @@
         yearSel.appendChild(o);
       });
 
-      // Teams (both former + new) alphabetical
+      // Teams combobox
       const teams = [...new Set(rows.flatMap(r => [r.former_team, r.new_team]).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-      const teamSel = document.getElementById("filter-team");
-      teams.forEach(t => {
-        const o = document.createElement("option");
-        o.value = t; o.textContent = t;
-        teamSel.appendChild(o);
-      });
+      CB_filterTeam.setOptions(teams.map(t => ({ value: t, label: t })));
 
       // Positions alphabetical
       const positions = [...new Set(rows.map(r => r.position).filter(Boolean))]
@@ -689,7 +856,7 @@
 
     function clearFilters() {
       document.getElementById("filter-year").value = "";
-      document.getElementById("filter-team").value = "";
+      CB_filterTeam.clear();
       document.getElementById("filter-position").value = "";
       document.getElementById("filter-player").value = "";
       renderCards(sortTransfers(ALL));
@@ -713,13 +880,15 @@
         populateFilters(ALL);
         renderCards(sortTransfers(ALL));
       } catch (err) {
-        console.error("Transfer load failed:", err);
+        console.warn("Transfer load failed:", err);
         grid.innerHTML = `<div class="feed-empty">Could not load transfers. Please try again later.</div>`;
       }
     }
 
     // Enter to search; dropdowns auto-apply
+    let CB_filterTeam;
     document.addEventListener("DOMContentLoaded", () => {
+      CB_filterTeam = Combobox('filter-team-text','filter-team','filter-team-drop','filter-team-clear');
       document.getElementById("filter-player").addEventListener("keydown", e => { if (e.key === "Enter") applyFilters(); });
       document.getElementById("filter-year").addEventListener("change", applyFilters);
       document.getElementById("filter-team").addEventListener("change", applyFilters);

@@ -491,6 +491,62 @@
     .footer-links a:hover { color: var(--purple-bright); }
     .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
 
+
+    /* ── COMBOBOX ── */
+    .combobox-wrap { position: relative; width: 100%; }
+    .combobox-input {
+      width: 100%;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 0 32px 0 16px;
+      outline: none;
+      box-sizing: border-box;
+      height: 46px;
+      transition: border-color 0.2s;
+    }
+    .combobox-input:focus { border-color: rgba(139,47,255,0.7); }
+    .combobox-clear {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); cursor: pointer;
+      font-size: 16px; line-height: 1;
+      background: none; border: none; padding: 4px;
+      display: none;
+    }
+    .combobox-clear:hover { color: var(--silver-light); }
+    .combobox-drop {
+      display: none; position: absolute;
+      top: 100%; left: 0; right: 0; z-index: 300;
+      background: var(--black-card);
+      border: 1px solid rgba(139,47,255,0.4);
+      border-top: none;
+      max-height: 260px; overflow-y: auto;
+      list-style: none; padding: 0; margin: 0;
+    }
+    .combobox-drop::-webkit-scrollbar { width: 4px; }
+    .combobox-drop::-webkit-scrollbar-thumb { background: rgba(139,47,255,0.4); }
+    .combobox-option {
+      padding: 10px 16px;
+      font-family: var(--font-body); font-size: 14px;
+      color: var(--silver-light); cursor: pointer;
+      transition: background 0.1s;
+    }
+    .combobox-option:hover, .combobox-option.cb-hi { background: rgba(139,47,255,0.15); }
+    .combobox-group-hd {
+      padding: 6px 16px 4px;
+      font-family: var(--font-condensed); font-size: 11px;
+      font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--purple-bright);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      pointer-events: none;
+    }
+    .combobox-empty {
+      padding: 12px 16px; font-size: 13px;
+      color: var(--text-muted); pointer-events: none;
+    }
     @media (max-width: 900px) {
       nav { padding: 0 24px; }
       .nav-links { display: none; }
@@ -517,7 +573,7 @@
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html" class="active">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -537,14 +593,19 @@
     <div class="controls">
       <div class="ctrl-field">
         <label for="sel-team">Team</label>
-        <select id="sel-team"><option value="">Loading teams…</option></select>
+        <div class="combobox-wrap">
+          <input type="text" class="combobox-input" id="sel-team-text" placeholder="Search teams…" autocomplete="off" />
+          <button class="combobox-clear" id="sel-team-clear">×</button>
+          <ul class="combobox-drop" id="sel-team-drop"></ul>
+          <input type="hidden" id="sel-team" />
+        </div>
       </div>
       <div class="ctrl-field season-field">
         <label>Season</label>
         <div class="season-toggle">
           <button id="btn-2526" data-view="current">25-26</button>
           <button id="btn-offseason" class="active" data-view="offseason">Offseason Changes</button>
-          <button id="btn-projected" data-view="projected">Projected</button>
+          <button id="btn-projected" data-view="projected">26-27</button>
         </div>
       </div>
       <div class="ctrl-field">
@@ -567,7 +628,7 @@
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -580,7 +641,7 @@
     const DEFAULT_TEAM = "Basha";
 
     // ── Team logo + color resolution (shared with transfers page) ──
-    const LOGO_FILES = ["ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day o'connor","st. mary's","sunnyslope","tucson","verrado","west point","westview","willow canyon"];
+    const LOGO_FILES = ["agua fria","alchesay","alhambra","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus","cactus shadows","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler","chandler prep","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale","glendale prep","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon","horizon honors","independence","ironwood","ironwood ridge","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon/university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","st. mary's","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day o'connor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe","tempe prep","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma"];
     const TEAM_COLORS = {"ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"};
     const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/" + encodeURIComponent(f) + ".png"; });
@@ -683,16 +744,17 @@
         </div>`;
     }
 
-    function teamHeader(name, seasonText) {
+    function teamHeader(name, seasonText, region) {
       const { logo } = resolveTeam(name);
       const inner = logo
         ? `<img src="${logo}" alt="${esc(name)}" onerror="this.parentNode.innerHTML='<span class=&quot;monogram&quot;>${esc((name||'?').charAt(0))}</span>'" />`
         : `<span class="monogram">${esc((name || "?").charAt(0))}</span>`;
+      const regionTag = region ? `<span style="font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-left:8px;">${esc(region)}</span>` : '';
       return `
         <div class="summary-team-head">
           <div class="summary-team-logo">${inner}</div>
           <div>
-            <div class="summary-team-name">${esc(name)}</div>
+            <div class="summary-team-name" style="display:flex;align-items:baseline;gap:0;">${esc(name)}${regionTag}</div>
             <div class="summary-team-season">${esc(seasonText)}</div>
           </div>
         </div>`;
@@ -707,12 +769,12 @@
       if (VIEW === "current") {
         const roster = filterPlayers(data.roster || []);
         if (!(data.roster || []).length) {
-          wrap.innerHTML = teamHeader(data.team, data.season || "2025-26") +
+          wrap.innerHTML = teamHeader(data.team, data.season || "2025-26", (data.division || data.conference || "")) +
             `<div class="state-msg">No 25-26 roster on file for this team yet.</div>`;
           return;
         }
         wrap.innerHTML =
-          teamHeader(data.team, data.season || "2025-26") +
+          teamHeader(data.team, data.season || "2025-26", (data.division || data.conference || "")) +
           `<div class="summary">
             <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${roster.length}</div><div class="summary-lbl">Players${roster.length !== (data.roster||[]).length ? " (filtered)" : ""}</div></div>
           </div>` +
@@ -734,7 +796,7 @@
       // ── PROJECTED (full 26-27 roster, alphabetical) ──
       if (VIEW === "projected") {
         if (!hasAny) {
-          wrap.innerHTML = teamHeader(data.team, "2026-27 (Projected)") +
+          wrap.innerHTML = teamHeader(data.team, "2026-27 (Projected)", (data.division || data.conference || "")) +
             `<div class="state-msg">No projected roster data for this team yet.</div>`;
           return;
         }
@@ -757,7 +819,7 @@
           });
 
         wrap.innerHTML =
-          teamHeader(data.team, "2026-27 (Projected)") +
+          teamHeader(data.team, "2026-27 (Projected)", (data.division || data.conference || "")) +
           `<div class="summary">
             <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${rows.length}</div><div class="summary-lbl">Projected Players${rows.length !== combined.length ? " (filtered)" : ""}</div></div>
             <div class="summary-chip" style="--accent:var(--ret)"><div class="summary-num">${returningRaw.length}</div><div class="summary-lbl">Returning</div></div>
@@ -780,7 +842,7 @@
 
       // ── OFFSEASON CHANGES (turnover panels) ──
       if (!hasAny) {
-        wrap.innerHTML = teamHeader(data.team, data.season || "Offseason") +
+        wrap.innerHTML = teamHeader(data.team, "2026-27", (data.division || data.conference || "")) +
           `<div class="state-msg">No offseason data for this team yet.</div>`;
         return;
       }
@@ -791,22 +853,82 @@
       const out        = filterPlayers(outRaw);
 
       wrap.innerHTML =
-        teamHeader(data.team, data.season || "Offseason Changes") +
+        teamHeader(data.team, "2026-27", (data.division || data.conference || "")) +
         `<div class="summary">
           <div class="summary-chip" style="--accent:var(--ret)"><div class="summary-num">${returningRaw.length}</div><div class="summary-lbl">Returning</div></div>
           <div class="summary-chip" style="--accent:var(--in)"><div class="summary-num">${transfersRaw.length}</div><div class="summary-lbl">Transfers In</div></div>
           <div class="summary-chip" style="--accent:var(--frosh)"><div class="summary-num">${freshmenRaw.length}</div><div class="summary-lbl">Incoming Freshmen</div></div>
           <div class="summary-chip" style="--accent:var(--grad)"><div class="summary-num">${gradRaw.length}</div><div class="summary-lbl">Graduating</div></div>
-          <div class="summary-chip" style="--accent:var(--out)"><div class="summary-num">${outRaw.length}</div><div class="summary-lbl">Transferred Out</div></div>
+          <div class="summary-chip" style="--accent:var(--out)"><div class="summary-num">${outRaw.length}</div><div class="summary-lbl">Transfers Out</div></div>
         </div>` +
         `<div class="panels">
           ${panel("Returning", "--ret", returning, { tag: "Returning", accent: "var(--ret)" })}
           ${panel("Transfers In", "--in", incoming, { tag: "In", from: true, accent: "var(--in)" })}
           ${panel("Incoming Freshmen", "--frosh", freshmen, { tag: "Frosh", accent: "var(--frosh)" })}
-          ${panel("Graduating", "--grad", grad, { tag: "Grad", accent: "var(--grad)" })}
-          ${panel("Transferred Out", "--out", out, { tag: "Out", to: true, accent: "var(--out)" })}
+          ${panel("Graduated", "--grad", grad, { tag: "Grad", accent: "var(--grad)" })}
+          ${panel("Transfers Out", "--out", out, { tag: "Out", to: true, accent: "var(--out)" })}
         </div>`;
     }
+
+
+    // ── Combobox helper ──
+    function Combobox(inpId, hidId, dropId, clrId, onPick) {
+      const inp = document.getElementById(inpId);
+      const hid = document.getElementById(hidId);
+      const drop = document.getElementById(dropId);
+      const clr = document.getElementById(clrId);
+      if (!inp||!hid||!drop||!clr) return {};
+      let allOpts = [], hilIdx = -1;
+
+      function rebuild() {
+        const q = inp.value.trim().toLowerCase();
+        const filtered = q ? allOpts.filter(o => o.label.toLowerCase().includes(q)||(o.group||'').toLowerCase().includes(q)) : allOpts;
+        if (!filtered.length) { drop.innerHTML='<li class="combobox-empty">No results</li>'; hilIdx=-1; return; }
+        let html='', lastG=null;
+        filtered.forEach(o => {
+          if (o.group && o.group!==lastG) { html+=`<li class="combobox-group-hd">${o.group}</li>`; lastG=o.group; }
+          html+=`<li class="combobox-option" data-value="${o.value.replace(/"/g,'&quot;')}">${o.label}</li>`;
+        });
+        drop.innerHTML=html; hilIdx=-1;
+        drop.querySelectorAll('.combobox-option').forEach(li =>
+          li.addEventListener('mousedown', e => { e.preventDefault(); pick(li.dataset.value, li.textContent); }));
+      }
+
+      function open() { rebuild(); drop.style.display='block'; }
+      function close() { drop.style.display='none'; }
+
+      function pick(val, label) {
+        hid.value=val; inp.value=val?label.trim():'';
+        clr.style.display=val?'inline':'none';
+        close(); hid.dispatchEvent(new Event('change'));
+        if(onPick) onPick(val);
+      }
+
+      inp.addEventListener('focus', open);
+      inp.addEventListener('input', () => { open(); if(!inp.value.trim()) pick('',''); });
+      inp.addEventListener('blur', () => setTimeout(close, 180));
+      inp.addEventListener('keydown', e => {
+        const opts=[...drop.querySelectorAll('.combobox-option')];
+        if(e.key==='ArrowDown'){e.preventDefault();hilIdx=Math.min(hilIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='ArrowUp'){e.preventDefault();hilIdx=Math.max(hilIdx-1,0);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='Enter'&&hilIdx>=0){e.preventDefault();const o=opts[hilIdx];if(o)pick(o.dataset.value,o.textContent);}
+        else if(e.key==='Escape')close();
+      });
+      clr.addEventListener('mousedown', e => { e.preventDefault(); pick('',''); inp.focus(); });
+
+      return {
+        setOptions(opts) { allOpts=opts; },
+        setValue(val,lbl) { pick(val||'', lbl||val||''); },
+        getValue() { return hid.value; },
+        clear() { pick('',''); }
+      };
+    }
+    // Init team combobox — fires loadRoster on pick
+    let CB_selTeam;
+    document.addEventListener('DOMContentLoaded', () => {
+      CB_selTeam = Combobox('sel-team-text','sel-team','sel-team-drop','sel-team-clear', () => loadRoster());
+      loadTeams();
+    });
 
     async function loadRoster() {
       const team = document.getElementById("sel-team").value;
@@ -825,11 +947,9 @@
     }
 
     async function loadTeams() {
-      const sel = document.getElementById("sel-team");
       try {
         const res = await fetch(`${API}/teams`);
         const teams = await res.json();
-        // group by conference, descending (6A → 1A)
         const order = ["6A","5A","4A","3A","2A","1A"];
         const byConf = {};
         teams.forEach(t => { (byConf[t.conference] = byConf[t.conference] || []).push(t); });
@@ -837,34 +957,25 @@
           const ia = order.indexOf(a), ib = order.indexOf(b);
           return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
         });
-        sel.innerHTML = "";
+        const opts = [];
         confs.forEach(conf => {
-          const og = document.createElement("optgroup");
-          og.label = conf || "Other";
           byConf[conf]
-            .sort((a, b) => (a.school || "").localeCompare(b.school || ""))
-            .forEach(t => {
-              const o = document.createElement("option");
-              o.value = t.school; o.textContent = t.school + (t.mascot ? ` (${t.mascot})` : "");
-              og.appendChild(o);
-            });
-          sel.appendChild(og);
+            .sort((a,b) => (a.school||'').localeCompare(b.school||''))
+            .forEach(t => opts.push({ value: t.school, label: t.school + (t.mascot ? ` (${t.mascot})` : ''), group: conf || 'Other' }));
         });
-        // default selection
-        const opts = [...sel.options];
+        CB_selTeam.setOptions(opts);
+        // default to Basha or first option
         const def = opts.find(o => o.value === DEFAULT_TEAM) || opts[0];
-        if (def) sel.value = def.value;
-        loadRoster();
+        if (def) CB_selTeam.setValue(def.value, def.label);
       } catch (e) {
-        console.error("Teams load failed:", e);
-        sel.innerHTML = `<option value="${DEFAULT_TEAM}">${DEFAULT_TEAM}</option>`;
-        sel.value = DEFAULT_TEAM;
-        loadRoster();
+        console.warn("Teams load failed:", e);
+        CB_selTeam.setOptions([{ value: DEFAULT_TEAM, label: DEFAULT_TEAM }]);
+        CB_selTeam.setValue(DEFAULT_TEAM, DEFAULT_TEAM);
       }
     }
 
     // events
-    document.getElementById("sel-team").addEventListener("change", loadRoster);
+    // sel-team change handled by CB_selTeam onPick callback above
     document.getElementById("sel-position").addEventListener("change", render);
     document.getElementById("sel-player").addEventListener("input", render);
     document.querySelectorAll(".season-toggle button").forEach(btn => {
@@ -880,7 +991,6 @@
       });
     });
 
-    loadTeams();
   </script>
 
 </body>
