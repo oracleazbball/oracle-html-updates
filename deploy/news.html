@@ -172,7 +172,7 @@
     .filter-row {
       margin-top: 24px;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 2fr auto;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
       gap: 12px;
       align-items: end;
     }
@@ -192,7 +192,8 @@
       color: var(--silver-light);
       font-family: var(--font-body);
       font-size: 14px;
-      padding: 12px 16px;
+      padding: 0 16px;
+      height: 46px;
       outline: none;
       width: 100%;
       box-sizing: border-box;
@@ -203,7 +204,8 @@
     .filter-field input:focus,
     .filter-field select:focus { border-color: rgba(139,47,255,0.7); }
     .filter-btn {
-      padding: 12px 32px;
+      height: 46px;
+      padding: 0 32px;
       background: var(--purple);
       color: #fff;
       font-family: var(--font-condensed);
@@ -438,6 +440,63 @@
     .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
 
     /* ── RESPONSIVE ── */
+
+    /* ── COMBOBOX ── */
+    .combobox-wrap { position: relative; width: 100%; height: 46px; }
+    .combobox-input {
+      width: 100%;
+      height: 46px;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 0 32px 0 16px;
+      outline: none;
+      box-sizing: border-box;
+      height: 46px;
+      transition: border-color 0.2s;
+    }
+    .combobox-input:focus { border-color: rgba(139,47,255,0.7); }
+    .combobox-clear {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); cursor: pointer;
+      font-size: 16px; line-height: 1;
+      background: none; border: none; padding: 4px;
+      display: none;
+    }
+    .combobox-clear:hover { color: var(--silver-light); }
+    .combobox-drop {
+      display: none; position: absolute;
+      top: 100%; left: 0; right: 0; z-index: 300;
+      background: var(--black-card);
+      border: 1px solid rgba(139,47,255,0.4);
+      border-top: none;
+      max-height: 260px; overflow-y: auto;
+      list-style: none; padding: 0; margin: 0;
+    }
+    .combobox-drop::-webkit-scrollbar { width: 4px; }
+    .combobox-drop::-webkit-scrollbar-thumb { background: rgba(139,47,255,0.4); }
+    .combobox-option {
+      padding: 10px 16px;
+      font-family: var(--font-body); font-size: 14px;
+      color: var(--silver-light); cursor: pointer;
+      transition: background 0.1s;
+    }
+    .combobox-option:hover, .combobox-option.cb-hi { background: rgba(139,47,255,0.15); }
+    .combobox-group-hd {
+      padding: 6px 16px 4px;
+      font-family: var(--font-condensed); font-size: 11px;
+      font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--purple-bright);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      pointer-events: none;
+    }
+    .combobox-empty {
+      padding: 12px 16px; font-size: 13px;
+      color: var(--text-muted); pointer-events: none;
+    }
     @media (max-width: 900px) {
       nav { padding: 0 24px; }
       .nav-links { display: none; }
@@ -462,7 +521,7 @@
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html" class="active">News Feed</a></li>
@@ -470,7 +529,7 @@
   </nav>
 
   <header class="tr-hero">
-    <p class="hero-eyebrow">News Feed · Live</p>
+    <p class="hero-eyebrow">News Feed</p>
     <h1>The <em>Latest</em>,<br/>Aggregated.</h1>
     <p>
       The most recent X/Twitter posts from Arizona's most notable high school basketball scouts —
@@ -487,11 +546,21 @@
       </div>
       <div class="filter-field">
         <label for="filter-username">Account</label>
-        <input id="filter-username" type="text" placeholder="e.g. GreggRosenberg1" />
+        <div class="combobox-wrap">
+          <input type="text" class="combobox-input" id="filter-username-text" placeholder="All Accounts" autocomplete="off" />
+          <button class="combobox-clear" id="filter-username-clear">×</button>
+          <ul class="combobox-drop" id="filter-username-drop"></ul>
+          <input type="hidden" id="filter-username" />
+        </div>
       </div>
       <div class="filter-field">
         <label for="filter-team">Team</label>
-        <select id="filter-team"><option value="">All Teams</option></select>
+        <div class="combobox-wrap">
+          <input type="text" class="combobox-input" id="filter-team-text" placeholder="All Teams" autocomplete="off" />
+          <button class="combobox-clear" id="filter-team-clear">×</button>
+          <ul class="combobox-drop" id="filter-team-drop"></ul>
+          <input type="hidden" id="filter-team" />
+        </div>
       </div>
       <div class="filter-field">
         <label for="filter-player">Player</label>
@@ -518,7 +587,7 @@
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -528,21 +597,94 @@
 
   <!-- ── LIVE TWEET FEED ── -->
   <script>
+
+    // ── Combobox helper ──
+    function Combobox(inpId, hidId, dropId, clrId, onPick) {
+      const inp = document.getElementById(inpId);
+      const hid = document.getElementById(hidId);
+      const drop = document.getElementById(dropId);
+      const clr = document.getElementById(clrId);
+      if (!inp||!hid||!drop||!clr) return {};
+      let allOpts = [], hilIdx = -1;
+
+      function rebuild() {
+        const q = inp.value.trim().toLowerCase();
+        const filtered = q ? allOpts.filter(o => o.label.toLowerCase().includes(q)||(o.group||'').toLowerCase().includes(q)) : allOpts;
+        if (!filtered.length) { drop.innerHTML='<li class="combobox-empty">No results</li>'; hilIdx=-1; return; }
+        let html='', lastG=null;
+        filtered.forEach(o => {
+          if (o.group && o.group!==lastG) { html+=`<li class="combobox-group-hd">${o.group}</li>`; lastG=o.group; }
+          html+=`<li class="combobox-option" data-value="${o.value.replace(/"/g,'&quot;')}">${o.label}</li>`;
+        });
+        drop.innerHTML=html; hilIdx=-1;
+        drop.querySelectorAll('.combobox-option').forEach(li =>
+          li.addEventListener('mousedown', e => { e.preventDefault(); pick(li.dataset.value, li.textContent); }));
+      }
+
+      function open() { rebuild(); drop.style.display='block'; }
+      function close() { drop.style.display='none'; }
+
+      function pick(val, label) {
+        hid.value=val; inp.value=val?label.trim():'';
+        clr.style.display=val?'inline':'none';
+        close(); hid.dispatchEvent(new Event('change'));
+        if(onPick) onPick(val);
+      }
+
+      inp.addEventListener('focus', open);
+      inp.addEventListener('input', () => { open(); if(!inp.value.trim()) pick('',''); });
+      inp.addEventListener('blur', () => setTimeout(close, 180));
+      inp.addEventListener('keydown', e => {
+        const opts=[...drop.querySelectorAll('.combobox-option')];
+        if(e.key==='ArrowDown'){e.preventDefault();hilIdx=Math.min(hilIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='ArrowUp'){e.preventDefault();hilIdx=Math.max(hilIdx-1,0);opts.forEach((o,i)=>o.classList.toggle('cb-hi',i===hilIdx));}
+        else if(e.key==='Enter'){
+          e.preventDefault();
+          if(hilIdx>=0){
+            // arrow-key selection — pick highlighted
+            const o=opts[hilIdx]; if(o) pick(o.dataset.value,o.textContent);
+          } else {
+            // no highlight — fuzzy match typed text against all options
+            const q=inp.value.trim().toLowerCase();
+            if(q){
+              const exact=allOpts.find(o=>o.label.toLowerCase()===q);
+              const starts=allOpts.find(o=>o.label.toLowerCase().startsWith(q));
+              const contains=allOpts.find(o=>o.label.toLowerCase().includes(q));
+              const match=exact||starts||contains;
+              if(match) pick(match.value, match.label);
+              else { hid.value=''; } // no match — clear hidden, search all
+            } else {
+              pick('',''); // empty — clear filter
+            }
+          }
+          // trigger the search action
+          hid.dispatchEvent(new Event('change'));
+          if(onPick) onPick(hid.value);
+        }
+        else if(e.key==='Escape')close();
+      });
+      clr.addEventListener('mousedown', e => { e.preventDefault(); pick('',''); inp.focus(); });
+
+      return {
+        setOptions(opts) { allOpts=opts; },
+        setValue(val,lbl) { pick(val||'', lbl||val||''); },
+        getValue() { return hid.value; },
+        clear() { pick('',''); }
+      };
+    }
+    // Init comboboxes
+    let CB_filterTeam, CB_filterUsername;
     // Load teams into dropdown on page load
     async function loadTeams() {
       try {
         const response = await fetch("https://oracle-api-7q4wz.ondigitalocean.app/teams");
         const teams = await response.json();
-        const select = document.getElementById("filter-team");
-
-        teams.forEach(team => {
-          const option = document.createElement("option");
-          option.value = team.school;
-          option.textContent = `${team.school} ${team.mascot} (${team.conference})`;
-          select.appendChild(option);
-        });
+        const sorted = teams.sort((a,b) => (a.school||'').localeCompare(b.school||''));
+        CB_filterTeam.setOptions(
+          sorted.map(t => ({ value: t.school, label: t.school }))
+        );
       } catch (err) {
-        console.log("Could not load teams:", err);
+        console.warn("Could not load teams:", err);
       }
     }
 
@@ -607,12 +749,31 @@
     // Clear all filters
     function clearFilters() {
       document.getElementById("filter-keyword").value = "";
-      document.getElementById("filter-username").value = "";
-      document.getElementById("filter-team").value = "";
+      CB_filterUsername.clear();
+      CB_filterTeam.clear();
       document.getElementById("filter-player").value = "";
       document.getElementById("active-filters").innerHTML = "";
       document.getElementById("results-count").textContent = "";
       loadTweets();
+    }
+
+
+    // Load accounts into combobox once on page load
+    async function loadAccounts() {
+      try {
+        const res = await fetch("https://oracle-api-7q4wz.ondigitalocean.app/tweets");
+        const tweets = await res.json();
+        if (!CB_filterUsername || !tweets.length) return;
+        const seen = new Map();
+        tweets.forEach(t => {
+          if (t.username && !seen.has(t.username))
+            seen.set(t.username, t.display_name || t.username);
+        });
+        const opts = [...seen.entries()]
+          .sort((a,b) => a[1].localeCompare(b[1]))
+          .map(([val, lbl]) => ({ value: val, label: lbl + ' (@' + val + ')' }));
+        CB_filterUsername.setOptions(opts);
+      } catch(e) { console.warn('Could not load accounts:', e); }
     }
 
     // Load tweets with optional filters
@@ -735,20 +896,21 @@
       }
     }
 
-    // Allow Enter key to trigger search from any filter input
+    // Initialize on page load — single DOMContentLoaded to ensure CB is ready before loadTeams
     document.addEventListener('DOMContentLoaded', () => {
+      CB_filterTeam = Combobox('filter-team-text','filter-team','filter-team-drop','filter-team-clear');
+      document.getElementById('filter-team').addEventListener('change', applyFilters);
+      CB_filterUsername = Combobox('filter-username-text','filter-username','filter-username-drop','filter-username-clear');
+      document.getElementById('filter-username').addEventListener('change', applyFilters);
       ['filter-keyword', 'filter-username', 'filter-player'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
       });
-      const teamSel = document.getElementById('filter-team');
-      if (teamSel) teamSel.addEventListener('change', applyFilters);
+      loadTeams();
+      loadAccounts();
+      loadTweets();
+      setInterval(loadTweets, 300000);
     });
-
-    // Initialize on page load
-    loadTeams();
-    loadTweets();
-    setInterval(loadTweets, 300000);
   </script>
 
 </body>

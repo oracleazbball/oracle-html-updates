@@ -379,7 +379,7 @@
     <ul class="nav-links">
       <li><a href="rankings.html" class="active">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -387,8 +387,8 @@
   </nav>
 
   <header class="rk-hero">
-    <p class="hero-eyebrow">Rankings · 2025–26 Preseason</p>
-    <h1>The Oracle<br/><em>Top 10</em>.</h1>
+    <p class="hero-eyebrow">Rankings · 2026–27 Preseason</p>
+    <h1>The <em>Top 10,</em><br/>In the State.</h1>
     <p class="sub">
       Statewide team rankings built on film study and stats — not recruiting hype.
       Updated regularly throughout the season.
@@ -408,7 +408,7 @@
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
       <li><a href="articles.html">Articles</a></li>
-      <li><a href="index.html#podcasts">Podcasts</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
@@ -492,8 +492,7 @@
           <div class="rank-info">
             <div class="rank-name">${esc(t1.team)}</div>
             <div class="rank-tags">
-              <span>${esc(t1.conf)}</span>
-              ${t1.region ? `<span class="sep">·</span><span>${esc(t1.region)}</span>` : ""}
+              <span>${esc(t1.region)}</span>
             </div>
           </div>
           <div class="rank-conf">${esc(t1.conf)}</div>
@@ -506,8 +505,7 @@
           <div class="rank-info">
             <div class="rank-name">${esc(t.team)}</div>
             <div class="rank-tags">
-              <span>${esc(t.conf)}</span>
-              ${t.region ? `<span class="sep">·</span><span>${esc(t.region)}</span>` : ""}
+              <span>${esc(t.region)}</span>
             </div>
           </div>
           <div class="rank-conf">${esc(t.conf)}</div>

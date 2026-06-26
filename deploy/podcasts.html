@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Podcasts · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-dark: #3b0075;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106,15,214,0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 18px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 18px; right: 18px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .pod-hero {
+      padding: 140px 48px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pod-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .pod-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 76px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .pod-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .pod-hero p {
+      margin-top: 22px;
+      max-width: 680px;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #aaa;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 48px 96px;
+    }
+
+    /* ── COMING SOON STATE ── */
+    .coming-soon {
+      border: 1px solid rgba(139,47,255,0.3);
+      background: rgba(106,15,214,0.06);
+      padding: 80px 48px;
+      text-align: center;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      margin-bottom: 64px;
+    }
+    .coming-soon .cs-icon {
+      font-size: 56px;
+      margin-bottom: 24px;
+      display: block;
+    }
+    .coming-soon h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 36px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      margin-bottom: 16px;
+    }
+    .coming-soon p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #aaa;
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+    .badge-soon {
+      display: inline-block;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      border: 1px solid rgba(139,47,255,0.5);
+      padding: 10px 28px;
+      animation: pulseBorder 2s ease-in-out infinite;
+    }
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(139,47,255,0.5); box-shadow: 0 0 0 rgba(139,47,255,0); }
+      50% { border-color: rgba(139,47,255,0.9); box-shadow: 0 0 20px rgba(139,47,255,0.3); }
+    }
+
+    /* ── WHAT TO EXPECT ── */
+    .expect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 8px;
+    }
+    .expect-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .expect-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .expect-title {
+      font-family: var(--font-condensed);
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .expect-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    .section-label {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 24px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent);
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .pod-hero { padding: 110px 24px 8px; }
+      main { padding: 32px 24px 64px; }
+      .expect-grid { grid-template-columns: 1fr; }
+      .coming-soon { padding: 48px 24px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html" class="active">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  </nav>
+
+  <header class="pod-hero">
+    <p class="hero-eyebrow">Podcasts</p>
+    <h1>The <em>Discussion,</em><br/>On Air.</h1>
+    <p>
+      Game recaps, player analysis, team breakdowns, and free-flowing conversation
+      on everything Arizona high school basketball.
+    </p>
+  </header>
+
+  <main>
+    <div class="coming-soon">
+      <span class="cs-icon">🎙️</span>
+      <h2>First Episode Dropping Soon</h2>
+      <p>
+        The Oracle podcast is in production. We'll be covering game recaps,
+        breaking down teams, and diving deep into the AZ high school basketball
+        conversation you can't find anywhere else.
+      </p>
+      <div class="badge-soon">Coming Soon</div>
+    </div>
+
+    <p class="section-label">What to Expect</p>
+    <div class="expect-grid">
+      <div class="expect-card">
+        <div class="expect-icon">🏀</div>
+        <div class="expect-title">Game Recaps</div>
+        <div class="expect-desc">In-depth audio breakdowns of the biggest matchups across all AIA divisions.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">📋</div>
+        <div class="expect-title">Team Breakdowns</div>
+        <div class="expect-desc">Film study sessions turned into audio — what makes each team tick and what doesn't.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">🔍</div>
+        <div class="expect-title">Player Analysis</div>
+        <div class="expect-desc">Detailed looks at standout players, rising prospects, and under-the-radar talent across AZ.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">🔄</div>
+        <div class="expect-title">Transfer Talk</div>
+        <div class="expect-desc">Reactions to the latest offseason moves and what they mean for the landscape.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">🗣️</div>
+        <div class="expect-title">AZ Hoops Conversation</div>
+        <div class="expect-desc">Free-flowing discussion on everything happening in Arizona high school basketball.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">📅</div>
+        <div class="expect-title">Season Previews</div>
+        <div class="expect-desc">Conference-by-conference previews breaking down the teams and storylines to watch.</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="divider"></div>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+</body>
+</html>

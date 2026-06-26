@@ -646,9 +646,31 @@
     const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { const fname = f.replace(/'/g,"").replace(/\//g,"-"); LOGO_MAP[norm(f)] = "assets/team-logos/" + encodeURIComponent(fname) + ".png"; });
     const COLOR_MAP = {}; Object.entries(TEAM_COLORS).forEach(([k, v]) => { COLOR_MAP[norm(k)] = v; });
+
+    // ── Alias map: norm(API name) → norm(LOGO_FILES entry) ──
+    const TEAM_ALIASES = {
+      "azcollegeprep":       "arizonacollegeprep",
+      "azlutheran":          "arizonalutheran",
+      "azchristian":         "arizonachristian",
+      "sdo":                 "sandradayoconnor",
+      "oconnor":             "sandradayoconnor",
+      "sandradayoconnor":    "sandradayoconnor",
+      "stmarys":             "stmarys",
+      "brophyprep":          "brophy",
+      "coronadel":           "coronadelsol",
+      "notredameprep":       "notredame",
+      "gilbertchristian":    "gilbertchristian",
+      "mountainview":        "mountainviewmesa",
+      "mtnview":             "mountainviewmesa",
+      "rinconuniversity":    "riconuniversity",
+      "riconuniversity":     "riconuniversity",
+    };
+
     function resolveTeam(name) {
-      const n = norm(name);
+      let n = norm(name);
       if (!n) return { logo: null, color: null };
+      // Apply alias map first
+      if (TEAM_ALIASES[n]) n = norm(TEAM_ALIASES[n]);
       let lk = LOGO_MAP[n] ? n : null, ck = COLOR_MAP[n] ? n : null;
       if (!lk) for (const k of Object.keys(LOGO_MAP)) { if (n.startsWith(k) || k.startsWith(n)) { lk = k; break; } }
       if (!ck) for (const k of Object.keys(COLOR_MAP)) { if (n.startsWith(k) || k.startsWith(n)) { ck = k; break; } }
