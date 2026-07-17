@@ -384,13 +384,13 @@
     .stat-card {
       background: var(--black-card);
       border: 1px solid rgba(106,15,214,0.2);
-      padding: 28px 26px;
+      padding: 22px 22px;
       position: relative;
       overflow: hidden;
       transition: border-color 0.2s, transform 0.2s;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .stat-card::before {
@@ -416,10 +416,14 @@
     }
 
     .stat-icon {
-      font-size: 22px;
+      font-size: 30px;
       line-height: 1;
       color: var(--purple-bright);
+      height: 40px;
+      display: flex;
+      align-items: center;
     }
+    .stat-icon img { max-height: 100%; width: auto; }
 
     .stat-headline {
       font-family: var(--font-condensed);
@@ -429,7 +433,10 @@
       text-transform: uppercase;
       color: var(--purple-bright);
       text-shadow: 0 0 18px rgba(139,47,255,0.35);
-      line-height: 1;
+      line-height: 1.05;
+      min-height: 34px;
+      display: flex;
+      align-items: flex-start;
     }
 
     .stat-sub {
@@ -439,7 +446,6 @@
       letter-spacing: 0.3px;
       color: var(--text-muted);
       line-height: 1.45;
-      margin-top: auto;
     }
 
     /* ── WHAT WE COVER ── */
@@ -458,7 +464,7 @@
 
     .coverage-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 2px;
       margin-top: 56px;
     }
@@ -849,18 +855,38 @@
       .about-grid { grid-template-columns: 1fr; gap: 40px; }
       .coverage-grid { grid-template-columns: 1fr 1fr; }
       .feed-section { padding: 64px 24px; }
+      #tweet-feed { grid-template-columns: 1fr; }
       #rankings { padding: 64px 24px !important; }
       .filter-row { grid-template-columns: 1fr 1fr !important; }
       .mission-section { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
       .mission-sidebar { position: static; }
-      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; gap: 28px; }
+      .footer-links { flex-wrap: wrap; gap: 20px 40px; }
     }
 
     @media (max-width: 600px) {
       .coverage-grid { grid-template-columns: 1fr; }
       .filter-row { grid-template-columns: 1fr !important; }
       .about-stats { grid-template-columns: 1fr 1fr; }
+      .stat-icon { height: 32px; font-size: 26px; }
+      .stat-headline { font-size: 22px; min-height: 46px; }
+      .stat-card { gap: 10px; }
       .hero-cta { flex-direction: column; align-items: center; }
+    }
+  </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
     }
   </style>
 </head>
@@ -874,12 +900,14 @@
     </a>
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
     </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
   <!-- HERO -->
@@ -915,14 +943,14 @@
       </div>
       <div class="about-stats">
         <div class="stat-card">
-          <div class="stat-icon"><svg width="28" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 1C14 1 6 7 6 14C6 16.5 7 18.5 8 20C8 22 7 23 7 25H10C10 23 11 22 11 20.5V28H13V20H15V28H17V20.5C17 22 18 23 18 25H21C21 23 20 22 20 20C21 18.5 22 16.5 22 14C22 7 14 1 14 1Z" fill="#8b2fff"/><path d="M8 14C8 14 4 13 3 10C3 10 5 9 7 11" stroke="#8b2fff" stroke-width="1.5" stroke-linecap="round"/><path d="M20 14C20 14 24 13 25 10C25 10 23 9 21 11" stroke="#8b2fff" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="stat-icon"><img src="assets/az-outline.png" alt="Arizona" width="36" height="37" style="display:block;object-fit:contain;" /></div>
           <div class="stat-headline">AIA Focus</div>
           <div class="stat-sub">AZ high school hoops, exclusively focusing on the AIA</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🏀</div>
           <div class="stat-headline">All Conferences</div>
-          <div class="stat-sub">Every AIA division, 6A through 1A</div>
+          <div class="stat-sub">Every AIA conference, every region, 6A through 1A</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🗞️</div>
@@ -930,9 +958,9 @@
           <div class="stat-sub">Fresh articles &amp; podcasts every week</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-headline">Advanced Ratings</div>
-          <div class="stat-sub">Team stats &amp; ratings you won't find anywhere else</div>
+          <div class="stat-icon">📈</div>
+          <div class="stat-headline">Advanced Metrics</div>
+          <div class="stat-sub">Team stats and insights you won't find anywhere else</div>
         </div>
       </div>
     </div>
@@ -952,6 +980,13 @@
           <div class="coverage-name">Rankings</div>
           <div class="coverage-desc">Statewide team rankings built on real film study and stats — not recruiting hype.</div>
           <div class="coverage-arrow">Explore →</div>
+        </a>
+
+        <a href="ratings.html" class="coverage-card">
+          <div class="coverage-icon">📊</div>
+          <div class="coverage-name">Ratings</div>
+          <div class="coverage-desc">Power ratings for every team, plus the advanced metrics behind them.</div>
+          <div class="coverage-arrow">View →</div>
         </a>
 
         <a href="articles.html" class="coverage-card">
@@ -1010,6 +1045,7 @@
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
@@ -1019,5 +1055,13 @@
     <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
   </footer>
 
-  </body>
+  
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
+</body>
 </html>

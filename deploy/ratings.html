@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ratings · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-dark: #3b0075;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+      --pos: #46d17a;
+      --neg: #e0556b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106,15,214,0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--silver-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+    }
+    .nav-logo .nav-mark {
+      height: 40px; width: 40px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 6px rgba(139,47,255,0.6));
+    }
+    .nav-logo span { color: var(--purple-bright); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: 8px 16px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 16px; right: 16px;
+      height: 2px;
+      background: var(--purple-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .rt-hero {
+      padding: 132px 48px 8px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .rt-hero .hero-eyebrow {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--purple-bright);
+      margin-bottom: 16px;
+    }
+    .rt-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(44px, 5.5vw, 72px);
+      letter-spacing: 5px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .rt-hero h1 em {
+      font-style: normal;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.6);
+    }
+    .rt-hero .sub {
+      margin-top: 20px;
+      max-width: 720px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #aaa;
+    }
+
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 28px 48px 96px;
+    }
+
+    /* ── SET TABS ── */
+    .set-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 26px;
+      border-bottom: 1px solid rgba(106,15,214,0.22);
+      padding-bottom: 2px;
+    }
+    .set-tab {
+      font-family: var(--font-condensed);
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 12px 20px;
+      margin-bottom: -3px;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+    }
+    .set-tab:hover { color: var(--silver-light); }
+    .set-tab.active {
+      color: var(--purple-bright);
+      border-bottom-color: var(--purple-bright);
+      text-shadow: 0 0 18px rgba(139,47,255,0.5);
+    }
+    .set-tab.soon { opacity: 0.4; cursor: not-allowed; }
+    .set-tab .badge {
+      font-size: 9px;
+      letter-spacing: 1px;
+      vertical-align: super;
+      color: var(--purple-bright);
+      margin-left: 4px;
+    }
+    .pod-card {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.22);
+      border-top: 3px solid var(--purple-bright);
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .pod-card:hover { border-color: rgba(139,47,255,0.6); transform: translateY(-3px); }
+    .pod-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at left, rgba(139,47,255,0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .pod-num {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 54px;
+      line-height: 1;
+      color: var(--purple-bright);
+      text-shadow: 0 0 30px rgba(139,47,255,0.4);
+      width: 54px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .pod-logo {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 1.5px solid rgba(139,47,255,0.5);
+      flex-shrink: 0;
+    }
+    .pod-logo img { width: 100%; height: 100%; object-fit: contain; padding: 5px; }
+    .pod-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 22px; color: #fff; }
+    .pod-info { min-width: 0; flex: 1; }
+    .pod-name {
+      font-family: var(--font-condensed);
+      font-size: 23px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      line-height: 1.05;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pod-meta {
+      margin-top: 4px;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .pod-rating {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 26px;
+      color: var(--purple-bright);
+      flex-shrink: 0;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 15px;
+      padding: 12px 16px 12px 42px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus { border-color: rgba(139,47,255,0.7); }
+    .search-box input::placeholder { color: #555; }
+    .search-box svg {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px; stroke: var(--text-muted); pointer-events: none;
+    }
+    select.filter {
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    select.filter:focus { border-color: rgba(139,47,255,0.7); }
+    .count-pill {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+    .count-pill b { color: var(--purple-bright); font-weight: 400; }
+    .clear-btn {
+      cursor: pointer;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+    }
+    .clear-btn:hover { color: var(--silver-light); }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 20px;
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 22px;
+      padding: 12px 16px;
+      border: 1px solid rgba(106,15,214,0.15);
+      background: rgba(13,13,13,0.5);
+    }
+    .legend b { color: var(--silver); font-weight: 400; }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      overflow: visible;
+      border: 1px solid rgba(106,15,214,0.18);
+      background: var(--black-card);
+    }
+    table.ratings {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 0;
+    }
+    table.ratings thead th {
+      position: sticky;
+      top: 72px;
+      z-index: 5;
+      background: #120a1f;
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver);
+      text-align: right;
+      padding: 14px 14px;
+      border-bottom: 2px solid rgba(139,47,255,0.4);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    table.ratings thead th.left { text-align: left; }
+    table.ratings thead th.group-end, table.ratings tbody td.group-end {
+      border-right: 1px solid rgba(255,255,255,0.12);
+      padding-right: 24px;
+    }
+    table.ratings thead th:hover { color: var(--purple-bright); }
+    table.ratings thead th .arrow { color: var(--purple-bright); font-size: 11px; margin-left: 2px; }
+    .th-info {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px; height: 14px;
+      margin-left: 5px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,47,255,0.55);
+      color: var(--purple-bright);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: 0;
+      cursor: help;
+      vertical-align: middle;
+      position: relative;
+    }
+    .th-info:hover { background: var(--purple-bright); color: #fff; }
+    .th-info::after {
+      content: attr(data-tip);
+      position: absolute;
+      top: calc(100% + 9px);
+      right: -8px;
+      width: 230px;
+      background: #16091f;
+      border: 1px solid rgba(139,47,255,0.5);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 400;
+      font-style: normal;
+      letter-spacing: 0.2px;
+      line-height: 1.5;
+      text-align: left;
+      text-transform: none;
+      white-space: normal;
+      padding: 10px 12px;
+      border-radius: 4px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      transition: opacity 0.15s, transform 0.15s;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .th-info::before {
+      content: '';
+      position: absolute;
+      top: calc(100% + 3px);
+      right: 0;
+      border: 6px solid transparent;
+      border-bottom-color: rgba(139,47,255,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s;
+      z-index: 51;
+    }
+    .th-info:hover::after,
+    .th-info:hover::before { opacity: 1; visibility: visible; transform: translateY(0); }
+    table.ratings tbody td {
+      padding: 13px 14px;
+      text-align: right;
+      font-size: 15px;
+      color: var(--silver-light);
+      border-bottom: 1px solid rgba(106,15,214,0.1);
+      white-space: nowrap;
+    }
+    table.ratings tbody tr { transition: background 0.12s; }
+    table.ratings tbody tr:hover { background: rgba(106,15,214,0.09); }
+    td.rank {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text-muted);
+      text-align: center;
+      width: 58px;
+    }
+    td.rank .az-rank {
+      display: block;
+      margin-top: 3px;
+      font-family: var(--font-condensed);
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--purple-bright);
+    }
+    td.team { text-align: left; }
+    .team-cell { display: flex; align-items: center; gap: 12px; }
+    .t-logo {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 1.5px solid rgba(106,15,214,0.5);
+      flex-shrink: 0;
+    }
+    .t-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+    .t-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 14px; color: #fff; }
+    .t-name {
+      font-family: var(--font-condensed);
+      font-size: 19px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      line-height: 1;
+    }
+    .t-state {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--purple-bright);
+      border: 1px solid rgba(139,47,255,0.35);
+      padding: 2px 6px;
+      border-radius: 2px;
+      margin-left: 2px;
+    }
+    td.rating-cell {
+      font-weight: 600;
+      font-size: 17px;
+      color: var(--purple-bright);
+    }
+    td.bracket {
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: left;
+    }
+    td.bestwin {
+      text-align: left;
+      font-size: 13px;
+      color: #999;
+      max-width: 280px;
+      white-space: normal;
+      line-height: 1.35;
+    }
+    td.bestwin b { color: var(--silver-light); font-weight: 500; }
+    .pos { color: var(--pos); }
+    .neg { color: var(--neg); }
+    .muted-td { color: var(--text-muted); }
+    .no-results {
+      padding: 60px 0;
+      text-align: center;
+      font-family: var(--font-condensed);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── CLICKABLE ROW + GAME LOG MODAL ── */
+    table.ratings tbody tr.clickable { cursor: pointer; }
+    td.team .t-name { position: relative; }
+    tr.clickable:hover td.team .t-name {
+      color: var(--purple-bright);
+      text-shadow: 0 0 16px rgba(139,47,255,0.5);
+    }
+    .gl-hint {
+      position: absolute;
+      top: 100%; left: 0;
+      white-space: nowrap;
+      font-family: var(--font-condensed);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.15s;
+      margin-top: 2px;
+    }
+    tr.clickable:hover .gl-hint { opacity: 1; color: var(--purple-bright); }
+
+    .gl-overlay {
+      position: fixed; inset: 0;
+      z-index: 500;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 20px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s;
+    }
+    .gl-overlay.open { opacity: 1; visibility: visible; }
+    .gl-modal {
+      background: #0d0d0d;
+      border: 1px solid rgba(139,47,255,0.4);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+      width: 100%;
+      max-width: 720px;
+      transform: translateY(-12px);
+      transition: transform 0.2s;
+    }
+    .gl-overlay.open .gl-modal { transform: translateY(0); }
+    .gl-head {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 24px 28px;
+      border-bottom: 1px solid rgba(106,15,214,0.3);
+      position: relative;
+      background: radial-gradient(ellipse at left, rgba(139,47,255,0.12), transparent 70%);
+    }
+    .gl-logo {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 2px solid rgba(139,47,255,0.5);
+      flex-shrink: 0;
+    }
+    .gl-logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+    .gl-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: #fff; }
+    .gl-title { flex: 1; min-width: 0; }
+    .gl-name {
+      font-family: var(--font-condensed);
+      font-size: 30px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      line-height: 1;
+    }
+    .gl-meta {
+      margin-top: 6px;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .gl-meta b { color: var(--pos); font-weight: 400; }
+    .gl-meta .rec-l { color: var(--neg); }
+    .gl-opp-state {
+      font-family: var(--font-condensed);
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--purple-bright);
+      border: 1px solid rgba(139,47,255,0.35);
+      padding: 1px 5px;
+      border-radius: 2px;
+      margin-left: 7px;
+      vertical-align: middle;
+    }
+    .gl-close {
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none;
+      color: var(--text-muted);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .gl-close:hover { color: var(--silver-light); }
+    .gl-body { max-height: 60vh; overflow-y: auto; }
+    .gl-game {
+      display: grid;
+      grid-template-columns: 26px 1fr auto auto;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 28px;
+      border-bottom: 1px solid rgba(106,15,214,0.1);
+    }
+    .gl-game:hover { background: rgba(106,15,214,0.08); }
+    .gl-wl {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .gl-wl.w { background: rgba(70,209,122,0.15); color: var(--pos); border: 1px solid rgba(70,209,122,0.4); }
+    .gl-wl.l { background: rgba(224,85,107,0.15); color: var(--neg); border: 1px solid rgba(224,85,107,0.4); }
+    .gl-opp { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .gl-opp-logo {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a;
+      border: 1px solid rgba(106,15,214,0.4);
+      flex-shrink: 0;
+    }
+    .gl-opp-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+    .gl-opp-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 12px; color: #fff; }
+    .gl-opp-name {
+      font-family: var(--font-condensed);
+      font-size: 17px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .gl-date {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .gl-score {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 16px;
+      text-align: right;
+      white-space: nowrap;
+      min-width: 74px;
+    }
+    .gl-score .win { color: var(--pos); }
+    .gl-score .loss { color: var(--neg); }
+    .gl-empty {
+      padding: 40px 28px;
+      text-align: center;
+      font-family: var(--font-condensed);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── DIVIDER + FOOTER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent);
+    }
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid rgba(106,15,214,0.2);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+    }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+    .ratings-notice {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 48px 40px;
+      font-size: 12.5px;
+      font-style: italic;
+      line-height: 1.6;
+      color: #666;
+    }
+    @media (max-width: 1000px) { .ratings-notice { padding: 0 22px 32px; } }
+
+    a { color: var(--purple-bright); }
+    a:hover { color: var(--purple-glow, #a855f7); }
+
+    @media (max-width: 1000px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .rt-hero { padding: 104px 22px 8px; }
+      main { padding: 22px 22px 64px; }
+      .table-wrap { overflow-x: auto; }
+      .podium { grid-template-columns: 1fr; }
+      .count-pill { margin-left: 0; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 22px; }
+    }
+
+    /* ── MOBILE CARD LIST ── */
+    .rcards { display: none; }
+    .mobile-sort { display: none; }
+    @media (max-width: 768px) {
+      .table-wrap { display: none; }
+      .legend { display: none; }
+      .rcards { display: flex; flex-direction: column; gap: 10px; }
+      .mobile-sort { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+      .mobile-sort label { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+      .mobile-sort select {
+        flex: 1; background: var(--black-card); border: 1px solid rgba(106,15,214,0.3);
+        color: var(--silver-light); font-family: var(--font-condensed); font-size: 14px;
+        letter-spacing: 1px; text-transform: uppercase; padding: 11px 14px; outline: none;
+      }
+      .rcard {
+        background: var(--black-card); border: 1px solid rgba(106,15,214,0.2);
+        border-left: 3px solid rgba(139,47,255,0.55); padding: 14px 15px;
+      }
+      .rc-head { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 12px; }
+      .rc-rank { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--text-muted); text-align: center; line-height: 1; }
+      .rc-rank .rc-az { display: block; margin-top: 3px; font-family: var(--font-condensed); font-weight: 400; font-size: 10px; letter-spacing: 1px; color: var(--purple-bright); }
+      .rc-logo { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0a0a0a; border: 1.5px solid rgba(106,15,214,0.5); }
+      .rc-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+      .rc-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 16px; color: #fff; }
+      .rc-id { min-width: 0; }
+      .rc-name { font-family: var(--font-condensed); font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--silver-light); line-height: 1.05; }
+      .rc-sub { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+      .rc-sub .az { color: var(--purple-bright); }
+      .rc-rating { font-family: var(--font-body); font-weight: 600; font-size: 22px; text-align: right; }
+      .rc-rating.pos { color: var(--pos); } .rc-rating.neg { color: var(--neg); } .rc-rating.zero { color: var(--purple-bright); }
+      .rc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 13px; background: rgba(106,15,214,0.15); border: 1px solid rgba(106,15,214,0.18); }
+      .rc-stat { background: var(--black-card); padding: 8px 10px; }
+      .rc-stat .l { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+      .rc-stat .v { font-family: var(--font-body); font-weight: 600; font-size: 16px; margin-top: 2px; color: var(--silver-light); }
+      .rc-stat .v.pos { color: var(--pos); } .rc-stat .v.neg { color: var(--neg); }
+      .rc-tap { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(106,15,214,0.15); font-family: var(--font-condensed); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--purple-bright); }
+      .rc-none { padding: 50px 0; text-align: center; font-family: var(--font-condensed); letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+    }
+  </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html" class="active">Ratings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <header class="rt-hero">
+    <p class="hero-eyebrow" id="heroEyebrow">Ratings</p>
+    <h1>Every Team,<br/><em>Rated.</em></h1>
+    <p class="sub">
+      Power ratings for every team, plus the metrics behind them. Sort by any column,
+      search a team, or filter by state and bracket. These ratings reflect how a team performed at a specific event only. This isn't a preseason ranking or a projection of how good a team will be going forward.
+    </p>
+  </header>
+
+  <main>
+    <div class="set-tabs" id="setTabs"></div>
+
+    <div class="controls">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search" placeholder="Search a team…" autocomplete="off" />
+      </div>
+      <select class="filter" id="stateFilter"><option value="">All States</option></select>
+      <select class="filter" id="bracketFilter"><option value="">All Brackets</option></select>
+      <button class="filter clear-btn" id="clearBtn" type="button">Clear Filters</button>
+      <span class="count-pill"><b id="count">—</b> teams</span>
+    </div>
+
+    <div class="legend">
+      <span><b>RATING</b> overall power rating</span>
+      <span><b>WAA</b> wins above average</span>
+      <span><b>ADJ. RPI</b> adjusted rating percentage index</span>
+      <span><b>ADJ. SOS</b> adjusted strength of schedule</span>
+      <span><b>ADJ. NET</b> adjusted scoring margin</span>
+      <span><b>ADJ. OFF</b> adjusted offensive rating</span>
+      <span><b>ADJ. DEF</b> adjusted defensive rating</span>
+    </div>
+
+    <div class="mobile-sort">
+      <label for="mobileSort">Sort</label>
+      <select id="mobileSort"></select>
+    </div>
+
+    <div class="table-wrap">
+      <table class="ratings">
+        <thead>
+          <tr id="head-row"></tr>
+        </thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+
+    <div class="rcards" id="rcards"></div>
+  </main>
+
+  <div class="gl-overlay" id="glOverlay">
+    <div class="gl-modal" role="dialog" aria-modal="true">
+      <div class="gl-head">
+        <div class="gl-logo" id="glLogo"></div>
+        <div class="gl-title">
+          <div class="gl-name" id="glName">—</div>
+          <div class="gl-meta" id="glMeta"></div>
+        </div>
+        <button class="gl-close" id="glClose" aria-label="Close">×</button>
+      </div>
+      <div class="gl-body" id="glBody"></div>
+    </div>
+  </div>
+
+  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without asking first.</p>
+
+  <div class="divider"></div>
+
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════
+    // RATING SETS — add a new set by pushing an entry here.
+    // Each set is its own Google Sheet published as CSV.
+    //   label    : tab name shown to viewers
+    //   eyebrow  : small line above the page title when this set is active
+    //   csv      : the sheet's published-CSV URL ("" = coming soon / greyed out)
+    // To update a set's data: just edit its Google Sheet — no code changes.
+    // ══════════════════════════════════════════════════════════════
+    const DATASETS = [
+      {
+        id: "section7",
+        label: "Section 7",
+        eyebrow: "Ratings",
+        csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMHnOmx2_O5s3Y8jIZ4x8VE2fHrkrsgHhvIh_RfOZMMn9Zb31E0tTaiT8hk1Vj0HWON3A3ey_hEPNb/pub?output=csv"
+      },
+      { id: "nli",     label: "Nevada Live Invitational",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "" },
+      { id: "overall", label: "Overall", eyebrow: "Ratings · Overall", csv: "" }
+    ];
+    let activeSet = DATASETS[0];
+
+    // ── GAME LOG source (one sheet, shared across all rating sets) ──
+    // Columns: Game ID, Event, Date, Time, Court, Bracket, Team, State,
+    //          Opponent, Opp. State, Team Score, Opp. Score, Margin, Result
+    const GAMELOG_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vScoeVy7TL0lUmnhqfOWC3WecCunupUFFmOoLJOZVRsxmF8RmVCaXz9AjgeAUm_ZcB8XZWgbV5Pzk7G/pub?gid=1170633783&single=true&output=csv";
+    let GAMES_BY_TEAM = null;   // norm(team) -> [games]
+    let gamesLoading = null;
+
+    // ── logo + color helpers (same system as rest of site) ──
+    const LOGO_FILES = ["agua fria","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","alchesay","alhambra","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus shadows","cactus","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler prep","chandler","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale prep","glendale","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon honors","horizon","independence","ironwood ridge","ironwood","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon-university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day oconnor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","st. marys","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe prep","tempe","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma","north valley christian","rancho solano prep","raymond s. kellis","phoenix country day","lincoln prep","the gregory school","asdb","ash fork","bagdad","basis flagstaff","cicero prep","desert heights prep","desert star","dishchiibikoh","duncan","el capitan","fort thomas","fredonia","grand canyon","greyhills academy","hayden","joseph city","lourdes catholic","maryvale prep","mayer","mogollon","music mountain","north phoenix preparatory","patagonia union","pdsd","ray","red mesa","rock point","rough rock","salome","san manuel","san pasqual","san simon","seligman","shonto prep","st. david","st. michael","superior","valley lutheran","valley union","williams","ala - radiance","desert sunrise","hopi","many farms","miami","morenci","mountainside","nfl yet","odyssey institute","parker","pinon","river valley","round valley","san miguel","santa cruz valley","santa rita","st. johns","tombstone","tonopah valley","trivium prep","valley (sanders)","veritas prep","willcox","ala - anthem south","ala - mesa north","ala - sierra vista","arete prep","franklin","globe","heritage acad gateway","heritage acad maricopa","heritage acad mesa"];
+    const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+    // aliases: sheet/API name -> logo file name (normalized)
+    const TEAM_ALIASES = {
+      "azcollegeprep":"arizonacollegeprep","azlutheran":"arizonalutheran","oconnor":"sandradayoconnor",
+      "brophyprep":"brophy","brophycollegeprep":"brophy","cactusshawdows":"cactusshadows",
+      "sandradayoconnor":"sandradayoconnor","stmaryscatholic":"stmarys","stmarys":"stmarys",
+      "trevorbrowne":"trevorgbrowne","bettyfairfax":"bettyhfairfax","casagrandeunion":"casagrande",
+      "mountainviewmesa":"mountainviewmesa","mountainviewmarana":"mountainviewmarana",
+      "rinconuniversity":"rinconuniversity","alaqueencreek":"alaqc","alagilbertnorth":"alagilbertnorth",
+      "alaironwood":"alaironwood","alawestfoothills":"alawestfoothills","pushridge":"puschridge",
+      "puschridgechristianacademy":"puschridge","marcosdeniza":"marcosdeniza",
+      "northvalleychristianacademy":"northvalleychristian","pcds":"phoenixcountryday",
+      "raymondskellis":"raymondskellis","kellis":"raymondskellis",
+      "nortedame":"notredame"
+    };
+    const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
+    function resolveLogo(name) {
+      let n = norm(name);
+      if (TEAM_ALIASES[n] !== undefined) n = TEAM_ALIASES[n];
+      if (!n) return null;
+      if (LOGO_MAP[n]) return LOGO_MAP[n];
+      // handle "mountain view (mesa)" style
+      for (const k of Object.keys(LOGO_MAP)) { if (k === n) return LOGO_MAP[k]; }
+      for (const k of Object.keys(LOGO_MAP)) { if (n.length>4 && (n.startsWith(k)||k.startsWith(n))) return LOGO_MAP[k]; }
+      return null;
+    }
+    const esc = s => (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    function logoHtml(name, cls, state) {
+      const isAZ = ["az","arizona","ariz"].includes(norm(state));
+      const logo = isAZ ? resolveLogo(name) : null;
+      const inner = logo
+        ? `<img src="${logo}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc((name||'?').charAt(0))}</span>'" />`
+        : `<span class="mono">${esc((name||'?').charAt(0))}</span>`;
+      return `<div class="${cls}">${inner}</div>`;
+    }
+
+    // ── CSV parser (quote-aware) ──
+    function parseCSVLine(line) {
+      const cols = []; let cur = "", inQ = false;
+      for (let i=0;i<line.length;i++){
+        const ch = line[i];
+        if (ch === '"') { if (inQ && line[i+1] === '"'){ cur+='"'; i++; } else inQ = !inQ; }
+        else if (ch === ',' && !inQ) { cols.push(cur); cur=""; }
+        else cur += ch;
+      }
+      cols.push(cur);
+      return cols.map(c => c.trim());
+    }
+    function parseCSV(text) {
+      const lines = text.replace(/\r/g,"").split("\n").filter(l => l.trim().length);
+      if (lines.length < 2) return [];
+      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+      const find = (...keys) => headers.findIndex(h => keys.some(k => h.includes(k)));
+      const I = {
+        rank: find("rank"), team: find("team"), state: find("state"),
+        bracket: headers.findIndex(h => h.includes("bracket") && !h.includes("tier")),
+        record: find("record"), rating: headers.findIndex(h => h==="rating"||h.startsWith("rating")),
+        adjrpi: headers.findIndex(h => h.includes("rpi") && h.includes("adj")),
+        sos: headers.findIndex(h => h.includes("sos") && !h.includes("adj")),
+        adjsos: headers.findIndex(h => h.includes("sos") && h.includes("adj")),
+        adjnet: headers.findIndex(h => h.includes("net") && h.includes("cross")),
+        adjoff: headers.findIndex(h => h.includes("off") && h.includes("cross")),
+        adjdef: headers.findIndex(h => h.includes("def") && h.includes("cross")),
+        ppg: headers.findIndex(h => h==="ppg"),
+        papg: find("papg"), waa: find("waa"), bestwin: find("best win","best")
+      };
+      return lines.slice(1).map(line => {
+        const c = parseCSVLine(line);
+        const g = k => I[k] >= 0 ? c[I[k]] : "";
+        return {
+          rank: parseInt(g("rank")) || 0,
+          team: g("team"), state: g("state"), bracket: g("bracket"),
+          record: g("record"), rating: g("rating"), adjrpi: g("adjrpi"), sos: g("sos"), adjsos: g("adjsos"),
+          adjnet: g("adjnet"), adjoff: g("adjoff"), adjdef: g("adjdef"),
+          ppg: g("ppg"), papg: g("papg"), waa: g("waa"), bestwin: g("bestwin")
+        };
+      }).filter(r => r.team);
+    }
+
+    // ── numeric helpers ──
+    const num = v => { const n = parseFloat(String(v).replace(/[+ ]/g,"")); return isNaN(n) ? null : n; };
+    const recPct = v => { const m = String(v).match(/(\d+)\s*-\s*(\d+)/); if(!m) return -1; const w=+m[1],l=+m[2]; return (w+l)? w/(w+l) : 0; };
+    function fmtSigned(v) {
+      const n = num(v); if (n === null) return `<span class="muted-td">—</span>`;
+      const cls = n > 0 ? "pos" : n < 0 ? "neg" : "";
+      const sign = n > 0 ? "+" : "";
+      return `<span class="${cls}">${sign}${n.toFixed(2)}</span>`;
+    }
+    function fmtBestWin(v) {
+      if (!v || v.startsWith("—")) return `<span class="muted-td">—</span>`;
+      // bold the opponent name up to the first comma
+      const ci = v.indexOf(",");
+      if (ci === -1) return esc(v);
+      return `<b>${esc(v.slice(0,ci))}</b>${esc(v.slice(ci))}`;
+    }
+
+    // ── column config ──
+    const COLS = [
+      { key:"rank",    label:"#",        cls:"rank",        left:false, sort:r=>r.rank,          def:"asc"  },
+      { key:"team",    label:"Team",     cls:"team",        left:true,  sort:r=>r.team.toLowerCase(), def:"asc" },
+      { key:"bracket", label:"Bracket",  cls:"bracket",     left:true,  sort:r=>r.bracket.toLowerCase(), def:"asc", desc:"The pool or sponsor bracket the team was placed in for the event." },
+      { key:"record",  label:"Rec",      cls:"",            left:false, sort:r=>recPct(r.record), def:"desc", group:true, desc:"Overall win\u2013loss record." },
+      { key:"rating",  label:"Rating",   cls:"rating-cell", left:false, sort:r=>num(r.rating),   def:"desc", group:true, desc:"Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was." },
+      { key:"waa",     label:"WAA",      cls:"",            left:false, sort:r=>num(r.waa),      def:"desc", desc:"Wins Above Average \u2014 how many more (or fewer) games a team won than an average team would against the same schedule." },
+      { key:"adjrpi",  label:"Adj. RPI", cls:"",            left:false, sort:r=>num(r.adjrpi),   def:"desc", desc:"Adjusted Rating Percentage Index \u2014 performance based on wins and opponent quality, measured across the whole event, not just their own bracket." },
+      { key:"adjsos",  label:"Adj. SOS", cls:"",            left:false, sort:r=>num(r.adjsos),   def:"desc", group:true, desc:"How tough a team's opponents were, measured across the whole event, not just their own bracket." },
+      { key:"adjnet",  label:"Adj. Net", cls:"",            left:false, sort:r=>num(r.adjnet),   def:"desc", desc:"Adjusted scoring margin (offense minus defense), measured across the whole event rather than a single bracket." },
+      { key:"adjoff",  label:"Adj. Off", cls:"",            left:false, sort:r=>num(r.adjoff),   def:"desc", desc:"Adjusted offensive rating, measured across the whole event rather than a single bracket." },
+      { key:"adjdef",  label:"Adj. Def", cls:"",            left:false, sort:r=>num(r.adjdef),   def:"asc",  desc:"Adjusted defensive rating, measured across the whole event rather than a single bracket. Lower is better." }
+    ];
+
+    let DATA = [], sortKey = "rank", sortDir = "asc";
+
+    function buildMobileSort() {
+      const sel = document.getElementById("mobileSort");
+      if (!sel) return;
+      const opts = [{key:"rank",label:"Overall Rank"}].concat(
+        COLS.filter(c => c.key !== "rank" && c.key !== "team" && c.key !== "bracket").map(c => ({key:c.key,label:c.label}))
+      );
+      sel.innerHTML = opts.map(o => `<option value="${o.key}">${o.label}</option>`).join("");
+      sel.value = sortKey;
+      sel.onchange = () => {
+        const col = COLS.find(c => c.key === sel.value);
+        sortKey = sel.value; sortDir = col ? col.def : "asc";
+        buildHead(); renderBody();
+      };
+    }
+
+    function buildHead() {
+      document.getElementById("head-row").innerHTML = COLS.map(col => {
+        const active = col.key === sortKey;
+        const arrow = active ? `<span class="arrow">${sortDir==="asc"?"▲":"▼"}</span>` : "";
+        const info = col.desc ? `<span class="th-info" data-tip="${esc(col.desc)}">i</span>` : "";
+        return `<th class="${col.left?"left":""}${col.group?" group-end":""}" data-key="${col.key}">${col.label}${info}${arrow}</th>`;
+      }).join("");
+      document.querySelectorAll("th[data-key]").forEach(th => {
+        th.onclick = () => {
+          const key = th.dataset.key;
+          const col = COLS.find(c => c.key === key);
+          if (sortKey === key) sortDir = sortDir === "asc" ? "desc" : "asc";
+          else { sortKey = key; sortDir = col.def; }
+          buildHead(); renderBody();
+        };
+      });
+      const ms = document.getElementById("mobileSort");
+      if (ms) ms.value = sortKey;
+    }
+
+    function currentRows() {
+      const q = norm(document.getElementById("search").value);
+      const st = document.getElementById("stateFilter").value;
+      const br = document.getElementById("bracketFilter").value;
+      let rows = DATA.filter(r =>
+        (!q || norm(r.team).includes(q)) &&
+        (!st || r.state === st) &&
+        (!br || r.bracket === br)
+      );
+      const col = COLS.find(c => c.key === sortKey);
+      const dir = sortDir === "asc" ? 1 : -1;
+      rows.sort((a,b) => {
+        let va = col.sort(a), vb = col.sort(b);
+        if (va === null) va = Infinity * dir; // push blanks to bottom
+        if (vb === null) vb = Infinity * dir;
+        if (typeof va === "string") return va.localeCompare(vb) * dir;
+        return (va - vb) * dir;
+      });
+      return rows;
+    }
+
+    function renderBody() {
+      const rows = currentRows();
+      document.getElementById("count").textContent = rows.length;
+      const body = document.getElementById("body");
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="${COLS.length}" class="no-results">No teams match your filters.</td></tr>`;
+        return;
+      }
+      body.innerHTML = rows.map(r => `
+        <tr class="clickable" data-team="${esc(r.team)}" data-state="${esc(r.state)}">
+          <td class="rank">${r.rank || "—"}${r.azRank ? `<span class="az-rank">AZ #${r.azRank}</span>` : ""}</td>
+          <td class="team">
+            <div class="team-cell">
+              ${logoHtml(r.team, "t-logo", r.state)}
+              <span class="t-name">${esc(r.team)}<span class="gl-hint">View team ▸</span></span>
+              ${r.state ? `<span class="t-state">${esc(r.state)}</span>` : ""}
+            </div>
+          </td>
+          <td class="bracket">${esc(r.bracket) || "—"}</td>
+          <td class="group-end">${esc(r.record) || "—"}</td>
+          <td class="rating-cell group-end">${fmtSigned(r.rating)}</td>
+          <td>${fmtSigned(r.waa)}</td>
+          <td>${num(r.adjrpi)!==null ? num(r.adjrpi).toFixed(3) : "—"}</td>
+          <td class="group-end">${num(r.adjsos)!==null ? num(r.adjsos).toFixed(3) : "—"}</td>
+          <td>${fmtSigned(r.adjnet)}</td>
+          <td>${num(r.adjoff)!==null ? num(r.adjoff).toFixed(1) : "—"}</td>
+          <td>${num(r.adjdef)!==null ? num(r.adjdef).toFixed(1) : "—"}</td>
+        </tr>`).join("");
+      body.querySelectorAll("tr.clickable").forEach(tr => {
+        tr.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(tr.dataset.team) + "&state=" + encodeURIComponent(tr.dataset.state || ""); };
+      });
+      renderCards(rows);
+    }
+
+    function renderCards(rows) {
+      const wrap = document.getElementById("rcards");
+      if (!wrap) return;
+      if (!rows.length) { wrap.innerHTML = `<div class="rc-none">No teams match your filters.</div>`; return; }
+      const cls = v => { const n = num(v); return n>0?"pos":n<0?"neg":""; };
+      const stat = (lbl, v, signed) => {
+        const n = num(v);
+        const t = n===null ? "—" : signed ? ((n>0?"+":"")+n.toFixed(lbl==="Adj. RPI"||lbl==="Adj. SOS"?(lbl==="Adj. RPI"?3:3):1)) : n.toFixed(lbl==="Adj. RPI"?3:lbl==="Adj. SOS"?3:1);
+        return `<div class="rc-stat"><div class="l">${lbl}</div><div class="v ${signed?cls(v):""}">${t}</div></div>`;
+      };
+      wrap.innerHTML = rows.map(r => {
+        const rn = num(r.rating);
+        const rtCls = rn>0?"pos":rn<0?"neg":"zero";
+        const rt = rn===null ? "—" : (rn>0?"+":"")+rn.toFixed(1);
+        const sub = [r.state?`<span class="az">${esc(r.state)}</span>`:"", r.record?esc(r.record):"", esc(r.bracket)].filter(Boolean).join(" · ");
+        return `
+        <div class="rcard" data-team="${esc(r.team)}" data-state="${esc(r.state)}">
+          <div class="rc-head">
+            <div class="rc-rank">${r.rank || "—"}${r.azRank ? `<span class="rc-az">AZ #${r.azRank}</span>` : ""}</div>
+            ${logoHtml(r.team, "rc-logo", r.state)}
+            <div class="rc-id">
+              <div class="rc-name">${esc(r.team)}</div>
+              <div class="rc-sub">${sub}</div>
+            </div>
+            <div class="rc-rating ${rtCls}">${rt}</div>
+          </div>
+          <div class="rc-stats">
+            <div class="rc-stat"><div class="l">WAA</div><div class="v ${cls(r.waa)}">${num(r.waa)!==null?(num(r.waa)>0?"+":"")+num(r.waa).toFixed(2):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. RPI</div><div class="v">${num(r.adjrpi)!==null?num(r.adjrpi).toFixed(3):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. SOS</div><div class="v">${num(r.adjsos)!==null?num(r.adjsos).toFixed(3):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Net</div><div class="v ${cls(r.adjnet)}">${num(r.adjnet)!==null?(num(r.adjnet)>0?"+":"")+num(r.adjnet).toFixed(1):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Off</div><div class="v">${num(r.adjoff)!==null?num(r.adjoff).toFixed(1):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Def</div><div class="v">${num(r.adjdef)!==null?num(r.adjdef).toFixed(1):"—"}</div></div>
+          </div>
+          <div class="rc-tap">Tap for full breakdown ›</div>
+        </div>`;
+      }).join("");
+      wrap.querySelectorAll(".rcard").forEach(c => {
+        c.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(c.dataset.team) + "&state=" + encodeURIComponent(c.dataset.state || ""); };
+      });
+    }
+
+    function renderPodium() {
+      const top = [...DATA].sort((a,b)=>a.rank-b.rank).slice(0,3);
+      document.getElementById("podium").innerHTML = top.map(t => {
+        const n = num(t.rating);
+        const rt = n!==null ? (n>0?"+":"")+n.toFixed(1) : "";
+        return `
+        <div class="pod-card">
+          <div class="pod-num">${t.rank}</div>
+          ${logoHtml(t.team, "pod-logo", t.state)}
+          <div class="pod-info">
+            <div class="pod-name">${esc(t.team)}</div>
+            <div class="pod-meta">${esc(t.state)}${t.record?" · "+esc(t.record):""}</div>
+          </div>
+          <div class="pod-rating">${rt}</div>
+        </div>`;
+      }).join("");
+    }
+
+    function buildFilters() {
+      const states = [...new Set(DATA.map(r=>r.state).filter(Boolean))].sort();
+      const brackets = [...new Set(DATA.map(r=>r.bracket).filter(Boolean))].sort();
+      const sf = document.getElementById("stateFilter");
+      const bf = document.getElementById("bracketFilter");
+      sf.innerHTML = `<option value="">All States</option>`;
+      bf.innerHTML = `<option value="">All Brackets</option>`;
+      states.forEach(s => sf.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
+      brackets.forEach(b => bf.insertAdjacentHTML("beforeend", `<option value="${esc(b)}">${esc(b)}</option>`));
+      // default to Arizona teams first (site focus) if AZ exists in this set
+      const azVal = states.find(s => norm(s) === "az" || norm(s) === "arizona" || norm(s) === "ariz");
+      sf.value = azVal || "";
+      sf.onchange = renderBody; bf.onchange = renderBody;
+      document.getElementById("search").oninput = renderBody;
+      document.getElementById("clearBtn").onclick = () => {
+        sf.value = ""; bf.value = ""; document.getElementById("search").value = "";
+        renderBody();
+      };
+    }
+
+    // ── fetch (multi-strategy, same as rankings) ──
+    async function fetchWithTimeout(url, ms=7000){
+      const ctrl = new AbortController(); const t = setTimeout(()=>ctrl.abort(), ms);
+      try { const r = await fetch(url,{signal:ctrl.signal}); clearTimeout(t); return r; }
+      catch(e){ clearTimeout(t); throw e; }
+    }
+    async function tryFetch(url){
+      try { const r=await fetchWithTimeout(url,5000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
+      try { const r=await fetchWithTimeout(`https://corsproxy.io/?url=${encodeURIComponent(url)}`,7000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
+      try { const r=await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,7000); if(r.ok){const j=await r.json(); if(j.contents&&j.contents.includes(','))return j.contents;} }catch(_){}
+      try { const r=await fetchWithTimeout(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,7000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
+      throw new Error("All fetch strategies failed");
+    }
+
+    function renderTabs() {
+      document.getElementById("setTabs").innerHTML = DATASETS.map(d => {
+        const soon = !d.csv;
+        return `<button class="set-tab${d.id===activeSet.id?" active":""}${soon?" soon":""}" data-id="${d.id}"${soon?" disabled":""}>${esc(d.label)}${soon?`<span class="badge">SOON</span>`:""}</button>`;
+      }).join("");
+      document.querySelectorAll(".set-tab:not(.soon)").forEach(btn => {
+        btn.onclick = () => {
+          if (btn.dataset.id === activeSet.id) return;
+          activeSet = DATASETS.find(d => d.id === btn.dataset.id);
+          document.getElementById("search").value = "";
+          sortKey = "rank"; sortDir = "asc";
+          renderTabs();
+          load();
+        };
+      });
+    }
+
+    // ── GAME LOG parsing + modal ──
+    function loadGames() {
+      if (GAMES_BY_TEAM) return Promise.resolve(GAMES_BY_TEAM);
+      if (gamesLoading) return gamesLoading;
+      gamesLoading = (async () => {
+        const csv = await tryFetch(GAMELOG_CSV_URL);
+        const lines = csv.replace(/\r/g,"").split("\n").filter(l => l.trim().length);
+        const H = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+        const col = (...keys) => H.findIndex(h => keys.some(k => h.includes(k)));
+        const I = {
+          gid: col("game id","gameid"), date: col("date"), bracket: col("bracket"),
+          team: H.findIndex(h => h==="team"), oppTeam: col("opponent"),
+          state: H.findIndex(h => h==="state"), oppState: col("opp. state","opp state"),
+          ts: col("team score"), os: col("opp. score","opp score"),
+          margin: col("margin"), result: col("result")
+        };
+        const map = {};
+        lines.slice(1).forEach(line => {
+          const c = parseCSVLine(line);
+          const team = (c[I.team]||"").trim();
+          if (!team) return;
+          const g = {
+            gid: c[I.gid], date: (c[I.date]||"").trim(),
+            opp: (c[I.oppTeam]||"").trim(), oppState: (c[I.oppState]||"").trim(),
+            ts: parseInt(c[I.ts]), os: parseInt(c[I.os]),
+            result: (c[I.result]||"").trim().toUpperCase()
+          };
+          const k = norm(team);
+          const ck = (TEAM_ALIASES[k] && TEAM_ALIASES[k].length) ? TEAM_ALIASES[k] : k;
+          (map[ck] = map[ck] || []).push(g);
+        });
+        GAMES_BY_TEAM = map;
+        return map;
+      })();
+      return gamesLoading;
+    }
+
+    function shortDate(d) {
+      const m = d.match(/([A-Za-z]+)\s+(\d+),/);
+      if (m) return m[1].slice(0,3) + " " + m[2];
+      return d;
+    }
+
+    async function openGameLog(team, state) {
+      const overlay = document.getElementById("glOverlay");
+      document.getElementById("glName").textContent = team;
+      document.getElementById("glLogo").innerHTML =
+        (["az","arizona","ariz"].includes(norm(state)) && resolveLogo(team))
+          ? `<img src="${resolveLogo(team)}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc(team.charAt(0))}</span>'" />`
+          : `<span class="mono">${esc(team.charAt(0))}</span>`;
+      document.getElementById("glMeta").textContent = "";
+      document.getElementById("glBody").innerHTML = `<div class="gl-empty">Loading…</div>`;
+      overlay.classList.add("open");
+      document.body.style.overflow = "hidden";
+
+      let map;
+      try { map = await loadGames(); }
+      catch(e){ document.getElementById("glBody").innerHTML = `<div class="gl-empty">Could not load game log.</div>`; return; }
+
+      const games = map[norm(team)] || map[(TEAM_ALIASES[norm(team)]||"")] || [];
+      if (!games.length) {
+        document.getElementById("glMeta").textContent = "No games found";
+        document.getElementById("glBody").innerHTML = `<div class="gl-empty">No game log available for this team.</div>`;
+        return;
+      }
+      const w = games.filter(g => g.result === "W").length;
+      const l = games.filter(g => g.result === "L").length;
+      document.getElementById("glMeta").innerHTML =
+        `${w}-${l} &nbsp;·&nbsp; ${games.length} game${games.length!==1?"s":""}`;
+
+      document.getElementById("glBody").innerHTML = games.map(g => {
+        const isAZ = ["az","arizona","ariz"].includes(norm(g.oppState));
+        const logo = isAZ ? resolveLogo(g.opp) : null;
+        const oppLogo = logo
+          ? `<img src="${logo}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc((g.opp||'?').charAt(0))}</span>'" />`
+          : `<span class="mono">${esc((g.opp||'?').charAt(0))}</span>`;
+        const won = g.result === "W";
+        const sc = (!isNaN(g.ts) && !isNaN(g.os))
+          ? `<span class="${won?'win':'loss'}">${g.ts}–${g.os}</span>` : "—";
+        return `
+          <div class="gl-game">
+            <div class="gl-wl ${won?'w':'l'}">${esc(g.result||'?')}</div>
+            <div class="gl-opp">
+              <div class="gl-opp-logo">${oppLogo}</div>
+              <span class="gl-opp-name">${esc(g.opp)}${g.oppState?`<span class="gl-opp-state">${esc(g.oppState)}</span>`:""}</span>
+            </div>
+            <div class="gl-score">${sc}</div>
+            <div class="gl-date">${esc(shortDate(g.date))}</div>
+          </div>`;
+      }).join("");
+    }
+
+    function closeGameLog() {
+      document.getElementById("glOverlay").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+    document.getElementById("glClose").onclick = closeGameLog;
+    document.getElementById("glOverlay").onclick = (e) => { if (e.target.id === "glOverlay") closeGameLog(); };
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeGameLog(); });
+
+    async function load(){
+      renderTabs();
+      buildHead();
+      document.getElementById("heroEyebrow").textContent = activeSet.eyebrow;
+      document.getElementById("count").textContent = "…";
+      document.getElementById("body").innerHTML = "";
+      try {
+        const csv = await tryFetch(activeSet.csv);
+        DATA = parseCSV(csv);
+        if (!DATA.length) throw new Error("Empty CSV");
+        // compute AZ-only rank (by overall rank order among AZ teams)
+        const azTeams = DATA.filter(r => ["az","arizona","ariz"].includes(norm(r.state)))
+                            .sort((a,b) => a.rank - b.rank);
+        azTeams.forEach((r,i) => { r.azRank = i + 1; });
+        buildFilters();
+        buildMobileSort();
+        renderBody();
+      } catch(e){
+        console.warn("Ratings load failed:", e.message);
+        document.getElementById("count").textContent = "0";
+        document.getElementById("body").innerHTML = `<tr><td colspan="${COLS.length}" class="no-results">Could not load ratings. Please try again later.</td></tr>`;
+      }
+    }
+
+    load();
+  </script>
+
+
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
+</body>
+</html>

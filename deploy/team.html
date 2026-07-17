@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Detail · The Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cinzel', serif;
+      --font-condensed: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --purple: #6a0fd6;
+      --purple-bright: #8b2fff;
+      --purple-dark: #3b0075;
+      --silver: #c0c0c0;
+      --silver-light: #e8e8e8;
+      --black: #000000;
+      --black-card: #0d0d0d;
+      --text-muted: #888;
+      --pos: #46d17a;
+      --neg: #e0556b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(106,15,214,0.3);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 800; font-size: 20px;
+      letter-spacing: 4px; color: var(--silver-light); text-decoration: none;
+      display: flex; align-items: center; gap: 12px; text-transform: uppercase;
+    }
+    .nav-logo .nav-mark { height: 40px; width: 40px; object-fit: contain; mix-blend-mode: screen; filter: drop-shadow(0 0 6px rgba(139,47,255,0.6)); }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      display: block; padding: 8px 16px;
+      font-family: var(--font-condensed); font-size: 13px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
+      text-decoration: none; transition: color 0.2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+      height: 2px; background: var(--purple-bright); transform: scaleX(0); transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--silver-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--silver-light); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    main { max-width: 1180px; margin: 0 auto; padding: 100px 48px 96px; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--font-condensed); font-size: 14px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-muted); text-decoration: none;
+      margin-bottom: 26px; transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--purple-bright); }
+
+    /* ── TEAM HEADER ── */
+    .th-head {
+      display: flex; align-items: center; gap: 26px;
+      padding-bottom: 28px; border-bottom: 1px solid rgba(106,15,214,0.25);
+      position: relative;
+    }
+    .th-logo {
+      width: 108px; height: 108px; border-radius: 50%;
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      background: #0a0a0a; border: 2px solid rgba(139,47,255,0.5); flex-shrink: 0;
+    }
+    .th-logo img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
+    .th-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 46px; color: #fff; }
+    .th-id { flex: 1; min-width: 0; }
+    .th-name {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(34px, 5vw, 56px); letter-spacing: 2px; line-height: 1;
+      text-transform: uppercase; color: var(--silver-light);
+    }
+    .th-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+    .tag {
+      font-family: var(--font-condensed); font-size: 14px; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 4px 11px; border-radius: 2px;
+      border: 1px solid rgba(106,15,214,0.4); color: var(--silver);
+    }
+    .tag.state { color: var(--purple-bright); border-color: rgba(139,47,255,0.5); }
+    .tag.qual { color: #f0b64a; border-color: rgba(240,182,74,0.5); background: rgba(240,182,74,0.08); }
+    .tag.qnote { color: #f0b64a; border-color: rgba(240,182,74,0.4); background: rgba(240,182,74,0.06); text-transform: none; letter-spacing: 0.5px; }
+    .tag.record { color: var(--silver-light); font-size: 16px; }
+    .th-rank { text-align: right; flex-shrink: 0; }
+    .th-rank .num { font-family: var(--font-display); font-weight: 900; font-size: 46px; color: var(--purple-bright); line-height: 1; text-shadow: 0 0 26px rgba(139,47,255,0.4); }
+    .th-rank .lbl { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── SECTION HEADS ── */
+    .sec-head {
+      font-family: var(--font-condensed); font-size: 15px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--purple-bright);
+      margin: 42px 0 4px; display: flex; align-items: center; gap: 12px;
+    }
+    .sec-head .rule { flex: 1; height: 1px; background: rgba(106,15,214,0.25); }
+    .sec-sub { font-family: var(--font-body); font-size: 13px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5; }
+
+    /* ── HEADLINE METRICS ── */
+    .metrics {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+      background: rgba(106,15,214,0.15);
+      border: 1px solid rgba(106,15,214,0.2);
+    }
+    .metric { background: var(--black-card); padding: 18px 18px 16px; }
+    .metric.feat {
+      grid-column: 1; grid-row: 1 / span 2;
+      display: flex; flex-direction: column; justify-content: center;
+      background: radial-gradient(ellipse at top left, rgba(139,47,255,0.14), var(--black-card) 70%);
+    }
+    .metric .m-lbl {
+      font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--text-muted);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .metric .m-val { font-family: var(--font-body); font-weight: 600; font-size: 30px; margin-top: 6px; line-height: 1; }
+    .metric.feat .m-val { font-size: 52px; margin-top: 10px; }
+    .m-val.pos { color: var(--pos); } .m-val.neg { color: var(--neg); }
+    .m-val.rate { color: var(--purple-bright); }
+    @media (max-width: 900px) { .metrics { grid-template-columns: repeat(2,1fr); } .metric.feat { grid-column: 1 / span 2; grid-row: auto; } }
+    @media (max-width: 560px) { .metrics { grid-template-columns: repeat(2,1fr); } }
+
+    /* info badge + tooltip */
+    .m-info {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; border-radius: 50%; margin-left: 6px;
+      border: 1px solid rgba(139,47,255,0.55); color: var(--purple-bright);
+      font-size: 10px; font-weight: 700; font-style: italic; font-family: var(--font-body);
+      cursor: help; position: relative; letter-spacing: 0;
+    }
+    .m-info:hover { background: var(--purple-bright); color: #fff; }
+    .m-info::after {
+      content: attr(data-tip); position: absolute; top: calc(100% + 8px); left: -8px;
+      width: 220px; background: #16091f; border: 1px solid rgba(139,47,255,0.5);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6); color: var(--silver-light);
+      font-family: var(--font-body); font-size: 12.5px; font-weight: 400; font-style: normal;
+      line-height: 1.5; text-align: left; text-transform: none; letter-spacing: 0.2px;
+      padding: 10px 12px; border-radius: 4px; opacity: 0; visibility: hidden;
+      transform: translateY(-4px); transition: opacity 0.15s, transform 0.15s; z-index: 50; pointer-events: none;
+    }
+    .m-info:hover::after { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    /* best win */
+    .best-win {
+      margin-top: 16px; padding: 16px 20px; background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.2); border-left: 3px solid var(--purple-bright);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .best-win .bw-lbl { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+    .best-win .bw-val { font-family: var(--font-condensed); font-size: 22px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--silver-light); }
+
+    /* raw scoring */
+    .raw-row { display: flex; gap: 2px; margin-top: 16px; background: rgba(106,15,214,0.15); border: 1px solid rgba(106,15,214,0.2); }
+    .raw-cell { flex: 1; background: var(--black-card); padding: 14px 18px; }
+    .raw-cell .m-lbl { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+    .raw-cell .m-val { font-family: var(--font-body); font-weight: 600; font-size: 24px; margin-top: 4px; }
+
+    /* ── BRACKET CONTEXT (expand) ── */
+    .bc-toggle {
+      margin-top: 42px; width: 100%; text-align: left;
+      background: var(--black-card); border: 1px solid rgba(106,15,214,0.25);
+      color: var(--silver-light); font-family: var(--font-condensed);
+      font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 16px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+    .bc-toggle:hover { border-color: rgba(139,47,255,0.6); }
+    .bc-toggle .chev { color: var(--purple-bright); font-size: 14px; transition: transform 0.2s; }
+    .bc-toggle.open .chev { transform: rotate(180deg); }
+    .bc-panel { display: none; border: 1px solid rgba(106,15,214,0.25); border-top: none; padding: 22px 20px; }
+    .bc-panel.open { display: block; }
+    .bc-note {
+      font-family: var(--font-body); font-size: 13px; color: #f0b64a;
+      background: rgba(240,182,74,0.08); border: 1px solid rgba(240,182,74,0.25);
+      padding: 10px 14px; border-radius: 3px; margin-bottom: 20px; line-height: 1.5;
+    }
+    .bc-strength { font-family: var(--font-condensed); font-size: 15px; letter-spacing: 1px; text-transform: uppercase; color: var(--silver); margin-bottom: 16px; }
+    .bc-strength b { color: var(--purple-bright); font-weight: 400; }
+    .bc-diff { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 12px 16px; background: rgba(139,47,255,0.07); border: 1px solid rgba(139,47,255,0.28); border-radius: 3px; }
+    .bc-diff-lbl { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+    .bc-diff-val { font-family: var(--font-condensed); font-size: 20px; letter-spacing: 1px; text-transform: uppercase; color: var(--purple-bright); }
+    .bc-diff-sub { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+    .bd-list { margin-bottom: 0; border: none; }
+    .bd-list-head { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); padding: 10px 14px; background: rgba(106,15,214,0.08); border-bottom: 1px solid rgba(106,15,214,0.15); }
+    .bd-row { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 12px; padding: 9px 14px; border-bottom: 1px solid rgba(106,15,214,0.08); }
+    .bd-row:last-child { border-bottom: none; }
+    .bd-row.me { background: rgba(139,47,255,0.12); }
+    .bd-pos { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--text-muted); text-align: center; }
+    .bd-row.me .bd-pos { color: var(--purple-bright); }
+    .bd-name { font-family: var(--font-condensed); font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--silver-light); }
+    .bd-row.me .bd-name { color: var(--purple-bright); }
+    .bd-avg { font-family: var(--font-body); font-size: 13px; color: var(--text-muted); }
+    .bc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: rgba(106,15,214,0.15); border: 1px solid rgba(106,15,214,0.2); }
+    .bc-cell { background: var(--black-card); padding: 14px 16px; }
+    .bc-cell .m-lbl { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+    .bc-cell .m-val { font-family: var(--font-body); font-weight: 600; font-size: 22px; margin-top: 4px; color: var(--silver-light); }
+    /* bracket compare */
+    .cmp-toggle {
+      margin-top: 20px; width: 100%; text-align: left;
+      background: rgba(106,15,214,0.08); border: 1px solid rgba(106,15,214,0.25);
+      color: var(--silver-light); font-family: var(--font-condensed);
+      font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 13px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+    .cmp-toggle:hover { border-color: rgba(139,47,255,0.6); }
+    .cmp-toggle .chev { color: var(--purple-bright); font-size: 12px; transition: transform 0.2s; }
+    .cmp-toggle.open .chev { transform: rotate(180deg); }
+    .cmp-wrap { display: none; margin-top: 2px; overflow-x: auto; border: 1px solid rgba(106,15,214,0.2); }
+    .cmp-wrap.open { display: block; }
+    table.cmp { width: 100%; border-collapse: collapse; min-width: 620px; }
+    table.cmp th {
+      font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--silver); text-align: right; padding: 10px 12px; background: #120a1f;
+      border-bottom: 1px solid rgba(139,47,255,0.35); white-space: nowrap;
+    }
+    table.cmp th.l { text-align: left; }
+    table.cmp th { cursor: pointer; user-select: none; transition: color 0.15s; }
+    table.cmp th:hover { color: var(--purple-bright); }
+    table.cmp th.sorted { color: var(--purple-bright); }
+    table.cmp th.sorted::after { content: " ▲"; font-size: 9px; }
+    table.cmp th.sorted.desc::after { content: " ▼"; }
+    table.cmp td {
+      font-family: var(--font-body); font-size: 14px; color: var(--silver-light);
+      text-align: right; padding: 9px 12px; border-bottom: 1px solid rgba(106,15,214,0.1); white-space: nowrap;
+    }
+    table.cmp td.l { text-align: left; font-family: var(--font-condensed); font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; }
+    table.cmp td.pos { color: var(--pos); } table.cmp td.neg { color: var(--neg); }
+    table.cmp tr.me td { background: rgba(139,47,255,0.12); }
+    table.cmp tr.me td.l { color: var(--purple-bright); }
+    table.cmp td .cpos { font-family: var(--font-display); font-weight: 800; color: var(--text-muted); margin-right: 8px; }
+    table.cmp tr.me td .cpos { color: var(--purple-bright); }
+    @media (max-width: 560px) { .bc-grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 560px) {
+    }
+
+    /* ── SCHEDULE ── */
+    .sched { border: 1px solid rgba(106,15,214,0.2); background: var(--black-card); }
+    .game {
+      display: grid; grid-template-columns: 1fr 64px 120px 88px; align-items: center;
+      gap: 18px; padding: 18px 24px; border-bottom: 1px solid rgba(106,15,214,0.1);
+    }
+    .g-rank { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--purple-bright); text-align: right; }
+    .g-rank-lbl { display: none; }
+    .sched-head {
+      display: grid; grid-template-columns: 1fr 64px 120px 88px; align-items: center;
+      gap: 18px; padding: 12px 24px;
+      background: #120a1f; border-bottom: 1px solid rgba(139,47,255,0.35);
+      font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--silver);
+    }
+    .sched-head span:nth-child(2) { text-align: right; }
+    .sched-head span:nth-child(3) { text-align: right; }
+    .sched-head span:nth-child(4) { text-align: right; }
+    .game:last-child { border-bottom: none; }
+    .game:hover { background: rgba(106,15,214,0.07); }
+    .g-event { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .g-event.qual { color: #f0b64a; }
+    .g-wl { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 15px; }
+    .g-wl.w { background: rgba(70,209,122,0.15); color: var(--pos); border: 1px solid rgba(70,209,122,0.4); }
+    .g-wl.l { background: rgba(224,85,107,0.15); color: var(--neg); border: 1px solid rgba(224,85,107,0.4); }
+    .g-wl.f { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid rgba(136,136,136,0.3); font-size: 10px; }
+    .g-opp { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .g-opp-logo { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0a0a0a; border: 1px solid rgba(106,15,214,0.4); flex-shrink: 0; }
+    .g-opp-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+    .g-opp-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 14px; color: #fff; }
+    .g-opp-name { font-family: var(--font-condensed); font-size: 21px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--silver-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .g-opp-state { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; color: var(--purple-bright); border: 1px solid rgba(139,47,255,0.35); padding: 1px 5px; border-radius: 2px; margin-left: 7px; vertical-align: middle; }
+    .g-ff { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .g-date { font-family: var(--font-condensed); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: right; white-space: nowrap; }
+    .g-score { font-family: var(--font-body); font-weight: 600; font-size: 19px; text-align: right; white-space: nowrap; }
+    .g-score .win { color: var(--pos); } .g-score .loss { color: var(--neg); } .g-score.ff { color: var(--text-muted); }
+    @media (max-width: 560px) {
+      .game { grid-template-columns: 1fr auto; grid-template-areas: "opp score" "rank date"; column-gap: 12px; row-gap: 4px; padding: 14px 16px; align-items: start; }
+      .g-opp { grid-area: opp; }
+      .g-rank { grid-area: rank; text-align: left; font-size: 15px; }
+      .g-rank-lbl { display: inline; font-family: var(--font-condensed); letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); font-size: 13px; }
+      .sched-head { display: none; }
+      .g-score { grid-area: score; align-self: start; font-size: 17px; }
+      .g-date { grid-area: date; align-self: end; }
+    }
+    @media (max-width: 560px) {
+      .g-opp-logo { display: none; }
+      .g-opp-name { white-space: normal; overflow: visible; }
+    }
+
+    .state-msg { padding: 90px 0; text-align: center; font-family: var(--font-condensed); font-size: 20px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+
+    /* footer */
+    .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(106,15,214,0.5), rgba(139,47,255,0.8), rgba(106,15,214,0.5), transparent); }
+    footer { background: var(--black-card); border-top: 1px solid rgba(106,15,214,0.2); padding: 48px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .footer-brand { font-family: var(--font-display); font-weight: 800; font-size: 16px; letter-spacing: 4px; text-transform: uppercase; color: var(--silver-light); }
+    .footer-brand span { color: var(--purple-bright); }
+    .footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--font-condensed); font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--purple-bright); }
+    .footer-copy { font-size: 12px; color: #444; letter-spacing: 1px; }
+    .ratings-notice { max-width: 1000px; margin: 0 auto; padding: 0 48px 40px; font-size: 12.5px; font-style: italic; line-height: 1.6; color: #666; }
+    @media (max-width: 1000px) { .ratings-notice { padding: 0 20px 32px; } }
+    a { color: var(--purple-bright); } a:hover { color: #a855f7; }
+
+    @media (max-width: 1000px) {
+      nav { padding: 0 20px; } .nav-links { display: none; }
+      main { padding: 96px 20px 64px; }
+      .th-head { flex-wrap: wrap; gap: 18px; } .th-rank { text-align: left; }
+      .th-name { line-height: 1.12; letter-spacing: 1px; }
+      .th-logo { width: 76px; height: 76px; }
+      .th-logo .mono { font-size: 34px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 40px 20px; }
+    }
+  </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/oracle-logo.png" alt="The Oracle" class="nav-mark" />
+      <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html" class="active">Ratings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <main id="main">
+    <div class="state-msg" id="stateMsg">Loading team…</div>
+  </main>
+
+  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without asking first.</p>
+
+  <div class="divider"></div>
+  <footer>
+    <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
+    <ul class="footer-links">
+      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
+      <li><a href="articles.html">Articles</a></li>
+      <li><a href="podcasts.html">Podcasts</a></li>
+      <li><a href="transfers.html">Transfer Tracker</a></li>
+      <li><a href="rosters.html">Rosters</a></li>
+      <li><a href="news.html">News Feed</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
+  </footer>
+
+  <script>
+    const LOGO_FILES = ["agua fria","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","alchesay","alhambra","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus shadows","cactus","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler prep","chandler","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale prep","glendale","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon honors","horizon","independence","ironwood ridge","ironwood","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon-university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day oconnor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","st. marys","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe prep","tempe","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma","north valley christian","rancho solano prep","raymond s. kellis","phoenix country day","lincoln prep","the gregory school","asdb","ash fork","bagdad","basis flagstaff","cicero prep","desert heights prep","desert star","dishchiibikoh","duncan","el capitan","fort thomas","fredonia","grand canyon","greyhills academy","hayden","joseph city","lourdes catholic","maryvale prep","mayer","mogollon","music mountain","north phoenix preparatory","patagonia union","pdsd","ray","red mesa","rock point","rough rock","salome","san manuel","san pasqual","san simon","seligman","shonto prep","st. david","st. michael","superior","valley lutheran","valley union","williams","ala - radiance","desert sunrise","hopi","many farms","miami","morenci","mountainside","nfl yet","odyssey institute","parker","pinon","river valley","round valley","san miguel","santa cruz valley","santa rita","st. johns","tombstone","tonopah valley","trivium prep","valley (sanders)","veritas prep","willcox","ala - anthem south","ala - mesa north","ala - sierra vista","arete prep","franklin","globe","heritage acad gateway","heritage acad maricopa","heritage acad mesa"];
+    const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+    // aliases: sheet/API name -> logo file name (normalized)
+    const TEAM_ALIASES = {
+      "azcollegeprep":"arizonacollegeprep","azlutheran":"arizonalutheran","oconnor":"sandradayoconnor",
+      "brophyprep":"brophy","brophycollegeprep":"brophy","cactusshawdows":"cactusshadows",
+      "sandradayoconnor":"sandradayoconnor","stmaryscatholic":"stmarys","stmarys":"stmarys",
+      "trevorbrowne":"trevorgbrowne","bettyfairfax":"bettyhfairfax","casagrandeunion":"casagrande",
+      "mountainviewmesa":"mountainviewmesa","mountainviewmarana":"mountainviewmarana",
+      "rinconuniversity":"rinconuniversity","alaqueencreek":"alaqc","alagilbertnorth":"alagilbertnorth",
+      "alaironwood":"alaironwood","alawestfoothills":"alawestfoothills","pushridge":"puschridge",
+      "puschridgechristianacademy":"puschridge","marcosdeniza":"marcosdeniza",
+      "northvalleychristianacademy":"northvalleychristian","pcds":"phoenixcountryday",
+      "raymondskellis":"raymondskellis","kellis":"raymondskellis",
+      "nortedame":"notredame"
+    };
+    const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
+    function resolveLogo(name) {
+      let n = norm(name);
+      if (TEAM_ALIASES[n] !== undefined) n = TEAM_ALIASES[n];
+      if (!n) return null;
+      if (LOGO_MAP[n]) return LOGO_MAP[n];
+      // handle "mountain view (mesa)" style
+      for (const k of Object.keys(LOGO_MAP)) { if (k === n) return LOGO_MAP[k]; }
+      for (const k of Object.keys(LOGO_MAP)) { if (n.length>4 && (n.startsWith(k)||k.startsWith(n))) return LOGO_MAP[k]; }
+      return null;
+    }
+    const esc = s => (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    const azSet = ["az","arizona","ariz"];
+    const isAZ = s => azSet.includes(norm(s));
+    function logoInner(name, state) {
+      const logo = isAZ(state) ? resolveLogo(name) : null;
+      return logo
+        ? `<img src="${logo}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc((name||'?').charAt(0))}</span>'" />`
+        : `<span class="mono">${esc((name||'?').charAt(0))}</span>`;
+    }
+    const fmt = (v, d) => (v===null||v===undefined||isNaN(v)) ? "—" : Number(v).toFixed(d);
+    const signed = (v, d) => { if (v===null||v===undefined||isNaN(v)) return {t:"—",c:""}; const n=Number(v); return {t:(n>0?"+":"")+n.toFixed(d), c:n>0?"pos":n<0?"neg":""}; };
+    function shortDate(d){ const m=String(d).match(/([A-Za-z]+)\s+(\d+),/); return m ? m[1].slice(0,3)+" "+m[2] : d; }
+
+    const TIPS = {
+      rating: "Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was.",
+      waa: "Wins Above Average — how many more (or fewer) games a team won than an average team would against the same schedule.",
+      adj_rpi: "Adjusted Rating Percentage Index — performance based on wins and opponent quality, measured across the whole event.",
+      adj_sos: "How tough a team's opponents were, measured across the whole event, not just their own bracket.",
+      adj_net: "Adjusted scoring margin (offense minus defense), measured across the whole event.",
+      adj_off: "Adjusted offensive rating, measured across the whole event.",
+      adj_def: "Adjusted defensive rating, measured across the whole event. Lower is better.",
+      rpi: "Rating Percentage Index within this bracket only \u2014 based on wins and opponent quality among bracket-mates.",
+      sos: "Strength of Schedule within this bracket only \u2014 how tough this team's bracket opponents were.",
+      adj_net_b: "Adjusted scoring margin (offense minus defense) relative to this bracket only.",
+      adj_off_b: "Adjusted offensive rating relative to this bracket only.",
+      adj_def_b: "Adjusted defensive rating relative to this bracket only. Lower is better."
+    };
+    const info = k => `<span class="m-info" data-tip="${esc(TIPS[k])}">i</span>`;
+
+    function metricCard(lbl, key, valObj, feat) {
+      return `<div class="metric${feat?" feat":""}">
+        <div class="m-lbl">${lbl}${TIPS[key]?info(key):""}</div>
+        <div class="m-val ${valObj.c||""}">${valObj.t}</div>
+      </div>`;
+    }
+
+    async function boot() {
+      const params = new URLSearchParams(location.search);
+      const q = params.get("team");
+      const qs = params.get("state");
+      const msg = document.getElementById("stateMsg");
+      if (!q) { msg.textContent = "No team specified."; return; }
+      let data;
+      try { data = await (await fetch("team_detail_data.json")).json(); }
+      catch(e){ msg.textContent = "Could not load team data."; return; }
+      const t = (qs ? data.find(d => norm(d.team) === norm(q) && norm(d.state) === norm(qs)) : null)
+        || data.find(d => norm(d.team) === norm(q))
+        || data.find(d => norm(d.team).includes(norm(q)));
+      if (!t) { msg.innerHTML = `No detailed data for "${esc(q)}".<br/><br/><a href="ratings.html">← Back to Ratings</a>`; return; }
+      render(t, data);
+    }
+
+    const ordinal = n => { const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+    function bracketDifficulty(t, data) {
+      if (!t.bracket) return null;
+      const isQual = /^Qualifier/i.test(t.bracket);
+      if (isQual) return null;
+      const groups = {};
+      data.forEach(d => {
+        if (!d.bracket) return;
+        if (/^Qualifier/i.test(d.bracket)) return;
+        const r = d.headline && typeof d.headline.rating === "number" ? d.headline.rating : null;
+        if (r === null) return;
+        (groups[d.bracket] = groups[d.bracket] || []).push(r);
+      });
+      const ranked = Object.entries(groups)
+        .map(([b, arr]) => ({ b, avg: arr.reduce((s,x)=>s+x,0)/arr.length }))
+        .sort((a,b) => b.avg - a.avg);
+      const pos = ranked.findIndex(x => x.b === t.bracket);
+      if (pos < 0) return null;
+      return { pos: pos+1, total: ranked.length, isQual, ranked };
+    }
+
+    function render(t, data) {
+      const h = t.headline || {};
+      const rating = signed(h.rating, 1);
+      const waa = signed(h.waa, 2);
+      const net = signed(h.adj_net, 1);
+      const off = signed(h.adj_off, 1);
+      const def = signed(h.adj_def, 1);
+
+      const metrics = `
+        <div class="metrics">
+          ${metricCard("Rating","rating",{t:rating.t,c:"rate"},true)}
+          ${metricCard("WAA","waa",waa)}
+          ${metricCard("Adj. RPI","adj_rpi",{t:fmt(h.adj_rpi,3),c:""})}
+          ${metricCard("Adj. SOS","adj_sos",{t:fmt(h.adj_sos,1),c:""})}
+          ${metricCard("Adj. Net","adj_net",net)}
+          ${metricCard("Adj. Off","adj_off",{t:off.t,c:""})}
+          ${metricCard("Adj. Def","adj_def",{t:def.t,c:""})}
+        </div>`;
+
+      const bw = "";
+
+      const raw = "";
+
+      const bc = t.bracket_context || {};
+      const brRank = (() => { const m = String(bc.bracket_rank||"").match(/(\d+)\s*of\s*(\d+)/i); return m ? `Ranked ${ordinal(+m[1])} out of ${m[2]} teams in bracket` : (bc.bracket_rank||""); })();
+      const rankNum = d => { const m = String(d.bracket_context && d.bracket_context.bracket_rank || "").match(/(\d+)/); return m ? +m[1] : 999; };
+      const mates = data.filter(d => d.bracket === t.bracket);
+      const cmpCols = [
+        { key:"team", label:"Team", left:true,  get:d=>(d.team||"").toLowerCase(), dir:"asc" },
+        { key:"rating", label:"Rating", get:d=>d.headline&&d.headline.rating, dir:"desc", sign:1 },
+        { key:"waa", label:"WAA", get:d=>d.headline&&d.headline.waa, dir:"desc", sign:2 },
+        { key:"rpi", label:"RPI", get:d=>d.bracket_context&&d.bracket_context.rpi, dir:"desc", dec:3 },
+        { key:"sos", label:"SOS", get:d=>d.bracket_context&&d.bracket_context.sos, dir:"desc", dec:3 },
+        { key:"net", label:"Adj. Net", get:d=>d.bracket_context&&d.bracket_context.adj_net_plain, dir:"desc", sign:1 },
+        { key:"off", label:"Adj. Off", get:d=>d.bracket_context&&d.bracket_context.adj_off_plain, dir:"desc", sign:1, nocolor:true },
+        { key:"def", label:"Adj. Def", get:d=>d.bracket_context&&d.bracket_context.adj_def_plain, dir:"asc", sign:1, nocolor:true }
+      ];
+      let cmpSort = "rankdefault", cmpDir = "asc";
+      function cmpCell(col, d) {
+        const v = col.get(d);
+        if (col.left) return `<td class="l"><span class="cpos">${rankNum(d)}</span>${esc(d.team)}</td>`;
+        if (col.sign !== undefined) { const s = signed(v, col.sign); return `<td class="${col.nocolor?'':s.c}">${s.t}</td>`; }
+        return `<td>${fmt(v, col.dec||1)}</td>`;
+      }
+      function cmpBodyHTML() {
+        let rows = [...mates];
+        if (cmpSort === "rankdefault") rows.sort((a,b)=>rankNum(a)-rankNum(b));
+        else {
+          const col = cmpCols.find(c=>c.key===cmpSort), dir = cmpDir==="asc"?1:-1;
+          rows.sort((a,b)=>{ let va=col.get(a), vb=col.get(b);
+            if (typeof va==="string") return va.localeCompare(vb)*dir;
+            if (va==null||isNaN(va)) va=dir*Infinity; if (vb==null||isNaN(vb)) vb=dir*Infinity;
+            return (va-vb)*dir; });
+        }
+        return rows.map(d => `<tr class="${d.team===t.team?'me':''}">${cmpCols.map(c=>cmpCell(c,d)).join("")}</tr>`).join("");
+      }
+      const cmpBlock = mates.length > 1 ? `
+        <button class="cmp-toggle" id="cmpToggle">
+          <span>Compare all ${mates.length} teams in ${esc(t.bracket)} bracket</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="cmp-wrap" id="cmpWrap">
+          <table class="cmp">
+            <thead><tr id="cmpHead">${cmpCols.map(c=>`<th class="${c.left?'l':''}" data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+            <tbody id="cmpBody">${cmpBodyHTML()}</tbody>
+          </table>
+        </div>` : "";
+      const diff = bracketDifficulty(t, data);
+      const diffList = diff ? diff.ranked.map((x,i) => `
+        <div class="bd-row${x.b===t.bracket?' me':''}">
+          <span class="bd-pos">${i+1}</span>
+          <span class="bd-name">${esc(x.b)}</span>
+        </div>`).join("") : "";
+      const bcPanel = `
+        <button class="bc-toggle" id="bcToggle">
+          <span>Bracket Context <span style="color:var(--text-muted);font-size:13px;">— within their pool only</span></span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="bc-panel" id="bcPanel">
+          <div class="bc-note">These numbers only compare this team against others in the same bracket — they are <b>not</b> valid to compare against teams from other brackets.</div>
+          <div class="bc-grid">
+            <div class="bc-cell"><div class="m-lbl">RPI${info("rpi")}</div><div class="m-val">${fmt(bc.rpi,3)}</div></div>
+            <div class="bc-cell"><div class="m-lbl">SOS${info("sos")}</div><div class="m-val">${fmt(bc.sos,3)}</div></div>
+            <div class="bc-cell"><div class="m-lbl">Adj. Net (bracket)${info("adj_net_b")}</div><div class="m-val">${signed(bc.adj_net_plain,1).t}</div></div>
+            <div class="bc-cell"><div class="m-lbl">Adj. Off (bracket)${info("adj_off_b")}</div><div class="m-val">${signed(bc.adj_off_plain,1).t}</div></div>
+            <div class="bc-cell"><div class="m-lbl">Adj. Def (bracket)${info("adj_def_b")}</div><div class="m-val">${signed(bc.adj_def_plain,1).t}</div></div>
+          </div>
+          ${cmpBlock}
+          ${diff ? `<button class="cmp-toggle" id="bdToggle"><span>${diff.isQual?"Qualifier Pools":"Section 7 Brackets"} Ranked by Difficulty</span><span class="chev">▼</span></button>
+          <div class="cmp-wrap" id="bdWrap"><div class="bd-list">
+            <div class="bd-list-head">Lower # = Higher Difficulty</div>
+            ${diffList}
+          </div></div>` : ""}
+        </div>`;
+
+      const rankOf = (name, st) => {
+        const d = (st ? data.find(x => norm(x.team)===norm(name) && norm(x.state)===norm(st)) : null)
+          || data.find(x => norm(x.team)===norm(name));
+        return d && d.overall_rank ? d.overall_rank : null;
+      };
+      const games = (t.schedule||[]).map(g => {
+        const ff = g.forfeit;
+        const won = g.result === "W";
+        const orank = rankOf(g.opponent, g.opponent_state);
+        const sc = ff
+          ? `<span class="ff">Forfeit</span>`
+          : (!isNaN(g.team_score) && !isNaN(g.opponent_score))
+            ? `${g.team_score}–${g.opponent_score} <span class="${won?'win':'loss'}">(${esc(g.result||"?")})</span>` : "—";
+        return `
+          <div class="game">
+            <div class="g-opp">
+              <div class="g-opp-logo">${logoInner(g.opponent, g.opponent_state)}</div>
+              <span class="g-opp-name">${esc(g.opponent)}${g.opponent_state?`<span class="g-opp-state">${esc(g.opponent_state)}</span>`:""}</span>
+            </div>
+            <div class="g-rank">${orank?`<span class="g-rank-lbl">Rank </span>#${orank}`:""}</div>
+            <div class="g-score ${ff?'ff':''}">${sc}</div>
+            <div class="g-date">${esc(shortDate(g.date))}</div>
+          </div>`;
+      }).join("");
+
+      const qualBadge = t.made_section_7 === false ? `<span class="tag qual">Qualifier Only</span>` : "";
+      const playedQual = (t.schedule||[]).some(g => /qualifier/i.test(g.event||""));
+      const qualNote = (playedQual && t.made_section_7 !== false) ? `<span class="tag qnote">Qualifier wins not counted</span>` : "";
+
+      document.getElementById("main").innerHTML = `
+        <a href="ratings.html" class="back-link">◂ Back to Ratings</a>
+        <div class="th-head">
+          <div class="th-logo">${logoInner(t.team, t.state)}</div>
+          <div class="th-id">
+            <div class="th-name">${esc(t.team)}</div>
+            <div class="th-tags">
+              ${t.state?`<span class="tag state">${esc(t.state)}</span>`:""}
+              ${qualBadge}
+              ${t.bracket?`<span class="tag">${esc(t.bracket)}</span>`:""}
+              ${t.record?`<span class="tag record">${esc(t.record)}</span>`:""}
+              ${qualNote}
+            </div>
+          </div>
+          <div class="th-rank">
+            <div class="num">#${t.overall_rank ?? "—"}</div>
+            <div class="lbl">of ${t.total_teams ?? "—"} teams</div>
+          </div>
+        </div>
+
+        <div class="sec-head">Overall Ratings <span class="rule"></span></div>
+        <div class="sec-sub">Every metric here is valid to compare against any other team in the field, regardless of bracket.</div>
+        ${metrics}
+        ${bw}
+        ${raw}
+
+        ${bcPanel}
+
+        <div class="sec-head">Schedule <span class="rule"></span></div>
+        <div class="sched"><div class="sched-head"><span>Team</span><span>Rank</span><span>Score</span><span>Date</span></div>${games || '<div class="state-msg">No games listed.</div>'}</div>
+      `;
+
+      const toggle = document.getElementById("bcToggle");
+      toggle.onclick = () => {
+        toggle.classList.toggle("open");
+        document.getElementById("bcPanel").classList.toggle("open");
+      };
+      const cmp = document.getElementById("cmpToggle");
+      if (cmp) cmp.onclick = () => {
+        cmp.classList.toggle("open");
+        document.getElementById("cmpWrap").classList.toggle("open");
+      };
+      const bd = document.getElementById("bdToggle");
+      if (bd) bd.onclick = () => {
+        bd.classList.toggle("open");
+        document.getElementById("bdWrap").classList.toggle("open");
+      };
+      const cmpHead = document.getElementById("cmpHead");
+      if (cmpHead) cmpHead.querySelectorAll("th[data-key]").forEach(th => {
+        th.onclick = () => {
+          const key = th.dataset.key;
+          const col = cmpCols.find(c => c.key === key);
+          if (cmpSort === key) cmpDir = cmpDir === "asc" ? "desc" : "asc";
+          else { cmpSort = key; cmpDir = col.dir; }
+          document.getElementById("cmpBody").innerHTML = cmpBodyHTML();
+          cmpHead.querySelectorAll("th").forEach(h => h.classList.remove("sorted","asc","desc"));
+          th.classList.add("sorted", cmpDir);
+        };
+      });
+    }
+
+    boot();
+  </script>
+
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
+</body>
+</html>

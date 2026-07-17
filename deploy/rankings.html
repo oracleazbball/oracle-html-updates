@@ -300,6 +300,7 @@
       flex-wrap: wrap;
     }
     .rank-tags .sep { color: rgba(139,47,255,0.4); }
+    .rank-tags .conf-inline { display: none; color: var(--purple-bright); }
     .rank-conf {
       font-family: var(--font-condensed);
       font-size: 13px;
@@ -362,10 +363,26 @@
       .rank-feature .big-num { font-size: 64px; width: 72px; }
       .rank-row { grid-template-columns: 40px 44px 1fr; gap: 14px; }
       .rank-conf { display: none; }
+      .rank-tags .conf-inline { display: inline; }
       footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
     }
     @media (max-width: 560px) {
       .rank-feature .logo-wrap { display: none; }
+    }
+  </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
     }
   </style>
 </head>
@@ -378,16 +395,18 @@
     </a>
     <ul class="nav-links">
       <li><a href="rankings.html" class="active">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
     </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
   <header class="rk-hero">
-    <p class="hero-eyebrow">Rankings · 2026–27 Preseason</p>
+    <p class="hero-eyebrow">Rankings</p>
     <h1>The <em>Top 10,</em><br/>In the State.</h1>
     <p class="sub">
       Statewide team rankings built on film study and stats — not recruiting hype.
@@ -407,6 +426,7 @@
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
@@ -493,6 +513,7 @@
             <div class="rank-name">${esc(t1.team)}</div>
             <div class="rank-tags">
               <span>${esc(t1.region)}</span>
+              ${t1.conf?`<span class="sep">·</span><span class="conf-inline">${esc(t1.conf)}</span>`:""}
             </div>
           </div>
           <div class="rank-conf">${esc(t1.conf)}</div>
@@ -506,6 +527,7 @@
             <div class="rank-name">${esc(t.team)}</div>
             <div class="rank-tags">
               <span>${esc(t.region)}</span>
+              ${t.conf?`<span class="sep">·</span><span class="conf-inline">${esc(t.conf)}</span>`:""}
             </div>
           </div>
           <div class="rank-conf">${esc(t.conf)}</div>
@@ -573,5 +595,13 @@
     load();
   </script>
 
+
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
 </body>
 </html>

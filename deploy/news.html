@@ -501,6 +501,7 @@
       nav { padding: 0 24px; }
       .nav-links { display: none; }
       .tr-hero { padding: 110px 24px 8px; }
+      .tr-hero h1 { font-size: 40px; letter-spacing: 2px; }
       main { padding: 24px 24px 64px; }
       .filter-row { grid-template-columns: 1fr 1fr; }
       .transfer-grid { grid-template-columns: 1fr; }
@@ -508,6 +509,22 @@
     }
     @media (max-width: 560px) {
       .filter-row { grid-template-columns: 1fr; }
+      .tr-hero h1 { font-size: 32px; letter-spacing: 1px; }
+    }
+  </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
     }
   </style>
 </head>
@@ -520,12 +537,14 @@
     </a>
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html" class="active">News Feed</a></li>
     </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
   <header class="tr-hero">
@@ -586,6 +605,7 @@
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
@@ -913,5 +933,13 @@
     });
   </script>
 
+
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
 </body>
 </html>

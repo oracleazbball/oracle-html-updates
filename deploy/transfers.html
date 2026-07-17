@@ -185,6 +185,12 @@
       text-transform: uppercase;
       color: var(--text-muted);
     }
+    .filter-row .filter-field input,
+    .filter-row .filter-field select,
+    .filter-row .combobox-input {
+      height: 46px;
+      box-sizing: border-box;
+    }
     .filter-field input,
     .filter-field select {
       background: var(--black-card);
@@ -192,7 +198,8 @@
       color: var(--silver-light);
       font-family: var(--font-body);
       font-size: 14px;
-      padding: 12px 16px;
+      padding: 0 16px;
+      height: 46px;
       outline: none;
       width: 100%;
       box-sizing: border-box;
@@ -265,6 +272,16 @@
     .transfer-card:hover {
       border-color: rgba(139,47,255,0.45);
       transform: translateY(-3px);
+    }
+    .tc-date {
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(106,15,214,0.15);
+      padding-top: 12px;
+      margin-top: -4px;
     }
 
     .tc-top {
@@ -533,6 +550,21 @@
       .filter-row { grid-template-columns: 1fr; }
     }
   </style>
+
+  <style id="mobile-nav-css">
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
+    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    @media (max-width:1000px){
+      .nav-burger{display:flex;}
+      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
+      nav .nav-links.open{transform:translateY(0);}
+      nav .nav-links a{padding:15px 24px;font-size:16px;}
+      nav .nav-links a::after{display:none !important;}
+    }
+  </style>
 </head>
 <body>
 
@@ -543,16 +575,18 @@
     </a>
     <ul class="nav-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html" class="active">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
     </ul>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
   <header class="tr-hero">
-    <p class="hero-eyebrow">Transfer Tracker · 2026–27 Season</p>
+    <p class="hero-eyebrow">Transfer Tracker</p>
     <h1>The <em>Movement</em>,<br/>Tracked.</h1>
     <p>
       Every transfer and notable incoming freshman across Arizona high school basketball — who's leaving, where they're landing,
@@ -581,6 +615,13 @@
         <select id="filter-position"><option value="">All Positions</option></select>
       </div>
       <div class="filter-field">
+        <label for="filter-sort">Sort By</label>
+        <select id="filter-sort" style="height:46px;">
+          <option value="recent">Most Recent</option>
+          <option value="team">Team (A–Z)</option>
+        </select>
+      </div>
+      <div class="filter-field">
         <label for="filter-player">Player</label>
         <input id="filter-player" type="text" placeholder="Search by name…" />
       </div>
@@ -602,6 +643,7 @@
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
@@ -687,11 +729,9 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Zmh1cmpxdGN6Zm9wamFzY2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5MDcsImV4cCI6MjA5NTI5ODkwN30.DV1f8Mqi9gPS9vPSwco1-Auvnb2b3xXta8Ai-5vVWYU";
 
     // ── Team logo + color resolution ──
-    const LOGO_FILES = ["agua fria","alchesay","alhambra","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus","cactus shadows","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler","chandler prep","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale","glendale prep","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon","horizon honors","independence","ironwood","ironwood ridge","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon/university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","st. mary's","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day o'connor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe","tempe prep","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma"];
+    const LOGO_FILES = ["agua fria","alchesay","alhambra","ala - gilbert north","ala - ironwood","ala - qc","ala - vistancia","ala - west foothills","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","apollo","arcadia","arizona college prep","arizona lutheran","baboquivari","barry goldwater","basha","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","boulder creek","bourgade catholic","bradshaw mountain","brophy","buckeye union","buena","cactus canyon","cactus","cactus shadows","camelback","camp verde","campo verde","canyon del oro","canyon view","carl hayden","casa grande","casteel","catalina foothills","catalina","centennial","central","chandler","chandler prep","chaparral","chinle","chino valley","cholla","cibola","cienega","coconino","combs","coolidge","copper canyon","corona del sol","coronado","cortez","crismon","deer valley","desert christian","desert edge","desert mountain","desert ridge","desert view","desert vista","dobson","douglas","dysart","eastmark","empire","estrella foothills","flagstaff","florence","flowing wells","fountain hills","ganado","gila ridge","gilbert christian","gilbert classical","gilbert","glendale","glendale prep","goodyear","greenway","hamilton","heritage academy - laveen","highland","higley","holbrook","horizon","horizon honors","independence","ironwood","ironwood ridge","kingman academy","kingman","kofa","la joya","lake havasu","lee williams","liberty","madison highland prep","marana","marcos de niza","maricopa","maryvale","mcclintock","mesa","mesquite","metro tech","mica mountain","millennium","mingus union","mohave","monument valley","moon valley","mountain pointe","mountain ridge","mountain view (marana)","mountain view (mesa)","nogales","north canyon","north","northland prep","northwest christian","notre dame","page","palo verde","paradise honors","paradise valley","payson","peoria","perry","phoenix christian","pima","pinnacle","poston butte","prescott","pueblo","pusch ridge","queen creek","red mountain","rincon/university","rio rico","sabino","safford","saguaro","sahuarita","sahuaro","st. marys","salpointe catholic","san carlos","san luis","san tan charter","san tan foothills","sandra day o'connor","scottsdale christian","scottsdale prep","sedona red rock","seton catholic","shadow mountain","shadow ridge","show low","sierra linda","skyline","snowflake","somerton","south mountain","st. augustine","st. john paul ii","sunnyside","sunnyslope","sunrise mountain","tanque verde","tempe","tempe prep","thatcher","thunderbird","tolleson union","trevor g. browne","tuba city","tucson","valley christian","valley vista","verrado","vista grande","walden grove","washington","west point","westview","westwood","wickenburg","williams field","willow canyon","window rock","winslow","xavier","youngker","yuma catholic","yuma","az compass prep","bella vista","hillcrest prep","phh prep","dream city","asdb","ash fork","bagdad","basis flagstaff","cicero prep","desert heights prep","desert star","dishchiibikoh","duncan","el capitan","fort thomas","fredonia","grand canyon","greyhills academy","hayden","joseph city","lourdes catholic","maryvale prep","mayer","mogollon","music mountain","north phoenix preparatory","patagonia union","pdsd","ray","red mesa","rock point","rough rock","salome","san manuel","san pasqual","san simon","seligman","shonto prep","st. david","st. michael","superior","valley lutheran","valley union","williams","ala - radiance","desert sunrise","hopi","many farms","miami","morenci","mountainside","nfl yet","odyssey institute","parker","pinon","river valley","round valley","san miguel","santa cruz valley","santa rita","st. johns","tombstone","tonopah valley","trivium prep","valley (sanders)","veritas prep","willcox","ala - anthem south","ala - mesa north","ala - sierra vista","arete prep","franklin","globe","heritage acad gateway","heritage acad maricopa","heritage acad mesa"];
 
-    const TEAM_COLORS = {
-      "ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"
-    };
+    const TEAM_COLORS = {"agua fria":"#912c34","ala - anthem south":"#6c7290","ala - gilbert north":"#aeb3b3","ala - ironwood":"#90193c","ala - mesa north":"#1c3566","ala - qc":"#132942","ala - radiance":"#8d6f71","ala - sierra vista":"#1d3060","ala - vistancia":"#cdcfd1","ala - west foothills":"#1f3160","alchesay":"#4cb7ac","alhambra":"#136a2e","amphitheater":"#03844b","andrada polytechnic":"#195da7","antelope union":"#8b8b8b","anthem prep":"#b88894","apache junction":"#907228","apollo":"#c9ba6c","arcadia":"#ee3b33","arete prep":"#2b2b2b","arizona college prep":"#6c508b","arizona lutheran":"#cd8f16","asdb":"#28388c","ash fork":"#eca826","az compass prep":"#136032","baboquivari":"#0d2653","bagdad":"#8ba7b9","barry goldwater":"#fce26e","basha":"#00492b","basis flagstaff":"#d0ccd3","bella vista":"#153a46","benjamin franklin":"#063058","benson":"#f4050d","betty h. fairfax":"#8d94b8","bisbee":"#d6abad","blue ridge":"#ab9501","boulder creek":"#b43036","bourgade catholic":"#253465","bradshaw mountain":"#ee4f47","brophy":"#8e4f51","buckeye union":"#0d5194","buena":"#8f8d8f","cactus canyon":"#7b6495","cactus shadows":"#2b305b","cactus":"#1a2832","camelback":"#ec4b25","camp verde":"#020297","campo verde":"#164734","canyon del oro":"#0a3d1e","canyon view":"#0c4b8f","carl hayden":"#144394","casa grande":"#f3b635","casteel":"#2a354d","catalina foothills":"#526faa","catalina":"#14278d","centennial":"#0a0f53","central":"#504b4b","chandler prep":"#4c0f15","chandler":"#162471","chaparral":"#8e7829","chinle":"#b3883e","chino valley":"#1a1795","cholla":"#ac7233","cibola":"#715316","cicero prep":"#312827","cienega":"#513550","coconino":"#2f090d","combs":"#c02229","coolidge":"#901c48","copper canyon":"#b56430","corona del sol":"#312d0c","coronado":"#032452","cortez":"#f1000c","crismon":"#5b718a","deer valley":"#17298e","desert christian":"#0359ac","desert edge":"#321705","desert heights prep":"#4b0f0f","desert mountain":"#c4043f","desert ridge":"#332e2d","desert star":"#4e6a91","desert sunrise":"#ad956e","desert view":"#c89592","desert vista":"#04034c","dishchiibikoh":"#0757a5","dobson":"#2d3d70","douglas":"#c7b375","dream city":"#011e4f","duncan":"#ae1523","dysart":"#e91f24","eastmark":"#d3842d","el capitan":"#26368b","empire":"#922f33","estrella foothills":"#727272","flagstaff":"#6d8975","florence":"#fa1921","flowing wells":"#01245d","fort thomas":"#0d246e","fountain hills":"#01478a","franklin":"#6d562c","fredonia":"#49566e","ganado":"#2f170a","gila ridge":"#84a8b9","gilbert christian":"#045930","gilbert classical":"#f7c312","gilbert":"#eeb419","glendale prep":"#f1ce10","glendale":"#aa0504","globe":"#cc8a33","goodyear":"#142f47","grand canyon":"#d01346","greenway":"#4b772f","greyhills academy":"#08554c","hamilton":"#4f0a1c","hayden":"#adb4d7","heritage acad gateway":"#c32d33","heritage acad maricopa":"#d26f74","heritage acad mesa":"#720918","heritage academy - laveen":"#b40101","highland":"#045052","higley":"#0f2856","hillcrest prep":"#162634","holbrook":"#16258b","hopi":"#334b76","horizon honors":"#556573","horizon":"#077338","independence":"#ce2432","ironwood ridge":"#07113d","ironwood":"#e66e75","joseph city":"#364756","kingman academy":"#03132f","kingman":"#ebb212","kofa":"#d3072e","la joya":"#05054c","lake havasu":"#ce8f37","lee williams":"#6d2732","liberty":"#8c8c8c","lincoln prep":"#534f5c","lourdes catholic":"#d3cd32","madison highland prep":"#d2d1d2","many farms":"#d11346","marana":"#ab984e","marcos de niza":"#8b540a","maricopa":"#714c09","maryvale prep":"#731527","maryvale":"#fcb815","mayer":"#8f4d6b","mcclintock":"#034684","mesa":"#48308b","mesquite":"#1c3583","metro tech":"#6f0d1e","miami":"#48972e","mica mountain":"#899aaa","millennium":"#6f388d","mingus union":"#eb242d","mogollon":"#2d0d0e","mohave":"#0b3917","monument valley":"#bf1f2f","moon valley":"#0f2665","morenci":"#e62224","mountain pointe":"#762a37","mountain ridge":"#5b1213","mountainside":"#4d77ad","music mountain":"#2d2e2e","nfl yet":"#ef6d42","nogales":"#c23338","north canyon":"#561471","north phoenix preparatory":"#725027","north valley christian":"#1b2a55","north":"#ec3b34","northland prep":"#800000","northwest christian":"#5d3284","notre dame":"#58336e","odyssey institute":"#822837","page":"#b2afaf","palo verde":"#90924d","paradise honors":"#0c77d2","paradise valley":"#ce2425","parker":"#c4b258","patagonia union":"#b27734","payson":"#573674","pdsd":"#60add3","peoria":"#2f2f2f","perry":"#061248","phh prep":"#4e0451","phoenix christian":"#65962b","phoenix country day":"#0b2041","pima":"#153982","pinnacle":"#4c5771","pinon":"#086f72","poston butte":"#495174","prescott":"#efc808","pueblo":"#162446","pusch ridge":"#cd9a2b","queen creek":"#d6b77c","rancho solano prep":"#182449","ray":"#302a2d","raymond s. kellis":"#293351","red mesa":"#2f0405","red mountain":"#e62a46","rincon-university":"#542959","rio rico":"#e81f28","river valley":"#d57885","rock point":"#a50f4e","rough rock":"#a50849","round valley":"#f4aa33","sabino":"#cc9b34","safford":"#b1b5ba","saguaro":"#f3cb1b","sahuarita":"#053368","sahuaro":"#942f51","salome":"#358868","salpointe catholic":"#d78848","san carlos":"#2c2627","san luis":"#4d6754","san manuel":"#c90436","san miguel":"#f38d1a","san pasqual":"#042aa4","san simon":"#d4d4d4","san tan charter":"#54540e","san tan foothills":"#505050","sandra day oconnor":"#5468a9","santa cruz valley":"#c1030a","santa rita":"#f2ba34","scottsdale christian":"#d30814","scottsdale prep":"#527196","sedona red rock":"#7b2da3","seligman":"#eb1d30","seton catholic":"#cf1643","shadow mountain":"#a30c33","shadow ridge":"#760e13","shonto prep":"#f6b42d","show low":"#06713c","sierra linda":"#9d0a37","skyline":"#076537","snowflake":"#1254a2","somerton":"#57375b","south mountain":"#302b2b","st. augustine":"#e81d2f","st. david":"#0658a4","st. john paul ii":"#0d2f32","st. johns":"#6e0708","st. marys":"#036332","st. michael":"#2a1f20","sunnyside":"#095194","sunnyslope":"#70ab94","sunrise mountain":"#6b0d88","superior":"#f8a13a","tanque verde":"#106a37","tempe prep":"#706b26","tempe":"#06064f","thatcher":"#066c44","the gregory school":"#2d6795","thunderbird":"#4d2a12","tolleson union":"#e6a418","tombstone":"#94884b","tonopah valley":"#f40611","trevor g. browne":"#6b4b35","trivium prep":"#4e0d1a","tuba city":"#09512c","tucson":"#c84d53","valley christian":"#30518e","valley lutheran":"#e50c0c","valley union":"#0e2a65","valley vista":"#b06aa8","veritas prep":"#243068","verrado":"#504733","vista grande":"#30291a","walden grove":"#941b2b","washington":"#352f75","west point":"#2e0d11","westview":"#708ab4","westwood":"#6c2974","wickenburg":"#803d97","williams field":"#4f0303","williams":"#735433","willow canyon":"#18254d","window rock":"#3193c2","winslow":"#cacaca","xavier":"#0c6b3b","youngker":"#0a2719","yuma catholic":"#097a3e","yuma":"#484978"};
 
     const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -719,11 +759,16 @@
       "mtnview":             "mountainviewmesa",
       "rinconuniversity":    "riconuniversity",
       "riconuniversity":     "riconuniversity",
+      "bettyfairfax":        "bettyhfairfax",
     };
 
     function resolveTeam(name) {
-      const n = norm(name);
+      let n = norm(name);
       if (!n) return { logo: null, color: null };
+      // teams that must NEVER borrow another school's logo via fuzzy match
+      const NO_LOGO = ["hillcrest"];
+      if (NO_LOGO.includes(n)) return { logo: null, color: null };
+      if (TEAM_ALIASES[n]) n = TEAM_ALIASES[n];
       let logoKey = LOGO_MAP[n] ? n : null;
       let colorKey = COLOR_MAP[n] ? n : null;
       if (!logoKey) {
@@ -767,7 +812,11 @@
 
     let ALL = [];
 
-    function sortTransfers(rows) {
+    function sortTransfers(rows, mode) {
+      if (mode === "recent") {
+        const ts = r => { const d = new Date(r.scraped_at || r.created_at || 0).getTime(); return isNaN(d) ? 0 : d; };
+        return rows.slice().sort((a, b) => ts(b) - ts(a));
+      }
       return rows.slice().sort((a, b) => {
         const t = (a.new_team || "").localeCompare(b.new_team || "", undefined, { sensitivity: "base" });
         if (t !== 0) return t;
@@ -800,6 +849,9 @@
         const badges = [];
         if (r.grad_year) badges.push(`<div class="grad-badge">Class of ${escapeHtml(r.grad_year)}</div>`);
         if (r.star_rating != null && r.star_rating !== "") badges.push(`<div class="star-badge">${escapeHtml(r.star_rating)}★</div>`);
+        const dRaw = r.scraped_at || r.created_at;
+        let dateHtml = "";
+        if (dRaw) { const d = new Date(dRaw); if (!isNaN(d)) dateHtml = `<div class="tc-date">Updated ${d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div>`; }
         return `
           <div class="transfer-card">
             <div class="tc-top">
@@ -818,6 +870,7 @@
                    ${teamBlock(r.new_team, "to")}`
               }
             </div>
+            ${dateHtml}
           </div>`;
       }
 
@@ -871,7 +924,7 @@
       if (position) rows = rows.filter(r => r.position === position);
       if (player) rows = rows.filter(r => (r.player_name || "").toLowerCase().includes(player));
 
-      renderCards(sortTransfers(rows));
+      renderCards(sortTransfers(rows, document.getElementById("filter-sort").value));
     }
 
     function clearFilters() {
@@ -879,7 +932,8 @@
       CB_filterTeam.clear();
       document.getElementById("filter-position").value = "";
       document.getElementById("filter-player").value = "";
-      renderCards(sortTransfers(ALL));
+      document.getElementById("filter-sort").value = "recent";
+      renderCards(sortTransfers(ALL, "recent"));
     }
 
     async function loadTransfers() {
@@ -890,6 +944,9 @@
         });
         if (!res.ok) throw new Error("HTTP " + res.status);
         ALL = await res.json();
+        // exclude players who aren't at AIA schools (should never be shown)
+        const EXCLUDE_PLAYERS = ["darren ford", "innocent onwo"];
+        ALL = ALL.filter(r => !EXCLUDE_PLAYERS.includes((r.player_name || "").trim().toLowerCase()));
 
         if (!Array.isArray(ALL) || ALL.length === 0) {
           grid.innerHTML = `<div class="feed-empty">No transfers posted yet. Check back soon.</div>`;
@@ -898,7 +955,7 @@
         }
 
         populateFilters(ALL);
-        renderCards(sortTransfers(ALL));
+        renderCards(sortTransfers(ALL, document.getElementById("filter-sort").value));
       } catch (err) {
         console.warn("Transfer load failed:", err);
         grid.innerHTML = `<div class="feed-empty">Could not load transfers. Please try again later.</div>`;
@@ -913,10 +970,19 @@
       document.getElementById("filter-year").addEventListener("change", applyFilters);
       document.getElementById("filter-team").addEventListener("change", applyFilters);
       document.getElementById("filter-position").addEventListener("change", applyFilters);
+      document.getElementById("filter-sort").addEventListener("change", applyFilters);
     });
 
     loadTransfers();
   </script>
 
+
+  <script id="mobile-nav-js">
+    (function(){
+      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
+      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
+        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
+    })();
+  </script>
 </body>
 </html>
