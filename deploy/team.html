@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4TBFK6W7RR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4TBFK6W7RR');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Team Detail · The Oracle</title>
@@ -496,6 +505,20 @@
 
     function render(t, data) {
       const h = t.headline || {};
+      const teamLabel = fixName(t.team) + (t.state ? " (" + t.state + ")" : "");
+      document.title = teamLabel + " · Ratings · The Oracle";
+      if (typeof gtag === "function") {
+        gtag('event', 'page_view', {
+          page_title: teamLabel + " · Ratings",
+          page_location: location.href,
+          page_path: location.pathname + location.search
+        });
+        gtag('event', 'team_view', {
+          team_name: fixName(t.team),
+          team_state: t.state || "",
+          team_bracket: t.bracket || ""
+        });
+      }
       const rating = signed(h.rating, 1);
       const waa = signed(h.waa, 2);
       const net = signed(h.adj_net, 1);

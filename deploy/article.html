@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4TBFK6W7RR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4TBFK6W7RR');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Oracle</title>
@@ -340,6 +349,17 @@
 
     function renderArticle(a) {
       document.title = a.title + " · The Oracle";
+      if (typeof gtag === "function") {
+        gtag('event', 'page_view', {
+          page_title: a.title,
+          page_location: location.href,
+          page_path: location.pathname + location.search
+        });
+        gtag('event', 'article_view', {
+          article_title: a.title,
+          article_slug: getSlug()
+        });
+      }
       const tags = (a.tags || []).map(t => `<span class="article-tag">${esc(t)}</span>`).join("");
       const meta = [a.author, fmtDate(a.published_at)].filter(Boolean).map(esc).join(' <span class="dot">·</span> ');
       const cover = a.cover_image
