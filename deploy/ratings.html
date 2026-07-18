@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ratings · The Oracle</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Oracle" />
+  <meta property="og:title" content="Ratings · The Oracle" />
+  <meta property="og:description" content="Power ratings and advanced metrics for every team, from Section 7 and beyond." />
+  <meta property="og:url" content="https://oraclebasketball.com/ratings" />
+  <meta property="og:image" content="https://oraclebasketball.com/assets/oracle-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ratings · The Oracle" />
+  <meta name="twitter:description" content="Power ratings and advanced metrics for every team, from Section 7 and beyond." />
+  <meta name="twitter:image" content="https://oraclebasketball.com/assets/oracle-og.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -894,7 +906,7 @@
     </div>
   </div>
 
-  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without asking first.</p>
+  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without us granting permission.</p>
 
   <div class="divider"></div>
 
@@ -1040,26 +1052,33 @@
 
     // ── column config ──
     const COLS = [
-      { key:"rank",    label:"#",        cls:"rank",        left:false, sort:r=>r.rank,          def:"asc"  },
-      { key:"team",    label:"Team",     cls:"team",        left:true,  sort:r=>r.team.toLowerCase(), def:"asc" },
-      { key:"bracket", label:"Bracket",  cls:"bracket",     left:true,  sort:r=>r.bracket.toLowerCase(), def:"asc", desc:"The pool or sponsor bracket the team was placed in for the event." },
-      { key:"record",  label:"Rec",      cls:"",            left:false, sort:r=>recPct(r.record), def:"desc", group:true, desc:"Overall win\u2013loss record." },
-      { key:"rating",  label:"Rating",   cls:"rating-cell", left:false, sort:r=>num(r.rating),   def:"desc", group:true, desc:"Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was." },
-      { key:"waa",     label:"WAA",      cls:"",            left:false, sort:r=>num(r.waa),      def:"desc", desc:"Wins Above Average \u2014 how many more (or fewer) games a team won than an average team would against the same schedule." },
-      { key:"adjrpi",  label:"Adj. RPI", cls:"",            left:false, sort:r=>num(r.adjrpi),   def:"desc", desc:"Adjusted Rating Percentage Index \u2014 performance based on wins and opponent quality, measured across the whole event, not just their own bracket." },
-      { key:"adjsos",  label:"Adj. SOS", cls:"",            left:false, sort:r=>num(r.adjsos),   def:"desc", group:true, desc:"How tough a team's opponents were, measured across the whole event, not just their own bracket." },
-      { key:"adjnet",  label:"Adj. Net", cls:"",            left:false, sort:r=>num(r.adjnet),   def:"desc", desc:"Adjusted scoring margin (offense minus defense), measured across the whole event rather than a single bracket." },
-      { key:"adjoff",  label:"Adj. Off", cls:"",            left:false, sort:r=>num(r.adjoff),   def:"desc", desc:"Adjusted offensive rating, measured across the whole event rather than a single bracket." },
-      { key:"adjdef",  label:"Adj. Def", cls:"",            left:false, sort:r=>num(r.adjdef),   def:"asc",  desc:"Adjusted defensive rating, measured across the whole event rather than a single bracket. Lower is better." }
+      { key:"rank",    label:"#",        cls:"rank",        left:false, sort:r=>r.rank,          def:"asc",  cell:r=>`<td class="rank">${r.rank || "—"}${r.azRank ? `<span class="az-rank">AZ #${r.azRank}</span>` : ""}</td>` },
+      { key:"team",    label:"Team",     cls:"team",        left:true,  sort:r=>r.team.toLowerCase(), def:"asc", cell:r=>`<td class="team"><div class="team-cell">${logoHtml(r.team, "t-logo", r.state)}<span class="t-name">${esc(r.team)}<span class="gl-hint">View team ▸</span></span>${r.state ? `<span class="t-state">${esc(r.state)}</span>` : ""}</div></td>` },
+      { key:"bracket", label:"Bracket",  cls:"bracket",     left:true,  sort:r=>r.bracket.toLowerCase(), def:"asc", desc:"The pool or sponsor bracket the team was placed in for the event.", cell:r=>`<td class="bracket">${esc(r.bracket) || "—"}</td>` },
+      { key:"record",  label:"Rec",      cls:"",            left:false, sort:r=>recPct(r.record), def:"desc", group:true, desc:"Overall win\u2013loss record.", cell:r=>`<td>${esc(r.record) || "—"}</td>` },
+      { key:"rating",  label:"Rating",   cls:"rating-cell", left:false, sort:r=>num(r.rating),   def:"desc", group:true, desc:"Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was.", cell:r=>`<td class="rating-cell">${fmtSigned(r.rating)}</td>` },
+      { key:"waa",     label:"WAA",      cls:"",            left:false, sort:r=>num(r.waa),      def:"desc", desc:"Wins Above Average \u2014 how many more (or fewer) games a team won than an average team would against the same schedule.", cell:r=>`<td>${fmtSigned(r.waa)}</td>` },
+      { key:"adjrpi",  label:"Adj. RPI", cls:"",            left:false, sort:r=>num(r.adjrpi),   def:"desc", desc:"Adjusted Rating Percentage Index \u2014 performance based on wins and opponent quality, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjrpi)!==null ? num(r.adjrpi).toFixed(3) : "—"}</td>` },
+      { key:"adjsos",  label:"Adj. SOS", cls:"",            left:false, sort:r=>num(r.adjsos),   def:"desc", group:true, desc:"How tough a team's opponents were, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjsos)!==null ? num(r.adjsos).toFixed(3) : "—"}</td>` },
+      { key:"adjnet",  label:"Adj. Net", cls:"",            left:false, sort:r=>num(r.adjnet),   def:"desc", desc:"Adjusted scoring margin (offense minus defense), measured across the whole event rather than a single bracket.", cell:r=>`<td>${fmtSigned(r.adjnet)}</td>` },
+      { key:"adjoff",  label:"Adj. Off", cls:"",            left:false, sort:r=>num(r.adjoff),   def:"desc", desc:"Adjusted offensive rating, measured across the whole event rather than a single bracket.", cell:r=>`<td>${num(r.adjoff)!==null ? num(r.adjoff).toFixed(1) : "—"}</td>` },
+      { key:"adjdef",  label:"Adj. Def", cls:"",            left:false, sort:r=>num(r.adjdef),   def:"asc",  desc:"Adjusted defensive rating, measured across the whole event rather than a single bracket. Lower is better.", cell:r=>`<td>${num(r.adjdef)!==null ? num(r.adjdef).toFixed(1) : "—"}</td>` }
     ];
+
+    // Overall tab shows a trimmed column set (combined record + combined rating only).
+    function activeCols() {
+      if (activeSet && activeSet.id === "overall") return COLS.filter(c => ["rank","team","record","rating"].includes(c.key));
+      return COLS;
+    }
 
     let DATA = [], sortKey = "rank", sortDir = "asc";
 
     function buildMobileSort() {
       const sel = document.getElementById("mobileSort");
       if (!sel) return;
+      const cols = activeCols();
       const opts = [{key:"rank",label:"Overall Rank"}].concat(
-        COLS.filter(c => c.key !== "rank" && c.key !== "team" && c.key !== "bracket").map(c => ({key:c.key,label:c.label}))
+        cols.filter(c => c.key !== "rank" && c.key !== "team" && c.key !== "bracket").map(c => ({key:c.key,label:c.label}))
       );
       sel.innerHTML = opts.map(o => `<option value="${o.key}">${o.label}</option>`).join("");
       sel.value = sortKey;
@@ -1071,11 +1090,13 @@
     }
 
     function buildHead() {
-      document.getElementById("head-row").innerHTML = COLS.map(col => {
+      const cols = activeCols();
+      document.getElementById("head-row").innerHTML = cols.map((col, i) => {
         const active = col.key === sortKey;
         const arrow = active ? `<span class="arrow">${sortDir==="asc"?"▲":"▼"}</span>` : "";
         const info = col.desc ? `<span class="th-info" data-tip="${esc(col.desc)}">i</span>` : "";
-        return `<th class="${col.left?"left":""}${col.group?" group-end":""}" data-key="${col.key}">${col.label}${info}${arrow}</th>`;
+        const groupEnd = col.group && i < cols.length - 1;
+        return `<th class="${col.left?"left":""}${groupEnd?" group-end":""}" data-key="${col.key}">${col.label}${info}${arrow}</th>`;
       }).join("");
       document.querySelectorAll("th[data-key]").forEach(th => {
         th.onclick = () => {
@@ -1116,29 +1137,18 @@
       document.getElementById("count").textContent = rows.length;
       const body = document.getElementById("body");
       if (!rows.length) {
-        body.innerHTML = `<tr><td colspan="${COLS.length}" class="no-results">No teams match your filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="${activeCols().length}" class="no-results">No teams match your filters.</td></tr>`;
         return;
       }
-      body.innerHTML = rows.map(r => `
-        <tr class="clickable" data-team="${esc(r.team)}" data-state="${esc(r.state)}">
-          <td class="rank">${r.rank || "—"}${r.azRank ? `<span class="az-rank">AZ #${r.azRank}</span>` : ""}</td>
-          <td class="team">
-            <div class="team-cell">
-              ${logoHtml(r.team, "t-logo", r.state)}
-              <span class="t-name">${esc(r.team)}<span class="gl-hint">View team ▸</span></span>
-              ${r.state ? `<span class="t-state">${esc(r.state)}</span>` : ""}
-            </div>
-          </td>
-          <td class="bracket">${esc(r.bracket) || "—"}</td>
-          <td class="group-end">${esc(r.record) || "—"}</td>
-          <td class="rating-cell group-end">${fmtSigned(r.rating)}</td>
-          <td>${fmtSigned(r.waa)}</td>
-          <td>${num(r.adjrpi)!==null ? num(r.adjrpi).toFixed(3) : "—"}</td>
-          <td class="group-end">${num(r.adjsos)!==null ? num(r.adjsos).toFixed(3) : "—"}</td>
-          <td>${fmtSigned(r.adjnet)}</td>
-          <td>${num(r.adjoff)!==null ? num(r.adjoff).toFixed(1) : "—"}</td>
-          <td>${num(r.adjdef)!==null ? num(r.adjdef).toFixed(1) : "—"}</td>
-        </tr>`).join("");
+      const cols = activeCols();
+      body.innerHTML = rows.map(r => {
+        const cells = cols.map((col, i) => {
+          let html = col.cell(r);
+          if (col.group && i < cols.length - 1) html = html.replace(/^<td/, '<td class="group-end"').replace(/^<td class="group-end" class="/, '<td class="group-end ');
+          return html;
+        }).join("");
+        return `<tr class="clickable" data-team="${esc(r.team)}" data-state="${esc(r.state)}">${cells}</tr>`;
+      }).join("");
       body.querySelectorAll("tr.clickable").forEach(tr => {
         tr.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(tr.dataset.team) + "&state=" + encodeURIComponent(tr.dataset.state || ""); };
       });
@@ -1160,6 +1170,15 @@
         const rtCls = rn>0?"pos":rn<0?"neg":"zero";
         const rt = rn===null ? "—" : (rn>0?"+":"")+rn.toFixed(1);
         const sub = [r.state?`<span class="az">${esc(r.state)}</span>`:"", r.record?esc(r.record):"", esc(r.bracket)].filter(Boolean).join(" · ");
+        const statsBlock = (activeSet && activeSet.id === "overall") ? "" : `
+          <div class="rc-stats">
+            <div class="rc-stat"><div class="l">WAA</div><div class="v ${cls(r.waa)}">${num(r.waa)!==null?(num(r.waa)>0?"+":"")+num(r.waa).toFixed(2):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. RPI</div><div class="v">${num(r.adjrpi)!==null?num(r.adjrpi).toFixed(3):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. SOS</div><div class="v">${num(r.adjsos)!==null?num(r.adjsos).toFixed(3):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Net</div><div class="v ${cls(r.adjnet)}">${num(r.adjnet)!==null?(num(r.adjnet)>0?"+":"")+num(r.adjnet).toFixed(1):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Off</div><div class="v">${num(r.adjoff)!==null?num(r.adjoff).toFixed(1):"—"}</div></div>
+            <div class="rc-stat"><div class="l">Adj. Def</div><div class="v">${num(r.adjdef)!==null?num(r.adjdef).toFixed(1):"—"}</div></div>
+          </div>`;
         return `
         <div class="rcard" data-team="${esc(r.team)}" data-state="${esc(r.state)}">
           <div class="rc-head">
@@ -1171,14 +1190,7 @@
             </div>
             <div class="rc-rating ${rtCls}">${rt}</div>
           </div>
-          <div class="rc-stats">
-            <div class="rc-stat"><div class="l">WAA</div><div class="v ${cls(r.waa)}">${num(r.waa)!==null?(num(r.waa)>0?"+":"")+num(r.waa).toFixed(2):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. RPI</div><div class="v">${num(r.adjrpi)!==null?num(r.adjrpi).toFixed(3):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. SOS</div><div class="v">${num(r.adjsos)!==null?num(r.adjsos).toFixed(3):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Net</div><div class="v ${cls(r.adjnet)}">${num(r.adjnet)!==null?(num(r.adjnet)>0?"+":"")+num(r.adjnet).toFixed(1):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Off</div><div class="v">${num(r.adjoff)!==null?num(r.adjoff).toFixed(1):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Def</div><div class="v">${num(r.adjdef)!==null?num(r.adjdef).toFixed(1):"—"}</div></div>
-          </div>
+          ${statsBlock}
           <div class="rc-tap">Tap for full breakdown ›</div>
         </div>`;
       }).join("");

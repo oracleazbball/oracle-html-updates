@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Transfer Tracker · The Oracle</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Oracle" />
+  <meta property="og:title" content="Transfer Tracker · The Oracle" />
+  <meta property="og:description" content="Track every Arizona high school basketball transfer and incoming freshman." />
+  <meta property="og:url" content="https://oraclebasketball.com/transfers" />
+  <meta property="og:image" content="https://oraclebasketball.com/assets/oracle-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Transfer Tracker · The Oracle" />
+  <meta name="twitter:description" content="Track every Arizona high school basketball transfer and incoming freshman." />
+  <meta name="twitter:image" content="https://oraclebasketball.com/assets/oracle-og.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -552,13 +564,14 @@
   </style>
 
   <style id="mobile-nav-css">
+    html,body{overflow-x:hidden;max-width:100%;}
     .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
     .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
     .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
     .nav-burger.open span:nth-child(2){opacity:0;}
     .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
     @media (max-width:1000px){
-      .nav-burger{display:flex;}
+      .nav-burger{display:flex;position:fixed;top:16px;right:16px;z-index:130;}
       nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
       nav .nav-links.open{transform:translateY(0);}
       nav .nav-links a{padding:15px 24px;font-size:16px;}

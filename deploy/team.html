@@ -373,7 +373,7 @@
     <div class="state-msg" id="stateMsg">Loading team…</div>
   </main>
 
-  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without asking first.</p>
+  <p class="ratings-notice">Ratings and metrics are original work of The Oracle, © 2026, all rights reserved. Screenshot it, share it, post it, tag us — that's all welcome. What we ask is that nobody copies our data to build their own site, product, or profit off our work without us granting permission.</p>
 
   <div class="divider"></div>
   <footer>
@@ -418,6 +418,8 @@
       for (const k of Object.keys(LOGO_MAP)) { if (n.length>4 && (n.startsWith(k)||k.startsWith(n))) return LOGO_MAP[k]; }
       return null;
     }
+    const NAME_FIX = { "norte dame": "Notre Dame" };
+    const fixName = n => NAME_FIX[(n||"").trim().toLowerCase()] || n;
     const esc = s => (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
     const azSet = ["az","arizona","ariz"];
@@ -532,7 +534,7 @@
       let cmpSort = "rankdefault", cmpDir = "asc";
       function cmpCell(col, d) {
         const v = col.get(d);
-        if (col.left) return `<td class="l"><span class="cpos">${rankNum(d)}</span>${esc(d.team)}</td>`;
+        if (col.left) return `<td class="l"><span class="cpos">${rankNum(d)}</span>${esc(fixName(d.team))}</td>`;
         if (col.sign !== undefined) { const s = signed(v, col.sign); return `<td class="${col.nocolor?'':s.c}">${s.t}</td>`; }
         return `<td>${fmt(v, col.dec||1)}</td>`;
       }
@@ -604,7 +606,7 @@
           <div class="game">
             <div class="g-opp">
               <div class="g-opp-logo">${logoInner(g.opponent, g.opponent_state)}</div>
-              <span class="g-opp-name">${esc(g.opponent)}${g.opponent_state?`<span class="g-opp-state">${esc(g.opponent_state)}</span>`:""}</span>
+              <span class="g-opp-name">${esc(fixName(g.opponent))}${g.opponent_state?`<span class="g-opp-state">${esc(g.opponent_state)}</span>`:""}</span>
             </div>
             <div class="g-rank">${orank?`<span class="g-rank-lbl">Rank </span>#${orank}`:""}</div>
             <div class="g-score ${ff?'ff':''}">${sc}</div>
@@ -621,7 +623,7 @@
         <div class="th-head">
           <div class="th-logo">${logoInner(t.team, t.state)}</div>
           <div class="th-id">
-            <div class="th-name">${esc(t.team)}</div>
+            <div class="th-name">${esc(fixName(t.team))}</div>
             <div class="th-tags">
               ${t.state?`<span class="tag state">${esc(t.state)}</span>`:""}
               ${qualBadge}
