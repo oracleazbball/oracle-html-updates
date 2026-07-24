@@ -302,11 +302,17 @@
     .g-opp-name { font-family: var(--font-condensed); font-size: 21px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--silver-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .g-opp-state { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; color: var(--purple-bright); border: 1px solid rgba(139,47,255,0.35); padding: 1px 5px; border-radius: 2px; margin-left: 7px; vertical-align: middle; }
     .g-ff { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .g-opp-link { text-decoration: none; cursor: pointer; }
+    .g-opp-link:hover .g-opp-name { color: var(--purple-bright); }
+    .g-opp-link:hover .g-opp-logo { border-color: rgba(139,47,255,0.8); }
     .g-date { font-family: var(--font-condensed); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: right; white-space: nowrap; }
     .g-score { font-family: var(--font-body); font-weight: 600; font-size: 19px; text-align: right; white-space: nowrap; }
     .g-score .win { color: var(--pos); } .g-score .loss { color: var(--neg); } .g-score.ff { color: var(--text-muted); }
+    .sched.no-date .game { grid-template-columns: 1fr 64px 120px; }
+    .sched.no-date .sched-head { grid-template-columns: 1fr 64px 120px; }
     @media (max-width: 560px) {
       .game { grid-template-columns: 1fr auto; grid-template-areas: "opp score" "rank date"; column-gap: 12px; row-gap: 4px; padding: 14px 16px; align-items: start; }
+      .sched.no-date .game { grid-template-columns: 1fr auto; grid-template-areas: "opp score" "rank rank"; }
       .g-opp { grid-area: opp; }
       .g-rank { grid-area: rank; text-align: left; font-size: 15px; }
       .g-rank-lbl { display: inline; font-family: var(--font-condensed); letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); font-size: 13px; }
@@ -470,16 +476,19 @@
       const params = new URLSearchParams(location.search);
       const q = params.get("team");
       const qs = params.get("state");
+      const set = params.get("set") || "section7";
+      const DATA_FILES = { section7: "team_detail_data.json", nli: "team_detail_nli.json" };
+      const EVENT_LABELS = { section7: "Section 7", nli: "Nevada Live Invitational" };
       const msg = document.getElementById("stateMsg");
       if (!q) { msg.textContent = "No team specified."; return; }
       let data;
-      try { data = await (await fetch("team_detail_data.json")).json(); }
+      try { data = await (await fetch(DATA_FILES[set] || DATA_FILES.section7)).json(); }
       catch(e){ msg.textContent = "Could not load team data."; return; }
       const t = (qs ? data.find(d => norm(d.team) === norm(q) && norm(d.state) === norm(qs)) : null)
         || data.find(d => norm(d.team) === norm(q))
         || data.find(d => norm(d.team).includes(norm(q)));
       if (!t) { msg.innerHTML = `No detailed data for "${esc(q)}".<br/><br/><a href="ratings.html">← Back to Ratings</a>`; return; }
-      render(t, data);
+      render(t, data, EVENT_LABELS[set] || EVENT_LABELS.section7, set);
     }
 
     const ordinal = n => { const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
@@ -503,7 +512,7 @@
       return { pos: pos+1, total: ranked.length, isQual, ranked };
     }
 
-    function render(t, data) {
+    function render(t, data, eventLabel, setId) {
       const h = t.headline || {};
       const teamLabel = fixName(t.team) + (t.state ? " (" + t.state + ")" : "");
       document.title = teamLabel + " · Ratings · The Oracle";
@@ -585,11 +594,6 @@
           </table>
         </div>` : "";
       const diff = bracketDifficulty(t, data);
-      const diffList = diff ? diff.ranked.map((x,i) => `
-        <div class="bd-row${x.b===t.bracket?' me':''}">
-          <span class="bd-pos">${i+1}</span>
-          <span class="bd-name">${esc(x.b)}</span>
-        </div>`).join("") : "";
       const bcPanel = `
         <button class="bc-toggle" id="bcToggle">
           <span>Bracket Context <span style="color:var(--text-muted);font-size:13px;">— within their pool only</span></span>
@@ -605,11 +609,6 @@
             <div class="bc-cell"><div class="m-lbl">Adj. Def (bracket)${info("adj_def_b")}</div><div class="m-val">${signed(bc.adj_def_plain,1).t}</div></div>
           </div>
           ${cmpBlock}
-          ${diff ? `<button class="cmp-toggle" id="bdToggle"><span>${diff.isQual?"Qualifier Pools":"Section 7 Brackets"} Ranked by Difficulty</span><span class="chev">▼</span></button>
-          <div class="cmp-wrap" id="bdWrap"><div class="bd-list">
-            <div class="bd-list-head">Lower # = Higher Difficulty</div>
-            ${diffList}
-          </div></div>` : ""}
         </div>`;
 
       const rankOf = (name, st) => {
@@ -617,6 +616,8 @@
           || data.find(x => norm(x.team)===norm(name));
         return d && d.overall_rank ? d.overall_rank : null;
       };
+      const inSet = (name, st) => !!((st ? data.find(x => norm(x.team)===norm(name) && norm(x.state)===norm(st)) : null) || data.find(x => norm(x.team)===norm(name)));
+      const anyDate = (t.schedule||[]).some(g => !!g.date);
       const games = (t.schedule||[]).map(g => {
         const ff = g.forfeit;
         const won = g.result === "W";
@@ -625,15 +626,17 @@
           ? `<span class="ff">Forfeit</span>`
           : (!isNaN(g.team_score) && !isNaN(g.opponent_score))
             ? `${g.team_score}–${g.opponent_score} <span class="${won?'win':'loss'}">(${esc(g.result||"?")})</span>` : "—";
+        const oppLink = inSet(g.opponent, g.opponent_state)
+          ? `team.html?team=${encodeURIComponent(g.opponent)}&state=${encodeURIComponent(g.opponent_state||"")}&set=${encodeURIComponent(setId)}`
+          : null;
+        const oppInner = `<div class="g-opp-logo">${logoInner(g.opponent, g.opponent_state)}</div>
+              <span class="g-opp-name">${esc(fixName(g.opponent))}${g.opponent_state?`<span class="g-opp-state">${esc(g.opponent_state)}</span>`:""}</span>`;
         return `
           <div class="game">
-            <div class="g-opp">
-              <div class="g-opp-logo">${logoInner(g.opponent, g.opponent_state)}</div>
-              <span class="g-opp-name">${esc(fixName(g.opponent))}${g.opponent_state?`<span class="g-opp-state">${esc(g.opponent_state)}</span>`:""}</span>
-            </div>
+            ${oppLink ? `<a class="g-opp g-opp-link" href="${oppLink}">${oppInner}</a>` : `<div class="g-opp">${oppInner}</div>`}
             <div class="g-rank">${orank?`<span class="g-rank-lbl">Rank </span>#${orank}`:""}</div>
             <div class="g-score ${ff?'ff':''}">${sc}</div>
-            <div class="g-date">${esc(shortDate(g.date))}</div>
+            ${anyDate?`<div class="g-date">${esc(shortDate(g.date))}</div>`:""}
           </div>`;
       }).join("");
 
@@ -649,6 +652,7 @@
             <div class="th-name">${esc(fixName(t.team))}</div>
             <div class="th-tags">
               ${t.state?`<span class="tag state">${esc(t.state)}</span>`:""}
+              ${eventLabel?`<span class="tag">${esc(eventLabel)}</span>`:""}
               ${qualBadge}
               ${t.bracket?`<span class="tag">${esc(t.bracket)}</span>`:""}
               ${t.record?`<span class="tag record">${esc(t.record)}</span>`:""}
@@ -670,7 +674,7 @@
         ${bcPanel}
 
         <div class="sec-head">Schedule <span class="rule"></span></div>
-        <div class="sched"><div class="sched-head"><span>Team</span><span>Rank</span><span>Score</span><span>Date</span></div>${games || '<div class="state-msg">No games listed.</div>'}</div>
+        <div class="sched${anyDate?'':' no-date'}"><div class="sched-head"><span>Team</span><span>Rank</span><span>Score</span>${anyDate?'<span>Date</span>':''}</div>${games || '<div class="state-msg">No games listed.</div>'}</div>
       `;
 
       const toggle = document.getElementById("bcToggle");
@@ -682,11 +686,6 @@
       if (cmp) cmp.onclick = () => {
         cmp.classList.toggle("open");
         document.getElementById("cmpWrap").classList.toggle("open");
-      };
-      const bd = document.getElementById("bdToggle");
-      if (bd) bd.onclick = () => {
-        bd.classList.toggle("open");
-        document.getElementById("bdWrap").classList.toggle("open");
       };
       const cmpHead = document.getElementById("cmpHead");
       if (cmpHead) cmpHead.querySelectorAll("th[data-key]").forEach(th => {

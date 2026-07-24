@@ -856,7 +856,7 @@
     <h1>Every Team,<br/><em>Rated.</em></h1>
     <p class="sub">
       Power ratings for every team, plus the metrics behind them. Sort by any column,
-      search a team, or filter by state and bracket. These ratings reflect how a team performed at a specific event only. This isn't a preseason ranking or a projection of how good a team will be going forward.
+      search a team, or filter by state and bracket. These ratings reflect how a team performed at a specific event only. This isn't a preseason ranking or a projection of how good a team will be going forward. <a href="article.html?slug=how-the-oracle-s-ratings-actually-work">See how the ratings work</a>.
     </p>
   </header>
 
@@ -949,7 +949,7 @@
         eyebrow: "Ratings",
         csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMHnOmx2_O5s3Y8jIZ4x8VE2fHrkrsgHhvIh_RfOZMMn9Zb31E0tTaiT8hk1Vj0HWON3A3ey_hEPNb/pub?output=csv"
       },
-      { id: "nli",     label: "Nevada Live Invitational",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "" },
+      { id: "nli",     label: "Nevada Live Invitational",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVX08fXpXsyhiBD0NNJ_k_Xc_TqADH_avBR6UWgxOupQCey6xlsgCwye9BEih4mX2o2sOVnyS2l-Bt/pub?gid=2144519886&single=true&output=csv" },
       { id: "overall", label: "Overall", eyebrow: "Ratings · Overall", csv: "" }
     ];
     let activeSet = DATASETS[0];
@@ -1159,7 +1159,7 @@
         return `<tr class="clickable" data-team="${esc(r.team)}" data-state="${esc(r.state)}">${cells}</tr>`;
       }).join("");
       body.querySelectorAll("tr.clickable").forEach(tr => {
-        tr.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(tr.dataset.team) + "&state=" + encodeURIComponent(tr.dataset.state || ""); };
+        tr.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(tr.dataset.team) + "&state=" + encodeURIComponent(tr.dataset.state || "") + "&set=" + encodeURIComponent(activeSet.id); };
       });
       renderCards(rows);
     }
@@ -1204,7 +1204,7 @@
         </div>`;
       }).join("");
       wrap.querySelectorAll(".rcard").forEach(c => {
-        c.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(c.dataset.team) + "&state=" + encodeURIComponent(c.dataset.state || ""); };
+        c.onclick = () => { location.href = "team.html?team=" + encodeURIComponent(c.dataset.team) + "&state=" + encodeURIComponent(c.dataset.state || "") + "&set=" + encodeURIComponent(activeSet.id); };
       });
     }
 
