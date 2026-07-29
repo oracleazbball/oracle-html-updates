@@ -35,6 +35,7 @@
       --font-body: 'Barlow', system-ui, sans-serif;
       --purple: #6a0fd6;
       --purple-bright: #8b2fff;
+      --purple-glow: #a855f7;
       --purple-dark: #3b0075;
       --silver: #c0c0c0;
       --silver-light: #e8e8e8;
@@ -351,7 +352,7 @@
 
     /* ── TABLE ── */
     .table-wrap {
-      overflow: visible;
+      overflow-x: auto;
       border: 1px solid rgba(106,15,214,0.18);
       background: var(--black-card);
     }
@@ -361,9 +362,6 @@
       min-width: 0;
     }
     table.ratings thead th {
-      position: sticky;
-      top: 72px;
-      z-index: 5;
       background: #120a1f;
       font-family: var(--font-condensed);
       font-size: 13px;
@@ -372,7 +370,7 @@
       text-transform: uppercase;
       color: var(--silver);
       text-align: right;
-      padding: 14px 14px;
+      padding: 14px 8px;
       border-bottom: 2px solid rgba(139,47,255,0.4);
       cursor: pointer;
       user-select: none;
@@ -449,7 +447,7 @@
     .th-info:hover::after,
     .th-info:hover::before { opacity: 1; visibility: visible; transform: translateY(0); }
     table.ratings tbody td {
-      padding: 13px 14px;
+      padding: 13px 8px;
       text-align: right;
       font-size: 15px;
       color: var(--silver-light);
@@ -511,6 +509,27 @@
       font-size: 17px;
       color: var(--purple-bright);
     }
+    th.tilt-col, td.tilt-col { width: 96px; text-align: center !important; }
+    .tilt-wrap { display: flex; flex-direction: column; gap: 5px; align-items: stretch; min-width: 80px; }
+    .tilt-hdr { display: block; font-size: 10.5px; letter-spacing: 1px; color: var(--text-muted); font-weight: 400; margin-top: 3px; }
+    .tilt-axis { display: flex; align-items: center; gap: 6px; }
+    .tilt-axis .tilt-track { flex: 1; }
+    .tilt-end { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); flex-shrink: 0; }
+    .tilt-track {
+      position: relative; height: 6px; border-radius: 3px;
+      background: rgba(255,255,255,0.07); overflow: hidden;
+    }
+    .tilt-mid { position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: rgba(255,255,255,0.28); }
+    .tilt-fill { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+    .tilt-fill.off { background: linear-gradient(90deg, rgba(139,47,255,0.55), var(--purple-bright)); }
+    .tilt-fill.def { background: linear-gradient(270deg, rgba(70,209,122,0.5), var(--pos)); }
+    .tilt-meta { display: none; }
+    .tilt-num { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 1; text-align: center; }
+    .tilt-num.off { color: var(--purple-bright); }
+    .tilt-num.def { color: var(--pos); }
+    .tilt-num.bal { color: var(--silver-light); }
+    .tilt-id { font-family: var(--font-condensed); font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); white-space: normal; line-height: 1.25; text-align: center; }
+
     td.bracket {
       font-family: var(--font-condensed);
       font-size: 13px;
@@ -771,7 +790,7 @@
       .nav-links { display: none; }
       .rt-hero { padding: 104px 22px 8px; }
       main { padding: 22px 22px 64px; }
-      .table-wrap { overflow-x: auto; }
+      .table-wrap { overflow: auto; }
       .podium { grid-template-columns: 1fr; }
       .count-pill { margin-left: 0; }
       footer { flex-direction: column; align-items: flex-start; padding: 40px 22px; }
@@ -779,8 +798,14 @@
 
     /* ── MOBILE CARD LIST ── */
     .rcards { display: none; }
+    /* Where the trimmed table fits the viewport, the page is the only scroller,
+       so thead can pin under the fixed 72px nav for the whole table. */
+    @media (min-width: 1308px) {
+      .table-wrap { overflow: visible; }
+      table.ratings thead th { position: sticky; top: 72px; z-index: 5; }
+    }
     .mobile-sort { display: none; }
-    @media (max-width: 768px) {
+    @media (max-width: 1307px) {
       .table-wrap { display: none; }
       .legend { display: none; }
       .rcards { display: flex; flex-direction: column; gap: 10px; }
@@ -813,6 +838,14 @@
       .rc-stat .v { font-family: var(--font-body); font-weight: 600; font-size: 16px; margin-top: 2px; color: var(--silver-light); }
       .rc-stat .v.pos { color: var(--pos); } .rc-stat .v.neg { color: var(--neg); }
       .rc-tap { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(106,15,214,0.15); font-family: var(--font-condensed); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--purple-bright); }
+      .rc-tilt { margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(106,15,214,0.15); display: flex; align-items: center; gap: 10px; }
+      .rc-tilt .tilt-axis { flex: 1; min-width: 0; }
+      .rc-tilt-top { display: none; }
+      .rc-tilt-num { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 1; min-width: 30px; text-align: right; flex-shrink: 0; color: var(--silver-light); }
+      .rc-tilt-num.off { color: var(--purple-bright); }
+      .rc-tilt-num.def { color: var(--pos); }
+      .rc-tilt-num.bal { color: var(--silver-light); }
+      .rc-tilt-id { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
       .rc-none { padding: 50px 0; text-align: center; font-family: var(--font-condensed); letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
     }
   </style>
@@ -874,15 +907,7 @@
       <span class="count-pill"><b id="count">—</b> teams</span>
     </div>
 
-    <div class="legend">
-      <span><b>RATING</b> overall power rating</span>
-      <span><b>WAA</b> wins above average</span>
-      <span><b>ADJ. RPI</b> adjusted rating percentage index</span>
-      <span><b>ADJ. SOS</b> adjusted strength of schedule</span>
-      <span><b>ADJ. NET</b> adjusted scoring margin</span>
-      <span><b>ADJ. OFF</b> adjusted offensive rating</span>
-      <span><b>ADJ. DEF</b> adjusted defensive rating</span>
-    </div>
+    <div class="legend" id="legend"></div>
 
     <div class="mobile-sort">
       <label for="mobileSort">Sort</label>
@@ -946,11 +971,11 @@
       {
         id: "section7",
         label: "Section 7",
-        eyebrow: "Ratings",
+        eyebrow: "Ratings · Section 7",
         csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMHnOmx2_O5s3Y8jIZ4x8VE2fHrkrsgHhvIh_RfOZMMn9Zb31E0tTaiT8hk1Vj0HWON3A3ey_hEPNb/pub?output=csv"
       },
       { id: "nli",     label: "Nevada Live Invitational",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVX08fXpXsyhiBD0NNJ_k_Xc_TqADH_avBR6UWgxOupQCey6xlsgCwye9BEih4mX2o2sOVnyS2l-Bt/pub?gid=2144519886&single=true&output=csv" },
-      { id: "overall", label: "Overall", eyebrow: "Ratings · Overall", csv: "" }
+      { id: "overall", label: "Overall (S7+NLI)", eyebrow: "Ratings · Overall (S7+NLI)", csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFE_Z3NL_4aEeb5uqUS87SjTNsIH7anA-4IeSNM-5X_bNnMzCAZrPjMdm8_0kYLNrk5IIhHLIrs4QR/pub?gid=752530610&single=true&output=csv" }
     ];
     let activeSet = DATASETS[0];
 
@@ -1016,18 +1041,33 @@
       if (lines.length < 2) return [];
       const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase());
       const find = (...keys) => headers.findIndex(h => keys.some(k => h.includes(k)));
+      // prefer a cross-bracket column when the sheet has both plain and cross-bracket variants
+      const preferCross = word => {
+        const cross = headers.findIndex(h => h.includes(word) && h.includes("cross"));
+        return cross >= 0 ? cross : headers.findIndex(h => h.includes(word) && h.includes("adj"));
+      };
       const I = {
         rank: find("rank"), team: find("team"), state: find("state"),
-        bracket: headers.findIndex(h => h.includes("bracket") && !h.includes("tier")),
-        record: find("record"), rating: headers.findIndex(h => h==="rating"||h.startsWith("rating")),
+        bracket: headers.findIndex(h => h.includes("bracket") && !h.includes("tier") && !h.includes("sec7") && !h.includes("nevada")),
+        record: find("record"), rating: headers.findIndex(h => h.includes("rating") && !h.includes("rpi") && !h.includes("percentage")),
         adjrpi: headers.findIndex(h => h.includes("rpi") && h.includes("adj")),
         sos: headers.findIndex(h => h.includes("sos") && !h.includes("adj")),
         adjsos: headers.findIndex(h => h.includes("sos") && h.includes("adj")),
-        adjnet: headers.findIndex(h => h.includes("net") && h.includes("cross")),
-        adjoff: headers.findIndex(h => h.includes("off") && h.includes("cross")),
-        adjdef: headers.findIndex(h => h.includes("def") && h.includes("cross")),
+        adjnet: preferCross("net"),
+        adjoff: preferCross("off"),
+        adjdef: preferCross("def"),
         ppg: headers.findIndex(h => h==="ppg"),
-        papg: find("papg"), waa: find("waa"), bestwin: find("best win","best")
+        events: headers.findIndex(h => h.includes("events")),
+        tilt: headers.findIndex(h => h.includes("tilt")),
+        identity: headers.findIndex(h => h.includes("identity")),
+        combined: headers.findIndex(h => h.includes("combined") && !h.includes("rating")),
+        papg: find("papg"), waa: find("waa"), bestwin: find("best win","best"),
+        s7bracket: headers.findIndex(h => h.includes("sec7") && h.includes("bracket")),
+        s7record:  headers.findIndex(h => (h.includes("sec7") || h.includes("s7")) && h.includes("record")),
+        s7rating:  headers.findIndex(h => (h.includes("sec7") || h.includes("s7")) && h.includes("rating")),
+        nvbracket: headers.findIndex(h => h.includes("nevada") && h.includes("bracket")),
+        nvrecord:  headers.findIndex(h => (h.includes("nevada") || h.includes("nl ") || h==="nl") && h.includes("record")),
+        nvrating:  headers.findIndex(h => (h.includes("nevada") || h.includes("nl ") || h.startsWith("nl")) && h.includes("rating"))
       };
       return lines.slice(1).map(line => {
         const c = parseCSVLine(line);
@@ -1037,12 +1077,42 @@
           team: g("team"), state: g("state"), bracket: g("bracket"),
           record: g("record"), rating: g("rating"), adjrpi: g("adjrpi"), sos: g("sos"), adjsos: g("adjsos"),
           adjnet: g("adjnet"), adjoff: g("adjoff"), adjdef: g("adjdef"),
-          ppg: g("ppg"), papg: g("papg"), waa: g("waa"), bestwin: g("bestwin")
+          ppg: g("ppg"), papg: g("papg"), waa: g("waa"), bestwin: g("bestwin"), events: g("events"),
+          tilt: g("tilt"), identity: g("identity"), combined: g("combined"),
+          s7bracket: g("s7bracket"), s7record: g("s7record"), s7rating: g("s7rating"),
+          nvbracket: g("nvbracket"), nvrecord: g("nvrecord"), nvrating: g("nvrating")
         };
       }).filter(r => r.team);
     }
 
     // ── numeric helpers ──
+    let TILT_MAX = 20;
+    const isDescriptor = v => v && !/^[+-]?[\d.]+$/.test(String(v).trim());
+    function tiltVal(r) {
+      const explicit = num(r.tilt);
+      if (explicit !== null) return explicit;
+      const o = num(r.adjoff), d = num(r.adjdef);
+      return (o === null || d === null) ? null : o + d;
+    }
+    function tiltCell(r) {
+      const n = tiltVal(r);
+      if (n === null) return `<td class="tilt-col"><span class="muted-td">—</span></td>`;
+      const pct = Math.min(Math.abs(n) / TILT_MAX, 1) * 50;
+      const side = n >= 0 ? "left:50%" : `right:50%`;
+      const cls = n >= 0 ? "off" : "def";
+      const label = isDescriptor(r.combined)
+        ? esc(r.combined)
+        : isDescriptor(r.identity)
+          ? esc(String(r.identity).replace(/-first/i, " first"))
+          : (Math.abs(n) < 2 ? "Balanced" : (n > 0 ? "Offense first" : "Defense first"));
+      const numCls = /balanced/i.test(label) ? "bal" : cls;
+      return `<td class="tilt-col">
+        <div class="tilt-wrap">
+          <div class="tilt-track"><span class="tilt-mid"></span><span class="tilt-fill ${cls}" style="${side};width:${pct}%"></span></div>
+          <div class="tilt-num ${numCls}">${Math.abs(n).toFixed(1)}</div>
+        </div>
+      </td>`;
+    }
     const num = v => { const n = parseFloat(String(v).replace(/[+ ]/g,"")); return isNaN(n) ? null : n; };
     const recPct = v => { const m = String(v).match(/(\d+)\s*-\s*(\d+)/); if(!m) return -1; const w=+m[1],l=+m[2]; return (w+l)? w/(w+l) : 0; };
     function fmtSigned(v) {
@@ -1064,20 +1134,29 @@
       { key:"rank",    label:"#",        cls:"rank",        left:false, sort:r=>r.rank,          def:"asc",  cell:r=>`<td class="rank">${r.rank || "—"}${r.azRank ? `<span class="az-rank">AZ #${r.azRank}</span>` : ""}</td>` },
       { key:"team",    label:"Team",     cls:"team",        left:true,  sort:r=>r.team.toLowerCase(), def:"asc", cell:r=>`<td class="team"><div class="team-cell">${logoHtml(r.team, "t-logo", r.state)}<span class="t-name">${esc(r.team)}<span class="gl-hint">View team ▸</span></span>${r.state ? `<span class="t-state">${esc(r.state)}</span>` : ""}</div></td>` },
       { key:"bracket", label:"Bracket",  cls:"bracket",     left:true,  sort:r=>r.bracket.toLowerCase(), def:"asc", desc:"The pool or sponsor bracket the team was placed in for the event.", cell:r=>`<td class="bracket">${esc(r.bracket) || "—"}</td>` },
-      { key:"record",  label:"Rec",      cls:"",            left:false, sort:r=>recPct(r.record), def:"desc", group:true, desc:"Overall win\u2013loss record.", cell:r=>`<td>${esc(r.record) || "—"}</td>` },
-      { key:"rating",  label:"Rating",   cls:"rating-cell", left:false, sort:r=>num(r.rating),   def:"desc", group:true, desc:"Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was.", cell:r=>`<td class="rating-cell">${fmtSigned(r.rating)}</td>` },
-      { key:"waa",     label:"WAA",      cls:"",            left:false, sort:r=>num(r.waa),      def:"desc", desc:"Wins Above Average \u2014 how many more (or fewer) games a team won than an average team would against the same schedule.", cell:r=>`<td>${fmtSigned(r.waa)}</td>` },
-      { key:"adjrpi",  label:"Adj. RPI", cls:"",            left:false, sort:r=>num(r.adjrpi),   def:"desc", desc:"Adjusted Rating Percentage Index \u2014 performance based on wins and opponent quality, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjrpi)!==null ? num(r.adjrpi).toFixed(3) : "—"}</td>` },
-      { key:"adjsos",  label:"Adj. SOS", cls:"",            left:false, sort:r=>num(r.adjsos),   def:"desc", group:true, desc:"How tough a team's opponents were, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjsos)!==null ? num(r.adjsos).toFixed(3) : "—"}</td>` },
-      { key:"adjnet",  label:"Adj. Net", cls:"",            left:false, sort:r=>num(r.adjnet),   def:"desc", desc:"Adjusted scoring margin (offense minus defense), measured across the whole event rather than a single bracket.", cell:r=>`<td>${fmtSigned(r.adjnet)}</td>` },
-      { key:"adjoff",  label:"Adj. Off", cls:"",            left:false, sort:r=>num(r.adjoff),   def:"desc", desc:"Adjusted offensive rating, measured across the whole event rather than a single bracket.", cell:r=>`<td>${num(r.adjoff)!==null ? num(r.adjoff).toFixed(1) : "—"}</td>` },
-      { key:"adjdef",  label:"Adj. Def", cls:"",            left:false, sort:r=>num(r.adjdef),   def:"asc",  desc:"Adjusted defensive rating, measured across the whole event rather than a single bracket. Lower is better.", cell:r=>`<td>${num(r.adjdef)!==null ? num(r.adjdef).toFixed(1) : "—"}</td>` }
+      { key:"events",  label:"Events",   cls:"bracket",     left:true,  sort:r=>(r.events||"").toLowerCase(), def:"asc", leg:"which events the team played in", desc:"Which event(s) this team played in \u2014 Section 7, Nevada Live Invitational, or both.", cell:r=>`<td class="bracket">${esc(r.events) || "—"}</td>` },
+      { key:"record", leg:"win\u2013loss record",  label:"Rec",      cls:"",            left:false, sort:r=>recPct(r.record), def:"desc", group:true, desc:"Overall win\u2013loss record.", cell:r=>`<td>${esc(r.record) || "—"}</td>` },
+      { key:"rating", leg:"overall power rating",  label:"Rating",   cls:"rating-cell", left:false, sort:r=>num(r.rating),   def:"desc", group:true, desc:"Overall power rating built from scoring margins and win-loss record, adjusted for how tough a team's bracket was.", cell:r=>`<td class="rating-cell">${fmtSigned(r.rating)}</td>` },
+      { key:"waa", leg:"wins above average",     label:"WAA",      cls:"",            left:false, sort:r=>num(r.waa),      def:"desc", desc:"Wins Above Average \u2014 how many more (or fewer) games a team won than an average team would against the same schedule.", cell:r=>`<td>${fmtSigned(r.waa)}</td>` },
+      { key:"adjrpi", leg:"adjusted rating percentage index",  label:"Adj. RPI", cls:"",            left:false, sort:r=>num(r.adjrpi),   def:"desc", desc:"Adjusted Rating Percentage Index \u2014 performance based on wins and opponent quality, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjrpi)!==null ? num(r.adjrpi).toFixed(3) : "—"}</td>` },
+      { key:"adjsos", leg:"adjusted strength of schedule",  label:"Adj. SOS", cls:"",            left:false, sort:r=>num(r.adjsos),   def:"desc", group:true, desc:"How tough a team's opponents were, measured across the whole event, not just their own bracket.", cell:r=>`<td>${num(r.adjsos)!==null ? num(r.adjsos).toFixed(3) : "—"}</td>` },
+      { key:"adjnet", leg:"adjusted scoring margin",  label:"Adj. Net", cls:"",            left:false, sort:r=>num(r.adjnet),   def:"desc", desc:"Adjusted scoring margin (offense minus defense), measured across the whole event rather than a single bracket.", cell:r=>`<td>${fmtSigned(r.adjnet)}</td>` },
+      { key:"adjoff", leg:"adjusted offensive rating",  label:"Adj. Off", cls:"",            left:false, sort:r=>num(r.adjoff),   def:"desc", desc:"Adjusted offensive rating, measured across the whole event rather than a single bracket.", cell:r=>`<td>${num(r.adjoff)!==null ? num(r.adjoff).toFixed(1) : "—"}</td>` },
+      { key:"adjdef", leg:"adjusted defensive rating",  label:"Adj. Def", cls:"",            left:false, sort:r=>num(r.adjdef),   def:"asc",  desc:"Adjusted defensive rating, measured across the whole event rather than a single bracket. Lower is better.", cell:r=>`<td>${num(r.adjdef)!==null ? num(r.adjdef).toFixed(1) : "—"}</td>` },
+      { key:"tilt", leg:"offense\u2013defense balance", label:"Tilt <span class='tilt-hdr'>Def \u25c2 \u25b8 Off</span>", legLabel:"Tilt", cls:"tilt-col", left:false, sort:r=>tiltVal(r), def:"desc", desc:"Whether a team's offense or defense was its stronger unit. The bar shows how far they leaned from balanced \u2014 left for defense, right for offense \u2014 and the number is the point gap between the two sides (so +8 means offense graded 8 points better than defense). This identifies style of play, not the quality of the team.", cell:r=>tiltCell(r) },
+      { key:"s7record", leg:"record at Section 7", label:"Sec 7 Rec", cls:"", left:false, sort:r=>recPct(r.s7record), def:"desc", group:true, desc:"Win\u2013loss record at Section 7.", cell:r=>`<td>${esc(r.s7record) || "—"}</td>` },
+      { key:"nvrecord", leg:"record at Nevada Live", label:"Nevada Rec", cls:"", left:false, sort:r=>recPct(r.nvrecord), def:"desc", desc:"Win\u2013loss record at the Nevada Live Invitational.", cell:r=>`<td>${esc(r.nvrecord) || "—"}</td>` },
     ];
 
-    // Overall tab shows a trimmed column set (combined record + combined rating only).
+    const SPLIT_KEYS = ["s7record","s7rating","nvrecord","nvrating"];
+    // Show every column the active sheet actually has data for (rank + team always).
     function activeCols() {
-      if (activeSet && activeSet.id === "overall") return COLS.filter(c => ["rank","team","record","rating"].includes(c.key));
-      return COLS;
+      if (!DATA.length) return COLS.filter(c => !SPLIT_KEYS.includes(c.key));
+      return COLS.filter(c => {
+        if (c.key === "rank" || c.key === "team") return true;
+        if (c.key === "tilt") return DATA.some(r => tiltVal(r) !== null);
+        return DATA.some(r => { const v = r[c.key]; return v !== undefined && v !== null && String(v).trim() !== ""; });
+      });
     }
 
     let DATA = [], sortKey = "rank", sortDir = "asc";
@@ -1087,15 +1166,31 @@
       if (!sel) return;
       const cols = activeCols();
       const opts = [{key:"rank",label:"Overall Rank"}].concat(
-        cols.filter(c => c.key !== "rank" && c.key !== "team" && c.key !== "bracket").map(c => ({key:c.key,label:c.label}))
+        cols.filter(c => c.key !== "rank" && c.key !== "team" && c.key !== "bracket").map(c => ({key:c.key,label:colLabel(c)}))
       );
       sel.innerHTML = opts.map(o => `<option value="${o.key}">${o.label}</option>`).join("");
       sel.value = sortKey;
       sel.onchange = () => {
         const col = COLS.find(c => c.key === sel.value);
         sortKey = sel.value; sortDir = col ? col.def : "asc";
-        buildHead(); renderBody();
+        buildHead(); renderLegend(); renderBody();
       };
+    }
+
+    // Overall tab's Rec/Rating are the combined (both-event) figures.
+    const OVERALL_LABELS = { rating: "Comb. Rating" };
+    const OVERALL_LEGS = { rating: "combined rating across both events" };
+    const colLabel = col => (activeSet && activeSet.id === "overall" && OVERALL_LABELS[col.key]) || col.label;
+    const colLeg = col => (activeSet && activeSet.id === "overall" && OVERALL_LEGS[col.key]) || col.leg;
+    const OVERALL_DESCS = { rating: "A team's Section 7 and Nevada Live power ratings combined onto one scale \u2014 averaged for teams that played both events, or the single-event rating for teams that played just one." };
+    const colDesc = col => (activeSet && activeSet.id === "overall" && OVERALL_DESCS[col.key]) || col.desc;
+
+    function renderLegend() {
+      const el = document.getElementById("legend");
+      if (!el) return;
+      const items = activeCols().filter(c => colLeg(c));
+      el.innerHTML = items.map(c => `<span><b>${(c.legLabel || colLabel(c)).toUpperCase()}</b> ${esc(colLeg(c))}</span>`).join("");
+      el.style.display = items.length ? "" : "none";
     }
 
     function buildHead() {
@@ -1103,9 +1198,9 @@
       document.getElementById("head-row").innerHTML = cols.map((col, i) => {
         const active = col.key === sortKey;
         const arrow = active ? `<span class="arrow">${sortDir==="asc"?"▲":"▼"}</span>` : "";
-        const info = col.desc ? `<span class="th-info" data-tip="${esc(col.desc)}">i</span>` : "";
+        const info = colDesc(col) ? `<span class="th-info" data-tip="${esc(colDesc(col))}">i</span>` : "";
         const groupEnd = col.group && i < cols.length - 1;
-        return `<th class="${col.left?"left":""}${groupEnd?" group-end":""}" data-key="${col.key}">${col.label}${info}${arrow}</th>`;
+        return `<th class="${col.left?"left":""}${groupEnd?" group-end":""}${col.cls?" "+col.cls:""}" data-key="${col.key}">${colLabel(col)}${info}${arrow}</th>`;
       }).join("");
       document.querySelectorAll("th[data-key]").forEach(th => {
         th.onclick = () => {
@@ -1113,7 +1208,7 @@
           const col = COLS.find(c => c.key === key);
           if (sortKey === key) sortDir = sortDir === "asc" ? "desc" : "asc";
           else { sortKey = key; sortDir = col.def; }
-          buildHead(); renderBody();
+          buildHead(); renderLegend(); renderBody();
         };
       });
       const ms = document.getElementById("mobileSort");
@@ -1142,6 +1237,8 @@
     }
 
     function renderBody() {
+      const tvals = DATA.map(r => Math.abs(tiltVal(r) ?? 0)).filter(v => v > 0);
+      TILT_MAX = tvals.length ? Math.max(...tvals) : 20;
       const rows = currentRows();
       document.getElementById("count").textContent = rows.length;
       const body = document.getElementById("body");
@@ -1178,15 +1275,32 @@
         const rn = num(r.rating);
         const rtCls = rn>0?"pos":rn<0?"neg":"zero";
         const rt = rn===null ? "—" : (rn>0?"+":"")+rn.toFixed(1);
-        const sub = [r.state?`<span class="az">${esc(r.state)}</span>`:"", r.record?esc(r.record):"", esc(r.bracket)].filter(Boolean).join(" · ");
-        const statsBlock = (activeSet && activeSet.id === "overall") ? "" : `
+        const sub = [r.state?`<span class="az">${esc(r.state)}</span>`:"", r.record?esc(r.record):"", esc(r.events || r.bracket)].filter(Boolean).join(" · ");
+        const mStats = [
+          ["WAA", r.waa, v=>(num(v)>0?"+":"")+num(v).toFixed(2), true],
+          ["Adj. RPI", r.adjrpi, v=>num(v).toFixed(3), false],
+          ["Adj. SOS", r.adjsos, v=>num(v).toFixed(3), false],
+          ["Adj. Net", r.adjnet, v=>(num(v)>0?"+":"")+num(v).toFixed(1), true],
+          ["Adj. Off", r.adjoff, v=>num(v).toFixed(1), false],
+          ["Adj. Def", r.adjdef, v=>num(v).toFixed(1), false],
+        ].filter(s => num(s[1]) !== null);
+        const statsBlock = mStats.length ? `
           <div class="rc-stats">
-            <div class="rc-stat"><div class="l">WAA</div><div class="v ${cls(r.waa)}">${num(r.waa)!==null?(num(r.waa)>0?"+":"")+num(r.waa).toFixed(2):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. RPI</div><div class="v">${num(r.adjrpi)!==null?num(r.adjrpi).toFixed(3):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. SOS</div><div class="v">${num(r.adjsos)!==null?num(r.adjsos).toFixed(3):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Net</div><div class="v ${cls(r.adjnet)}">${num(r.adjnet)!==null?(num(r.adjnet)>0?"+":"")+num(r.adjnet).toFixed(1):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Off</div><div class="v">${num(r.adjoff)!==null?num(r.adjoff).toFixed(1):"—"}</div></div>
-            <div class="rc-stat"><div class="l">Adj. Def</div><div class="v">${num(r.adjdef)!==null?num(r.adjdef).toFixed(1):"—"}</div></div>
+            ${mStats.map(s=>`<div class="rc-stat"><div class="l">${s[0]}</div><div class="v ${s[3]?cls(s[1]):""}">${s[2](s[1])}</div></div>`).join("")}
+          </div>` : "";
+        const tv = tiltVal(r);
+        const tLabel = isDescriptor(r.combined)
+          ? esc(r.combined)
+          : isDescriptor(r.identity)
+            ? esc(String(r.identity).replace(/-first/i, " first"))
+            : (tv!==null && Math.abs(tv) < 2 ? "Balanced" : tv>0 ? "Offense first" : "Defense first");
+        const tCls = tv===null ? "" : tv >= 0 ? "off" : "def";
+        const tNumCls = /balanced/i.test(tLabel) ? "bal" : tCls;
+        const tDir = tv===null ? "" : (Math.abs(tv) < 2 ? "Even split" : tv > 0 ? "Toward offense" : "Toward defense");
+        const tiltBlock = tv===null ? "" : `
+          <div class="rc-tilt">
+            <div class="rc-tilt-top"><span class="l">Tilt</span><span class="rc-tilt-num ${tNumCls}">${Math.abs(tv).toFixed(1)}</span></div>
+            <div class="tilt-axis"><span class="tilt-end">Def</span><div class="tilt-track"><span class="tilt-mid"></span><span class="tilt-fill ${tCls}" style="${tv>=0?"left:50%":"right:50%"};width:${Math.min(Math.abs(tv)/TILT_MAX,1)*50}%"></span></div><span class="tilt-end">Off</span></div>
           </div>`;
         return `
         <div class="rcard" data-team="${esc(r.team)}" data-state="${esc(r.state)}">
@@ -1200,6 +1314,7 @@
             <div class="rc-rating ${rtCls}">${rt}</div>
           </div>
           ${statsBlock}
+          ${tiltBlock}
           <div class="rc-tap">Tap for full breakdown ›</div>
         </div>`;
       }).join("");
@@ -1235,6 +1350,9 @@
       bf.innerHTML = `<option value="">All Brackets</option>`;
       states.forEach(s => sf.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
       brackets.forEach(b => bf.insertAdjacentHTML("beforeend", `<option value="${esc(b)}">${esc(b)}</option>`));
+      // hide the bracket filter entirely when the active sheet has no bracket data (e.g. Overall)
+      bf.style.display = brackets.length ? "" : "none";
+      if (!brackets.length) bf.value = "";
       // default to Arizona teams first (site focus) if AZ exists in this set
       const azVal = states.find(s => norm(s) === "az" || norm(s) === "arizona" || norm(s) === "ariz");
       sf.value = azVal || "";
@@ -1253,7 +1371,11 @@
       catch(e){ clearTimeout(t); throw e; }
     }
     async function tryFetch(url){
-      try { const r=await fetchWithTimeout(url,5000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
+      // Google can be slow when a second published sheet is requested right after another,
+      // so give the direct fetch a generous window and one retry before the proxies.
+      for (const ms of [15000, 15000]) {
+        try { const r=await fetchWithTimeout(url,ms); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
+      }
       try { const r=await fetchWithTimeout(`https://corsproxy.io/?url=${encodeURIComponent(url)}`,7000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
       try { const r=await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,7000); if(r.ok){const j=await r.json(); if(j.contents&&j.contents.includes(','))return j.contents;} }catch(_){}
       try { const r=await fetchWithTimeout(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,7000); if(r.ok){const t=await r.text(); if(t.includes(','))return t;} }catch(_){}
@@ -1377,27 +1499,38 @@
     document.getElementById("glOverlay").onclick = (e) => { if (e.target.id === "glOverlay") closeGameLog(); };
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeGameLog(); });
 
+    const SET_CACHE = {};
+
     async function load(){
       renderTabs();
-      buildHead();
       document.getElementById("heroEyebrow").textContent = activeSet.eyebrow;
+      const cached = SET_CACHE[activeSet.id];
+      if (cached) {
+        DATA = cached;
+        buildFilters(); buildMobileSort(); buildHead(); renderLegend(); renderBody();
+        return;
+      }
       document.getElementById("count").textContent = "…";
-      document.getElementById("body").innerHTML = "";
+      document.getElementById("body").innerHTML = `<tr><td colspan="${activeCols().length}" class="no-results">Loading…</td></tr>`;
       try {
         const csv = await tryFetch(activeSet.csv);
-        DATA = parseCSV(csv);
-        if (!DATA.length) throw new Error("Empty CSV");
+        const rows = parseCSV(csv);
+        if (!rows.length) throw new Error("Empty CSV");
+        DATA = rows;
         // compute AZ-only rank (by overall rank order among AZ teams)
         const azTeams = DATA.filter(r => ["az","arizona","ariz"].includes(norm(r.state)))
                             .sort((a,b) => a.rank - b.rank);
         azTeams.forEach((r,i) => { r.azRank = i + 1; });
+        SET_CACHE[activeSet.id] = DATA;
         buildFilters();
         buildMobileSort();
+        buildHead();
+        renderLegend();
         renderBody();
       } catch(e){
         console.warn("Ratings load failed:", e.message);
         document.getElementById("count").textContent = "0";
-        document.getElementById("body").innerHTML = `<tr><td colspan="${COLS.length}" class="no-results">Could not load ratings. Please try again later.</td></tr>`;
+        document.getElementById("body").innerHTML = `<tr><td colspan="${activeCols().length}" class="no-results">Could not load ratings. Please try again later.</td></tr>`;
       }
     }
 

@@ -5615,7 +5615,7 @@
    "adj_net": -4.4,
    "adj_off": 4.2,
    "adj_def": 8.7,
-   "best_win": "CDM Hoops (CA) 77-73, rank 91"
+   "best_win": "Corona del Mar (CA) 77-73, rank 91"
   },
   "bracket_context": {
    "bracket_rank": "3 of 16",
@@ -5633,7 +5633,7 @@
     "event": "Section 7",
     "date": "Friday, June 12, 2026",
     "court": "11",
-    "opponent": "CDM Hoops",
+    "opponent": "Corona del Mar",
     "opponent_state": "CA",
     "team_score": 77,
     "opponent_score": 73,
@@ -6975,7 +6975,7 @@
    "adj_net": -9.7,
    "adj_off": -4.5,
    "adj_def": 5.3,
-   "best_win": "CDM Hoops (CA) 67-65, rank 91"
+   "best_win": "Corona del Mar (CA) 67-65, rank 91"
   },
   "bracket_context": {
    "bracket_rank": "5 of 16",
@@ -7017,7 +7017,7 @@
     "event": "Section 7",
     "date": "Saturday, June 13, 2026",
     "court": "11",
-    "opponent": "CDM Hoops",
+    "opponent": "Corona del Mar",
     "opponent_state": "CA",
     "team_score": 67,
     "opponent_score": 65,
@@ -7200,7 +7200,7 @@
   ]
  },
  {
-  "team": "CDM Hoops",
+  "team": "Corona del Mar",
   "state": "CA",
   "bracket": "John Dawson Foundation",
   "bracket_tier": 7,
@@ -10421,7 +10421,7 @@
     "event": "Section 7",
     "date": "Saturday, June 13, 2026",
     "court": "12",
-    "opponent": "CDM Hoops",
+    "opponent": "Corona del Mar",
     "opponent_state": "CA",
     "team_score": 50,
     "opponent_score": 60,
@@ -11005,7 +11005,7 @@
     "event": "Section 7",
     "date": "Sunday, June 14, 2026",
     "court": "12",
-    "opponent": "CDM Hoops",
+    "opponent": "Corona del Mar",
     "opponent_state": "CA",
     "team_score": 50,
     "opponent_score": 71,
