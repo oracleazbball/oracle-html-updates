@@ -164,7 +164,65 @@
       padding: 24px 48px 96px;
     }
 
-    /* ── TAG FILTER BAR ── */
+    /* ── TAG SEARCH ── */
+    .tag-search {
+      position: relative;
+      max-width: 420px;
+      margin: 8px 0 14px;
+    }
+    .tag-search input {
+      width: 100%;
+      background: var(--black-card);
+      border: 1px solid rgba(106,15,214,0.3);
+      color: var(--silver-light);
+      font-family: var(--font-body);
+      font-size: 15px;
+      padding: 12px 38px 12px 40px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .tag-search input:focus { border-color: rgba(139,47,255,0.7); }
+    .tag-search input::placeholder { color: #555; }
+    .tag-search .ts-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px; pointer-events: none;
+    }
+    .tag-search .ts-icon svg { width: 100%; height: 100%; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+    .tag-search .ts-clear {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-muted);
+      font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 6px;
+      display: none;
+    }
+    .tag-search.has-val .ts-clear { display: block; }
+    .tag-search .ts-clear:hover { color: var(--silver-light); }
+    .tag-suggest {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #0d0d0d;
+      border: 1px solid rgba(139,47,255,0.45);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      max-height: 280px; overflow-y: auto;
+      z-index: 40;
+      display: none;
+    }
+    .tag-suggest.open { display: block; }
+    .ts-opt {
+      font-family: var(--font-condensed);
+      font-size: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      border-bottom: 1px solid rgba(106,15,214,0.1);
+    }
+    .ts-opt:last-child { border-bottom: none; }
+    .ts-opt:hover, .ts-opt.sel { background: rgba(106,15,214,0.18); color: var(--purple-bright); }
+    .ts-opt .ts-count { font-family: var(--font-body); font-size: 12px; color: var(--text-muted); }
+    .ts-empty { padding: 14px; font-family: var(--font-condensed); letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); font-size: 13px; }
+
+    /* ── ACTIVE TAG BAR ── */
     .tag-bar {
       display: flex;
       flex-wrap: wrap;
@@ -186,6 +244,7 @@
     }
     .tag-chip:hover { color: var(--silver-light); border-color: rgba(139,47,255,0.6); }
     .tag-chip.active { color: #fff; background: var(--purple); border-color: var(--purple); }
+    .tag-chip .x { margin-left: 7px; opacity: 0.7; }
 
     /* ── ARTICLE GRID ── */
     .article-grid {
@@ -382,6 +441,12 @@
   </header>
 
   <main>
+    <div class="tag-search" id="tag-search">
+      <span class="ts-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+      <input type="text" id="tag-input" placeholder="Search by player, team, topic…" autocomplete="off" />
+      <button class="ts-clear" id="ts-clear" aria-label="Clear">×</button>
+      <div class="tag-suggest" id="tag-suggest"></div>
+    </div>
     <div class="tag-bar" id="tag-bar"></div>
     <div class="article-grid" id="article-grid">
       <div class="state-msg">Loading articles…</div>
@@ -454,15 +519,77 @@
       grid.innerHTML = rows.map((a, i) => cardHtml(a, i === 0 && !activeTag)).join("");
     }
 
+    function tagCounts() {
+      const m = {};
+      ALL.forEach(a => (a.tags || []).forEach(t => { m[t] = (m[t] || 0) + 1; }));
+      return m;
+    }
+
     function renderTags() {
       const bar = document.getElementById("tag-bar");
-      const tags = [...new Set(ALL.flatMap(a => a.tags || []))].sort((a,b) => a.localeCompare(b));
-      if (!tags.length) { bar.innerHTML = ""; return; }
-      const chip = (label, val) =>
-        `<div class="tag-chip${activeTag === val ? " active" : ""}" data-tag="${esc(val)}">${esc(label)}</div>`;
-      bar.innerHTML = chip("All", "") + tags.map(t => chip(t, t)).join("");
-      bar.querySelectorAll(".tag-chip").forEach(c => {
-        c.addEventListener("click", () => { activeTag = c.dataset.tag; renderTags(); render(); });
+      if (!activeTag) { bar.innerHTML = ""; return; }
+      bar.innerHTML = `<div class="tag-chip active" data-tag="${esc(activeTag)}">${esc(activeTag)}<span class="x">×</span></div>`;
+      bar.querySelector(".tag-chip").addEventListener("click", () => {
+        activeTag = "";
+        document.getElementById("tag-input").value = "";
+        document.getElementById("tag-search").classList.remove("has-val");
+        renderTags(); render();
+      });
+    }
+
+    function initTagSearch() {
+      const wrap = document.getElementById("tag-search");
+      const input = document.getElementById("tag-input");
+      const box = document.getElementById("tag-suggest");
+      const clear = document.getElementById("ts-clear");
+      let sel = -1, opts = [];
+
+      function close() { box.classList.remove("open"); sel = -1; }
+      function pick(tag) {
+        activeTag = tag;
+        input.value = tag;
+        wrap.classList.add("has-val");
+        close(); renderTags(); render();
+      }
+      function show() {
+        const q = input.value.trim().toLowerCase();
+        const counts = tagCounts();
+        opts = Object.keys(counts)
+          .filter(t => !q || t.toLowerCase().includes(q))
+          .sort((a,b) => counts[b] - counts[a] || a.localeCompare(b))
+          .slice(0, 40);
+        box.innerHTML = opts.length
+          ? opts.map((t,i) => `<div class="ts-opt${i===sel?" sel":""}" data-tag="${esc(t)}">${esc(t)}<span class="ts-count">${counts[t]}</span></div>`).join("")
+          : `<div class="ts-empty">No matching tags</div>`;
+        box.querySelectorAll(".ts-opt").forEach(o => o.addEventListener("mousedown", e => { e.preventDefault(); pick(o.dataset.tag); }));
+        box.classList.add("open");
+      }
+
+      input.addEventListener("focus", show);
+      input.addEventListener("input", () => {
+        wrap.classList.toggle("has-val", !!input.value);
+        sel = -1;
+        if (activeTag && input.value.trim() !== activeTag) { activeTag = ""; renderTags(); render(); }
+        show();
+      });
+      input.addEventListener("keydown", e => {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          if (!box.classList.contains("open")) return show();
+          sel = e.key === "ArrowDown" ? Math.min(sel+1, opts.length-1) : Math.max(sel-1, 0);
+          box.querySelectorAll(".ts-opt").forEach((o,i) => o.classList.toggle("sel", i===sel));
+          const el = box.querySelectorAll(".ts-opt")[sel];
+          if (el) el.parentElement.scrollTop = el.offsetTop - 90;
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (opts.length) pick(sel >= 0 ? opts[sel] : opts[0]);
+        } else if (e.key === "Escape") { close(); input.blur(); }
+      });
+      input.addEventListener("blur", () => setTimeout(close, 120));
+      clear.addEventListener("click", () => {
+        input.value = ""; activeTag = "";
+        wrap.classList.remove("has-val");
+        close(); renderTags(); render();
       });
     }
 
@@ -474,6 +601,7 @@
         ALL = await res.json();
         if (!Array.isArray(ALL)) ALL = [];
         renderTags();
+        initTagSearch();
         render();
       } catch (e) {
         console.warn("Articles load failed:", e);
