@@ -1,30 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4TBFK6W7RR"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-4TBFK6W7RR');
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rankings · The Oracle</title>
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="The Oracle" />
-  <meta property="og:title" content="Rankings · The Oracle" />
-  <meta property="og:description" content="The top 25 high school basketball teams in Arizona, updated by The Oracle." />
-  <meta property="og:url" content="https://oraclebasketball.com/rankings" />
-  <meta property="og:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rankings · The Oracle" />
-  <meta name="twitter:description" content="The top 25 high school basketball teams in Arizona, updated by The Oracle." />
-  <meta name="twitter:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -119,52 +98,6 @@
     .nav-links a:hover::after { transform: scaleX(1); }
     .nav-links a.active { color: var(--silver-light); }
     .nav-links a.active::after { transform: scaleX(1); }
-
-    /* ── MOVEMENT ── */
-    .movement { margin-bottom: 30px; }
-    .mv-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
-    .mv-title {
-      font-family: var(--font-condensed); font-size: 15px; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--purple-bright); white-space: nowrap;
-    }
-    .mv-note {
-      font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--text-muted);
-    }
-    .mv-rule { flex: 1; height: 1px; background: rgba(106,15,214,0.25); }
-    .mv-list { background: var(--black-card); border: 1px solid rgba(106,15,214,0.2); }
-    .mv-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 18px;
-      border-bottom: 1px solid rgba(106,15,214,0.12);
-    }
-    .mv-item:last-child { border-bottom: none; }
-    .mv-arrow {
-      font-family: var(--font-condensed); font-size: 14px;
-      width: 13px; text-align: center; flex-shrink: 0;
-    }
-    .mv-arrow.up { color: var(--pos, #46d17a); }
-    .mv-arrow.down { color: var(--neg, #e0556b); }
-    .mv-arrow.new { color: var(--purple-bright); }
-    .mv-arrow.out { color: var(--text-muted); }
-    .mv-logo {
-      width: 26px; height: 26px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: #0a0a0a; border: 1px solid rgba(106,15,214,0.4);
-    }
-    .mv-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
-    .mv-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 11px; color: #fff; }
-    .mv-team {
-      font-family: var(--font-condensed); font-size: 18px; letter-spacing: 0.5px;
-      text-transform: uppercase; color: var(--silver-light); flex-shrink: 0;
-    }
-    .mv-txt { font-family: var(--font-body); font-size: 13.5px; color: var(--text-muted); }
-    .mv-txt b { color: var(--silver); font-weight: 500; }
-    @media (max-width: 720px) {
-      .mv-head { flex-wrap: wrap; gap: 4px 10px; }
-      .mv-item { flex-wrap: wrap; gap: 8px 10px; padding: 11px 14px; }
-      .mv-txt { flex: 1 1 100%; padding-left: 51px; font-size: 13px; }
-    }
 
     /* ── HERO ── */
     .rk-hero {
@@ -367,7 +300,6 @@
       flex-wrap: wrap;
     }
     .rank-tags .sep { color: rgba(139,47,255,0.4); }
-    .rank-tags .conf-inline { display: none; color: var(--purple-bright); }
     .rank-conf {
       font-family: var(--font-condensed);
       font-size: 13px;
@@ -378,56 +310,6 @@
       border: 1px solid rgba(139,47,255,0.3);
       padding: 5px 14px;
       white-space: nowrap;
-    }
-    .rank-move {
-      font-family: var(--font-condensed);
-      font-size: 16px;
-      letter-spacing: 1.5px;
-      text-align: right;
-      white-space: nowrap;
-      min-width: 62px;
-    }
-    .rank-move-cell { text-align: right; min-width: 74px; }
-    .rank-move-cell .rank-move { min-width: 0; }
-    .rank-prev {
-      font-family: var(--font-condensed);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 3px;
-      white-space: nowrap;
-    }
-    .rank-move.new-in { letter-spacing: 1px; }
-    .rank-move.up { color: #46d17a; }    .rank-move.down { color: #e0556b; }
-    .rank-row.tier-break {
-      border-bottom: 2px solid rgba(139,47,255,0.55);
-      box-shadow: 0 1px 12px rgba(139,47,255,0.18);
-    }
-    .tier-label {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-family: var(--font-condensed);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--purple-bright);
-      padding: 22px 0 10px;
-    }
-    .tier-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(139,47,255,0.45), transparent);
-    }
-    .rank-move.flat { color: var(--text-muted); }
-    .rank-move.new {
-      font-size: 13px;
-      color: var(--purple-bright);
-      border: 1px solid rgba(139,47,255,0.4);
-      padding: 3px 8px;
     }
 
     /* ── DIVIDER ── */
@@ -478,32 +360,12 @@
       main { padding: 24px 24px 64px; }
       .rank-feature { gap: 20px; padding: 24px 22px; }
       .rank-feature .big-num { font-size: 64px; width: 72px; }
-      .rank-row { grid-template-columns: 30px 48px minmax(0,1fr) auto; column-gap: 12px; padding-left: 12px; padding-right: 12px; }
+      .rank-row { grid-template-columns: 40px 44px 1fr; gap: 14px; }
       .rank-conf { display: none; }
-      .rank-move { min-width: 0; font-size: 15px; }
-      .rank-move-cell { min-width: 0; }
-      .rank-prev { font-size: 10px; letter-spacing: 0.5px; margin-top: 2px; }
-      .rank-name { overflow-wrap: break-word; }
-      .rank-tags .conf-inline { display: inline; }
       footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
     }
     @media (max-width: 560px) {
       .rank-feature .logo-wrap { display: none; }
-    }
-  </style>
-
-  <style id="mobile-nav-css">
-    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;}
-    .nav-burger span{display:block;width:22px;height:2px;background:#e8e8e8;transition:transform .22s,opacity .22s;}
-    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .nav-burger.open span:nth-child(2){opacity:0;}
-    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-    @media (max-width:1000px){
-      .nav-burger{display:flex;}
-      nav .nav-links{display:flex !important;position:fixed;top:72px;left:0;right:0;z-index:120;flex-direction:column;gap:0;background:rgba(0,0,0,.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(106,15,214,.35);transform:translateY(-150%);transition:transform .25s ease;padding:6px 0;box-shadow:0 22px 44px rgba(0,0,0,.65);max-height:calc(100vh - 72px);overflow-y:auto;}
-      nav .nav-links.open{transform:translateY(0);}
-      nav .nav-links a{padding:15px 24px;font-size:16px;}
-      nav .nav-links a::after{display:none !important;}
     }
   </style>
 </head>
@@ -516,19 +378,17 @@
     </a>
     <ul class="nav-links">
       <li><a href="rankings.html" class="active">Rankings</a></li>
-      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
       <li><a href="news.html">News Feed</a></li>
     </ul>
-  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
   <header class="rk-hero">
-    <p class="hero-eyebrow">Rankings</p>
-    <h1>The <em>Top 25,</em><br/>In the State.</h1>
+    <p class="hero-eyebrow">Rankings · 2026–27 Preseason</p>
+    <h1>The <em>Top 10,</em><br/>In the State.</h1>
     <p class="sub">
       Statewide team rankings built on film study and stats — not recruiting hype.
       Updated regularly throughout the season.
@@ -537,10 +397,6 @@
 
   <main>
     <div class="date-badge" id="rank-date"></div>
-    <section class="movement" id="movement" hidden>
-      <div class="mv-head"><span class="mv-title">This Week's Movement</span><span class="mv-note" id="mv-note"></span><span class="mv-rule"></span></div>
-      <div class="mv-list" id="mv-strip"></div>
-    </section>
     <div id="rank-feature"></div>
     <div class="rank-list" id="rank-list"></div>
   </main>
@@ -551,7 +407,6 @@
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
       <li><a href="rankings.html">Rankings</a></li>
-      <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
@@ -566,19 +421,14 @@
     // RANKINGS SOURCE — Google Sheet (published as CSV)
     // To update rankings: edit your Google Sheet and save.
     // The page automatically reflects changes on next load.
-    // Sheet columns: Rank | Team | Conference | Region | Change (movement)
+    // Sheet columns: Rank | Team | Conference | Region
     // ══════════════════════════════════════════════════════════════
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=0&single=true&output=csv";
-    // Previous-week tab (the one next to "Current"). Publish that tab as CSV and paste
-    // its URL here to enable the "Dropped out" list. Leave "" to hide that list.
-    const PREV_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1078721191&single=true&output=csv";
-    // "Week Start" tab — Monday's rankings. Drives Biggest Risers / Fallers.
-    const WEEKSTART_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1510859956&single=true&output=csv";
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["san tan charter","ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep"];
-    const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"};
+    const LOGO_FILES = ["ala - qc","apollo","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day o'connor","st. mary's","sunnyslope","tucson","verrado","west point","westview","willow canyon"];
+    const TEAM_COLORS = {"ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
     const COLOR_MAP = {}; Object.entries(TEAM_COLORS).forEach(([k,v]) => { COLOR_MAP[norm(k)] = v; });
@@ -599,126 +449,14 @@
       return `<div class="${size==='lg'?'logo-wrap':'rank-logo'}" style="${glow}">${inner}</div>`;
     }
 
-    let LAST_UPDATED = "";
-
-    // ── This Week's Movement ──
-    function mvLogo(name) {
-      const { logo } = resolveTeam(name);
-      const inner = logo
-        ? `<img src="${logo}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc((name||'?').charAt(0))}</span>'" />`
-        : `<span class="mono">${esc((name||'?').charAt(0))}</span>`;
-      return `<div class="mv-logo">${inner}</div>`;
-    }
-    function mvRows(items) {
-      return items.map(x => `
-        <div class="mv-item">
-          <span class="mv-arrow ${x.cls}">${x.icon}</span>
-          ${mvLogo(x.team)}
-          <span class="mv-team">${esc(x.team)}</span>
-          <span class="mv-txt">${x.txt}</span>
-        </div>`).join("");
-    }
-    function renderMovement(teams, prev, weekStart) {
-      // Short label like "July 27" — prefers the tab's own date cell, else the most recent Monday.
-      const MONTHS = ["January","February","March","April","May","June",
-                      "July","August","September","October","November","December"];
-      const shortDate = raw => {
-        const m = String(raw || "").trim().match(/^(\d{1,2})[\/\-](\d{1,2})/);
-        return (m && +m[1] >= 1 && +m[1] <= 12) ? `${MONTHS[+m[1]-1].slice(0,3)} ${+m[2]}` : "";
-      };
-      const lastMonday = () => {
-        const d = new Date();
-        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-        return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
-      };
-      void lastMonday;
-      const rankOf = (list, team) => {
-        const hit = (list || []).find(x => norm(x.team) === norm(team));
-        return hit ? hit.rank : null;
-      };
-      const weekLabel = shortDate(weekStart && weekStart.sheetDate);
-      const curLabel = shortDate(LAST_UPDATED);
-      let prevLabel = shortDate(prev && prev.sheetDate);
-      // Never claim the comparison is against the current rankings' own date.
-      if (prevLabel && prevLabel === curLabel) prevLabel = "";
-      // Risers/fallers measure the whole week: Current vs Week Start
-      // (falls back to Previous if the Week Start tab isn't available).
-      const base = (weekStart && weekStart.length) ? weekStart : prev;
-      const moved = [];
-      teams.forEach(t => {
-        const was = rankOf(base, t.team);
-        if (was === null) return;               // absent from the baseline = a new entry
-        const delta = was - t.rank;             // positive = climbed
-        if (delta !== 0) moved.push({ team: t.team, delta, rank: t.rank, was });
-      });
-      const topTied = (list, pick) => {
-        if (!list.length) return [];
-        const best = pick(list[0]);
-        return list.filter(m => pick(m) === best);
-      };
-      const asOf = curLabel ? ` as of ${curLabel}` : "";
-      const spots = n => `${n} spot${n === 1 ? "" : "s"}`;
-      const risers = topTied(moved.filter(m => m.delta > 0).sort((a,b) => b.delta - a.delta), m => m.delta)
-        .map(m => ({ team: m.team, cls: "up", icon: "▲",
-          txt: `climbed ${spots(m.delta)} — <b>#${m.was} → #${m.rank}</b>` }));
-      const fallers = topTied(moved.filter(m => m.delta < 0).sort((a,b) => a.delta - b.delta), m => m.delta)
-        .map(m => ({ team: m.team, cls: "down", icon: "▼",
-          txt: `fell ${spots(Math.abs(m.delta))} — <b>#${m.was} → #${m.rank}</b>` }));
-
-      // Moved in / dropped out compare against the last published version.
-      const prevList = (prev && prev.length) ? prev : [];
-      const prevSet = new Set(prevList.map(p => norm(p.team)));
-      const curSet = new Set(teams.map(t => norm(t.team)));
-      const entries = (prevList.length
-          ? teams.filter(t => !prevSet.has(norm(t.team)))
-          : teams.filter(t => /^(unranked|nr|new|n\/r)$/i.test(String(t.move||"").trim())))
-        .sort((a,b) => a.rank - b.rank)
-        .map(t => ({ team: t.team, cls: "new", icon: "★",
-          txt: `new to the Top 25${asOf} — <b>#${t.rank}</b>` }));
-      const dropped = prevList.filter(p => p.team && !curSet.has(norm(p.team)))
-        .sort((a,b) => a.rank - b.rank)
-        .map(p => ({ team: p.team, cls: "out", icon: "✕",
-          txt: `dropped out${asOf} — was <b>#${p.rank}</b>` }));
-
-      const items = [...risers, ...fallers, ...entries, ...dropped];
-      if (!items.length) { document.getElementById("movement").hidden = true; return; }
-
-      const notes = [];
-      if (weekLabel) notes.push(`Week of ${weekLabel}`);
-      document.getElementById("mv-note").textContent = notes.join(" · ");
-      document.getElementById("mv-strip").innerHTML = mvRows(items);
-      document.getElementById("movement").hidden = false;
-    }
-
-    // ── turn "7/27" or "7/27/26" into "July 27, 2026" ──
-    function prettyDate(raw) {
-      const s = String(raw || "").trim();
-      if (!s) return "";
-      const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?$/);
-      if (!m) return s;
-      const MONTHS = ["January","February","March","April","May","June",
-                      "July","August","September","October","November","December"];
-      const mo = +m[1], day = +m[2];
-      if (mo < 1 || mo > 12) return s;
-      let yr = m[3] ? +m[3] : new Date().getFullYear();
-      if (yr < 100) yr += 2000;
-      return `${MONTHS[mo-1]} ${day}, ${yr}`;
-    }
-
     // ── CSV parser ──
-    function parseCSV(text, keepDate) {
+    function parseCSV(text) {
       const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
       if (lines.length < 2) return [];
       const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g,"").trim().toLowerCase());
-      // cell G1 on the Current tab holds the "last updated" date
-      if (keepDate !== false) LAST_UPDATED = (lines[0].split(",")[6] || "").replace(/^"|"$/g,"").trim();
-      const SHEET_DATE = (lines[0].split(",")[6] || "").replace(/^"|"$/g,"").trim();
       const idx = k => headers.findIndex(h => h.includes(k));
       const iRank = idx("rank"), iTeam = idx("team"), iConf = idx("conf"), iReg = idx("reg");
-      const iMove = headers.findIndex(h => /chang|move|mvmt|\bdiff/.test(h));
-      let iTier = headers.findIndex(h => /tier|break|group/.test(h));
-      if (iTier < 0) iTier = headers.findIndex((h, k) => h === "" && k > 1);
-      const out = lines.slice(1).map(line => {
+      return lines.slice(1).map(line => {
         const cols = []; let cur = "", inQ = false;
         for (const ch of line) {
           if (ch === '"') { inQ = !inQ; }
@@ -730,65 +468,15 @@
           rank: iRank >= 0 ? parseInt(cols[iRank]) || 0 : 0,
           team: iTeam >= 0 ? cols[iTeam] : "",
           conf: iConf >= 0 ? cols[iConf] : "",
-          region: iReg >= 0 ? cols[iReg] : "",
-          move: iMove >= 0 ? cols[iMove] : "",
-          tier: iTier >= 0 ? cols[iTier] : ""
+          region: iReg >= 0 ? cols[iReg] : ""
         };
       }).filter(r => r.team).sort((a,b) => a.rank - b.rank);
-      out.sheetDate = SHEET_DATE;
-      return out;
-    }
-
-    // ── tier break: line under a row when the sheet marks a break ──
-    // Works two ways: a flag cell (x / yes / true / 1) draws a line under THAT row,
-    // or a tier label ("Tier 1", "A", 1…) draws a line wherever the label changes.
-    function isBreakAfter(cur, next) {
-      const c = String(cur && cur.tier || "").trim();
-      if (!next) return false;
-      const n = String(next.tier || "").trim();
-      if (/^(x|yes|y|true|1|break)$/i.test(c)) return true;
-      if (c && n && c.toLowerCase() !== n.toLowerCase()) return true;
-      return false;
-    }
-
-    // ── assign a tier number to every team (increments after each marked break) ──
-    function assignTiers(teams) {
-      let n = 1;
-      teams.forEach((t, i) => {
-        t.tierNum = n;
-        if (isBreakAfter(t, teams[i+1])) n++;
-      });
-      return teams;
-    }
-
-    // ── movement badge + previous rank ──
-    // Previous rank is derived: prev = current rank + spots moved.
-    // "Unranked" / "NR" / "NEW" → green ▲ NEW, previous rank shown as NR.
-    function moveHtml(raw, rank) {
-      const s = String(raw == null ? "" : raw).trim();
-      const wrap = (badge, prev) =>
-        `<div class="rank-move-cell">${badge}${prev ? `<div class="rank-prev">Prev ${prev}</div>` : ""}</div>`;
-
-      if (/^(unranked|nr|new|n\/r)$/i.test(s))
-        return wrap(`<div class="rank-move up new-in">▲ NEW</div>`, "NR");
-
-      if (!s || s === "—" || s === "-")
-        return wrap(`<div class="rank-move flat">—</div>`, rank || "");
-
-      const n = parseInt(s.replace(/[^0-9-]/g, ""), 10);
-      if (isNaN(n) || n === 0) return wrap(`<div class="rank-move flat">—</div>`, rank || "");
-
-      const prev = rank ? rank + n : "";
-      return n > 0
-        ? wrap(`<div class="rank-move up">▲ ${n}</div>`, prev)
-        : wrap(`<div class="rank-move down">▼ ${Math.abs(n)}</div>`, prev);
     }
 
     // ── render ──
     function render(teams) {
       const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-      document.getElementById("rank-date").textContent =
-        LAST_UPDATED ? "Last updated " + prettyDate(LAST_UPDATED) : "As of " + today;
+      document.getElementById("rank-date").textContent = "As of " + today;
 
       if (!teams.length) {
         document.getElementById("rank-feature").innerHTML = "";
@@ -797,9 +485,7 @@
       }
 
       const t1 = teams[0];
-      assignTiers(teams);
       document.getElementById("rank-feature").innerHTML = `
-        <div class="tier-label">Tier 1</div>
         <div class="rank-row">
           <div class="rank-num">1</div>
           ${logoHtml(t1.team, 'sm')}
@@ -807,26 +493,22 @@
             <div class="rank-name">${esc(t1.team)}</div>
             <div class="rank-tags">
               <span>${esc(t1.region)}</span>
-              ${t1.conf?`<span class="sep">·</span><span class="conf-inline">${esc(t1.conf)}</span>`:""}
             </div>
           </div>
-          ${moveHtml(t1.move, t1.rank || 1)}
+          <div class="rank-conf">${esc(t1.conf)}</div>
         </div>`;
-      if (isBreakAfter(t1, teams[1])) document.getElementById("rank-feature").querySelector(".rank-row").classList.add("tier-break");
 
-      document.getElementById("rank-list").innerHTML = teams.slice(1).map((t, i, arr) => `
-        ${t.tierNum !== (i === 0 ? teams[0].tierNum : arr[i-1].tierNum) ? `<div class="tier-label">Tier ${t.tierNum}</div>` : ""}
-        <div class="rank-row${isBreakAfter(t, arr[i+1]) ? " tier-break" : ""}">
+      document.getElementById("rank-list").innerHTML = teams.slice(1).map((t, i) => `
+        <div class="rank-row">
           <div class="rank-num">${t.rank || i + 2}</div>
           ${logoHtml(t.team, 'sm')}
           <div class="rank-info">
             <div class="rank-name">${esc(t.team)}</div>
             <div class="rank-tags">
               <span>${esc(t.region)}</span>
-              ${t.conf?`<span class="sep">·</span><span class="conf-inline">${esc(t.conf)}</span>`:""}
             </div>
           </div>
-          ${moveHtml(t.move, t.rank || i + 2)}
+          <div class="rank-conf">${esc(t.conf)}</div>
         </div>`).join("");
     }
 
@@ -881,14 +563,6 @@
         const teams = parseCSV(csv);
         if (!teams.length) throw new Error("Empty or unparseable CSV");
         render(teams);
-        let prev = [], weekStart = [];
-        if (PREV_CSV_URL) {
-          try { prev = parseCSV(await tryFetch(PREV_CSV_URL), false); } catch(_){}
-        }
-        if (WEEKSTART_CSV_URL) {
-          try { weekStart = parseCSV(await tryFetch(WEEKSTART_CSV_URL), false); } catch(_){}
-        }
-        renderMovement(teams, prev, weekStart);
       } catch (e) {
         console.warn("Rankings load failed:", e.message);
         document.getElementById("rank-date").textContent = "Could not load";
@@ -899,13 +573,5 @@
     load();
   </script>
 
-
-  <script id="mobile-nav-js">
-    (function(){
-      var b=document.querySelector('.nav-burger'), l=document.querySelector('nav .nav-links');
-      if(b&&l){ b.addEventListener('click',function(){b.classList.toggle('open');l.classList.toggle('open');});
-        l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
-    })();
-  </script>
 </body>
 </html>
