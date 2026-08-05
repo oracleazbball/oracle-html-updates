@@ -163,6 +163,66 @@
       padding: 40px 48px 96px;
     }
 
+    /* ── FEATURED EPISODE ── */
+    .pod-featured {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 64px;
+    }
+    .pod-video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: var(--black-card);
+      border: 1px solid rgba(139,47,255,0.3);
+      overflow: hidden;
+    }
+    .pod-video-wrap iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    .pod-featured-info .section-label { margin-bottom: 14px; }
+    .pod-featured-info h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      margin-bottom: 16px;
+    }
+    .pod-featured-info p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #aaa;
+      margin-bottom: 28px;
+      max-width: 480px;
+    }
+    .yt-subscribe {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-condensed);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--purple-bright);
+      padding: 13px 26px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .yt-subscribe:hover { background: #a855f7; transform: translateY(-1px); }
+    .yt-subscribe svg { width: 18px; height: 18px; fill: currentColor; }
+    @media (max-width: 900px) {
+      .pod-featured { grid-template-columns: 1fr; gap: 24px; }
+    }
+
     /* ── COMING SOON STATE ── */
     .coming-soon {
       border: 1px solid rgba(139,47,255,0.3);
@@ -341,21 +401,30 @@
     <p class="hero-eyebrow">Podcasts</p>
     <h1>The <em>Discussion,</em><br/>On Air.</h1>
     <p>
-      Game recaps, player analysis, team breakdowns, and free-flowing conversation
-      on everything Arizona high school basketball.
+      Game recaps, player analysis, team breakdowns, coach interviews, and free-flowing
+      conversation on everything Arizona high school basketball.
     </p>
   </header>
 
   <main>
-    <div class="coming-soon">
-      <span class="cs-icon">🎙️</span>
-      <h2>First Episode Dropping Soon</h2>
-      <p>
-        The Oracle podcast is in production. We'll be covering game recaps,
-        breaking down teams, and diving deep into the AZ high school basketball
-        conversation you can't find anywhere else.
-      </p>
-      <div class="badge-soon">Coming Soon</div>
+    <div class="pod-featured">
+      <div class="pod-video-wrap">
+        <iframe src="https://www.youtube.com/embed/Bv1viY8wNnc?si=NNgogXlnPvqYuQ60" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <div class="pod-featured-info">
+        <p class="section-label">Episode 1 · Now Live</p>
+        <h2>The Oracle Podcast Has Launched</h2>
+        <p>
+          Our first episode with Saguaro head coach Lucas Ramirez is now out.
+          Subscribe on YouTube to catch every future episode — game recaps, team
+          breakdowns, and the AZ high school basketball conversation you can't
+          find anywhere else.
+        </p>
+        <a class="yt-subscribe" href="https://www.youtube.com/@the_az_oracle?sub_confirmation=1" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.5 15.5v-7l6 3.5-6 3.5Z"/></svg>
+          Subscribe on YouTube
+        </a>
+      </div>
     </div>
 
     <p class="section-label">What to Expect</p>
@@ -376,9 +445,9 @@
         <div class="expect-desc">Detailed looks at standout players, rising prospects, and under-the-radar talent across AZ.</div>
       </div>
       <div class="expect-card">
-        <div class="expect-icon">🔄</div>
-        <div class="expect-title">Transfer Talk</div>
-        <div class="expect-desc">Reactions to the latest offseason moves and what they mean for the landscape.</div>
+        <div class="expect-icon">🎤</div>
+        <div class="expect-title">Coach Interviews</div>
+        <div class="expect-desc">Conversations with AZ high school coaches on their teams, philosophy, and the season ahead.</div>
       </div>
       <div class="expect-card">
         <div class="expect-icon">🗣️</div>
