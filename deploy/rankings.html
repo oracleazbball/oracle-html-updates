@@ -120,52 +120,6 @@
     .nav-links a.active { color: var(--silver-light); }
     .nav-links a.active::after { transform: scaleX(1); }
 
-    /* ── MOVEMENT ── */
-    .movement { margin-bottom: 30px; }
-    .mv-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
-    .mv-title {
-      font-family: var(--font-condensed); font-size: 15px; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--purple-bright); white-space: nowrap;
-    }
-    .mv-note {
-      font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--text-muted);
-    }
-    .mv-rule { flex: 1; height: 1px; background: rgba(106,15,214,0.25); }
-    .mv-list { background: var(--black-card); border: 1px solid rgba(106,15,214,0.2); }
-    .mv-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 18px;
-      border-bottom: 1px solid rgba(106,15,214,0.12);
-    }
-    .mv-item:last-child { border-bottom: none; }
-    .mv-arrow {
-      font-family: var(--font-condensed); font-size: 14px;
-      width: 13px; text-align: center; flex-shrink: 0;
-    }
-    .mv-arrow.up { color: var(--pos, #46d17a); }
-    .mv-arrow.down { color: var(--neg, #e0556b); }
-    .mv-arrow.new { color: var(--purple-bright); }
-    .mv-arrow.out { color: var(--text-muted); }
-    .mv-logo {
-      width: 26px; height: 26px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: #0a0a0a; border: 1px solid rgba(106,15,214,0.4);
-    }
-    .mv-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
-    .mv-logo .mono { font-family: var(--font-display); font-weight: 900; font-size: 11px; color: #fff; }
-    .mv-team {
-      font-family: var(--font-condensed); font-size: 18px; letter-spacing: 0.5px;
-      text-transform: uppercase; color: var(--silver-light); flex-shrink: 0;
-    }
-    .mv-txt { font-family: var(--font-body); font-size: 13.5px; color: var(--text-muted); }
-    .mv-txt b { color: var(--silver); font-weight: 500; }
-    @media (max-width: 720px) {
-      .mv-head { flex-wrap: wrap; gap: 4px 10px; }
-      .mv-item { flex-wrap: wrap; gap: 8px 10px; padding: 11px 14px; }
-      .mv-txt { flex: 1 1 100%; padding-left: 51px; font-size: 13px; }
-    }
-
     /* ── HERO ── */
     .rk-hero {
       padding: 140px 48px 16px;
@@ -521,7 +475,6 @@
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
-      <li><a href="news.html">News Feed</a></li>
     </ul>
   <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
@@ -537,10 +490,6 @@
 
   <main>
     <div class="date-badge" id="rank-date"></div>
-    <section class="movement" id="movement" hidden>
-      <div class="mv-head"><span class="mv-title">This Week's Movement</span><span class="mv-note" id="mv-note"></span><span class="mv-rule"></span></div>
-      <div class="mv-list" id="mv-strip"></div>
-    </section>
     <div id="rank-feature"></div>
     <div class="rank-list" id="rank-list"></div>
   </main>
@@ -556,7 +505,6 @@
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
-      <li><a href="news.html">News Feed</a></li>
     </ul>
     <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
   </footer>
@@ -569,11 +517,6 @@
     // Sheet columns: Rank | Team | Conference | Region | Change (movement)
     // ══════════════════════════════════════════════════════════════
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=0&single=true&output=csv";
-    // Previous-week tab (the one next to "Current"). Publish that tab as CSV and paste
-    // its URL here to enable the "Dropped out" list. Leave "" to hide that list.
-    const PREV_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1078721191&single=true&output=csv";
-    // "Week Start" tab — Monday's rankings. Drives Biggest Risers / Fallers.
-    const WEEKSTART_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1510859956&single=true&output=csv";
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
@@ -600,95 +543,6 @@
     }
 
     let LAST_UPDATED = "";
-
-    // ── This Week's Movement ──
-    function mvLogo(name) {
-      const { logo } = resolveTeam(name);
-      const inner = logo
-        ? `<img src="${logo}" alt="" onerror="this.outerHTML='<span class=\\'mono\\'>${esc((name||'?').charAt(0))}</span>'" />`
-        : `<span class="mono">${esc((name||'?').charAt(0))}</span>`;
-      return `<div class="mv-logo">${inner}</div>`;
-    }
-    function mvRows(items) {
-      return items.map(x => `
-        <div class="mv-item">
-          <span class="mv-arrow ${x.cls}">${x.icon}</span>
-          ${mvLogo(x.team)}
-          <span class="mv-team">${esc(x.team)}</span>
-          <span class="mv-txt">${x.txt}</span>
-        </div>`).join("");
-    }
-    function renderMovement(teams, prev, weekStart) {
-      // Short label like "July 27" — prefers the tab's own date cell, else the most recent Monday.
-      const MONTHS = ["January","February","March","April","May","June",
-                      "July","August","September","October","November","December"];
-      const shortDate = raw => {
-        const m = String(raw || "").trim().match(/^(\d{1,2})[\/\-](\d{1,2})/);
-        return (m && +m[1] >= 1 && +m[1] <= 12) ? `${MONTHS[+m[1]-1].slice(0,3)} ${+m[2]}` : "";
-      };
-      const lastMonday = () => {
-        const d = new Date();
-        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-        return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
-      };
-      void lastMonday;
-      const rankOf = (list, team) => {
-        const hit = (list || []).find(x => norm(x.team) === norm(team));
-        return hit ? hit.rank : null;
-      };
-      const weekLabel = shortDate(weekStart && weekStart.sheetDate);
-      const curLabel = shortDate(LAST_UPDATED);
-      let prevLabel = shortDate(prev && prev.sheetDate);
-      // Never claim the comparison is against the current rankings' own date.
-      if (prevLabel && prevLabel === curLabel) prevLabel = "";
-      // Risers/fallers measure the whole week: Current vs Week Start
-      // (falls back to Previous if the Week Start tab isn't available).
-      const base = (weekStart && weekStart.length) ? weekStart : prev;
-      const moved = [];
-      teams.forEach(t => {
-        const was = rankOf(base, t.team);
-        if (was === null) return;               // absent from the baseline = a new entry
-        const delta = was - t.rank;             // positive = climbed
-        if (delta !== 0) moved.push({ team: t.team, delta, rank: t.rank, was });
-      });
-      const topTied = (list, pick) => {
-        if (!list.length) return [];
-        const best = pick(list[0]);
-        return list.filter(m => pick(m) === best);
-      };
-      const asOf = curLabel ? ` as of ${curLabel}` : "";
-      const spots = n => `${n} spot${n === 1 ? "" : "s"}`;
-      const risers = topTied(moved.filter(m => m.delta > 0).sort((a,b) => b.delta - a.delta), m => m.delta)
-        .map(m => ({ team: m.team, cls: "up", icon: "▲",
-          txt: `climbed ${spots(m.delta)} — <b>#${m.was} → #${m.rank}</b>` }));
-      const fallers = topTied(moved.filter(m => m.delta < 0).sort((a,b) => a.delta - b.delta), m => m.delta)
-        .map(m => ({ team: m.team, cls: "down", icon: "▼",
-          txt: `fell ${spots(Math.abs(m.delta))} — <b>#${m.was} → #${m.rank}</b>` }));
-
-      // Moved in / dropped out compare against the last published version.
-      const prevList = (prev && prev.length) ? prev : [];
-      const prevSet = new Set(prevList.map(p => norm(p.team)));
-      const curSet = new Set(teams.map(t => norm(t.team)));
-      const entries = (prevList.length
-          ? teams.filter(t => !prevSet.has(norm(t.team)))
-          : teams.filter(t => /^(unranked|nr|new|n\/r)$/i.test(String(t.move||"").trim())))
-        .sort((a,b) => a.rank - b.rank)
-        .map(t => ({ team: t.team, cls: "new", icon: "★",
-          txt: `new to the Top 25${asOf} — <b>#${t.rank}</b>` }));
-      const dropped = prevList.filter(p => p.team && !curSet.has(norm(p.team)))
-        .sort((a,b) => a.rank - b.rank)
-        .map(p => ({ team: p.team, cls: "out", icon: "✕",
-          txt: `dropped out${asOf} — was <b>#${p.rank}</b>` }));
-
-      const items = [...risers, ...fallers, ...entries, ...dropped];
-      if (!items.length) { document.getElementById("movement").hidden = true; return; }
-
-      const notes = [];
-      if (weekLabel) notes.push(`Week of ${weekLabel}`);
-      document.getElementById("mv-note").textContent = notes.join(" · ");
-      document.getElementById("mv-strip").innerHTML = mvRows(items);
-      document.getElementById("movement").hidden = false;
-    }
 
     // ── turn "7/27" or "7/27/26" into "July 27, 2026" ──
     function prettyDate(raw) {
@@ -881,14 +735,6 @@
         const teams = parseCSV(csv);
         if (!teams.length) throw new Error("Empty or unparseable CSV");
         render(teams);
-        let prev = [], weekStart = [];
-        if (PREV_CSV_URL) {
-          try { prev = parseCSV(await tryFetch(PREV_CSV_URL), false); } catch(_){}
-        }
-        if (WEEKSTART_CSV_URL) {
-          try { weekStart = parseCSV(await tryFetch(WEEKSTART_CSV_URL), false); } catch(_){}
-        }
-        renderMovement(teams, prev, weekStart);
       } catch (e) {
         console.warn("Rankings load failed:", e.message);
         document.getElementById("rank-date").textContent = "Could not load";

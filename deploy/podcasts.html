@@ -406,7 +406,6 @@
       <li><a href="podcasts.html" class="active">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
-      <li><a href="news.html">News Feed</a></li>
     </ul>
   <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
@@ -421,19 +420,14 @@
   </header>
 
   <main>
-    <div class="pod-featured">
+    <div class="pod-featured" id="podFeatured">
       <div class="pod-video-wrap">
-        <iframe src="https://www.youtube.com/embed/Bv1viY8wNnc?si=NNgogXlnPvqYuQ60" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe id="podFeaturedFrame" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
       <div class="pod-featured-info">
-        <p class="section-label">Episode 1 · Now Live</p>
-        <h2>The Oracle Podcast Has Launched</h2>
-        <p>
-          Our first episode with Saguaro head coach Lucas Ramirez is now out.
-          Subscribe on YouTube to catch every future episode — game recaps, team
-          breakdowns, and the AZ high school basketball conversation you can't
-          find anywhere else.
-        </p>
+        <p class="section-label" id="podFeaturedLabel">Most Recent</p>
+        <h2 id="podFeaturedTitle"></h2>
+        <p id="podFeaturedDesc"></p>
         <a class="yt-subscribe" href="https://www.youtube.com/@the_az_oracle?sub_confirmation=1" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.5 15.5v-7l6 3.5-6 3.5Z"/></svg>
           Subscribe on YouTube
@@ -441,28 +435,11 @@
       </div>
     </div>
 
+    <p class="section-label" id="moreEpLabel" style="display:none;">More Episodes</p>
+    <div class="clips-grid" id="episodesGrid" style="grid-template-columns:repeat(3,1fr);"></div>
+
     <p class="section-label">Clips</p>
-    <!-- Newest clip goes first: add new .clip-card blocks right after clips-grid opens. -->
-    <div class="clips-grid">
-      <div class="clip-card">
-        <div class="clip-video-wrap">
-          <iframe src="https://www.youtube.com/embed/lAVKwZlIHrc" title="Oracle Short" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-        <div class="clip-caption">Oracle Short</div>
-      </div>
-      <div class="clip-card">
-        <div class="clip-video-wrap">
-          <iframe src="https://www.youtube.com/embed/hvUW9yMyIb8" title="Oracle Short" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-        <div class="clip-caption">Oracle Short</div>
-      </div>
-      <div class="clip-card">
-        <div class="clip-video-wrap">
-          <iframe src="https://www.youtube.com/embed/DEfnWRijpUY" title="Oracle Short" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-        <div class="clip-caption">Oracle Short</div>
-      </div>
-    </div>
+    <div class="clips-grid" id="clipsGrid"></div>
 
     <p class="section-label">What to Expect</p>
     <div class="expect-grid">
@@ -499,6 +476,63 @@
     </div>
   </main>
 
+  <script>
+    const SUPABASE_URL = "https://vwfhurjqtczfopjasceo.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Zmh1cmpxdGN6Zm9wamFzY2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5MDcsImV4cCI6MjA5NTI5ODkwN30.DV1f8Mqi9gPS9vPSwco1-Auvnb2b3xXta8Ai-5vVWYU";
+    const esc = s => (s == null ? "" : String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    function extractYouTubeId(input) {
+      if (!input) return "";
+      const s = String(input).trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s; // already a bare video ID
+      const m = s.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : s;
+    }
+    const sb = (table, query) => fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    }).then(r => r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)));
+
+    async function loadEpisode() {
+      try {
+        const all = await sb("podcast_episodes", "select=*&order=published_at.desc");
+        if (!all.length) return;
+        const featured = all.find(e => e.is_featured) || all[0];
+        document.getElementById("podFeaturedFrame").src = `https://www.youtube.com/embed/${esc(extractYouTubeId(featured.video_id || featured.url))}`;
+        document.getElementById("podFeaturedTitle").textContent = featured.title || "";
+        document.getElementById("podFeaturedDesc").textContent = featured.description || "";
+
+        const rest = all.filter(e => e !== featured);
+        if (rest.length) {
+          document.getElementById("moreEpLabel").style.display = "";
+          document.getElementById("episodesGrid").innerHTML = rest.map(e => `
+            <div class="clip-card">
+              <div class="clip-video-wrap" style="padding-top:56.25%;">
+                <iframe src="https://www.youtube.com/embed/${esc(extractYouTubeId(e.video_id || e.url))}" title="${esc(e.title || 'Episode')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <div class="clip-caption"><strong>${esc(e.title || "Episode")}</strong>${e.description ? `<br/>${esc(e.description)}` : ""}</div>
+            </div>`).join("");
+        }
+      } catch (e) { console.warn("Episode load failed:", e); }
+    }
+
+    async function loadClips() {
+      const grid = document.getElementById("clipsGrid");
+      try {
+        const rows = await sb("podcast_clips", "select=*&order=created_at.desc");
+        if (!rows.length) return;
+        grid.innerHTML = rows.map(c => `
+          <div class="clip-card">
+            <div class="clip-video-wrap">
+              <iframe src="https://www.youtube.com/embed/${esc(extractYouTubeId(c.video_id || c.url))}" title="${esc(c.caption || 'Oracle Short')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+            <div class="clip-caption">${esc(c.caption || "Oracle Short")}</div>
+          </div>`).join("");
+      } catch (e) { console.warn("Clips load failed:", e); }
+    }
+
+    loadEpisode();
+    loadClips();
+  </script>
+
   <div class="divider"></div>
 
   <footer>
@@ -510,7 +544,6 @@
       <li><a href="podcasts.html">Podcasts</a></li>
       <li><a href="transfers.html">Transfer Tracker</a></li>
       <li><a href="rosters.html">Rosters</a></li>
-      <li><a href="news.html">News Feed</a></li>
     </ul>
     <div class="footer-copy">© 2026 The Oracle · Arizona High School Basketball</div>
   </footer>
