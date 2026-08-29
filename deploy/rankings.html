@@ -16,14 +16,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="The Oracle" />
   <meta property="og:title" content="Rankings · The Oracle" />
-  <meta property="og:description" content="The top 25 high school basketball teams in Arizona, updated by The Oracle." />
+  <meta property="og:description" content="The top 32 high school basketball teams in Arizona, updated by The Oracle." />
   <meta property="og:url" content="https://oraclebasketball.com/rankings" />
   <meta property="og:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Rankings · The Oracle" />
-  <meta name="twitter:description" content="The top 25 high school basketball teams in Arizona, updated by The Oracle." />
+  <meta name="twitter:description" content="The top 32 high school basketball teams in Arizona, updated by The Oracle." />
   <meta name="twitter:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -481,7 +481,7 @@
 
   <header class="rk-hero">
     <p class="hero-eyebrow">Rankings</p>
-    <h1>The <em>Top 25,</em><br/>In the State.</h1>
+    <h1>The <em>Top 32,</em><br/>In the State.</h1>
     <p class="sub">
       Statewide team rankings built on film study and stats — not recruiting hype.
       Updated regularly throughout the season.
@@ -489,12 +489,149 @@
   </header>
 
   <main>
+    <div class="conf-section">
+      <div class="conf-header-row">
+        <h2 class="conf-title">Top 10 <em>By Conference</em></h2>
+        <button id="conf-hide-toggle">Hide</button>
+      </div>
+      <div id="conf-body">
+        <div class="conf-tabs" id="conf-tabs"></div>
+        <button class="conf-bracket-btn" id="conf-bracket-toggle" style="display:none;">View Full Bracket</button>
+        <p id="open-note" style="display:none;">The top eight (8) highest rated teams from the 4A-6A conferences, along with the next eight (8) highest rated teams combined from the 4A-6A conferences, will qualify for the Open playoffs.</p>
+        <div class="conf-panel" id="conf-panel"></div>
+      </div>
+    </div>
+
     <div class="date-badge" id="rank-date"></div>
     <div id="rank-feature"></div>
     <div class="rank-list" id="rank-list"></div>
   </main>
 
+  <div id="bracket-modal">
+    <div class="bracket-modal-inner">
+      <button id="bracket-modal-close">&times;</button>
+      <h3 class="bracket-modal-title">Open Projections — Hypothetical Bracket</h3>
+      <button id="bracket-clear-picks" onclick="clearPicks()">Clear Picks</button>
+      <div class="bracket-scroll" id="bracket-modal-body"></div>
+    </div>
+  </div>
+
   <div class="divider"></div>
+
+  <style>
+    .conf-section { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .conf-title { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; margin: 0; color: var(--text-muted); }
+    .conf-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    #conf-hide-toggle {
+      padding: 5px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-muted); font-family: var(--font-body); font-size: 12px; cursor: pointer;
+    }
+    #conf-hide-toggle:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
+    #conf-body.collapsed { display: none; }
+    .conf-title em { color: var(--purple-bright); font-style: normal; }
+    .conf-tabs { display: flex; gap: 10px; max-width: 560px; flex-wrap: wrap; }
+    .conf-tab-btn {
+      flex: 1; padding: 10px 12px; background: var(--black-card); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--silver-light); font-family: var(--font-condensed); font-size: 15px; letter-spacing: 2px;
+      cursor: pointer; text-align: center; transition: border-color .2s, color .2s;
+    }
+    .conf-tab-btn:hover { border-color: var(--purple); }
+    .conf-tab-btn.active { border-color: var(--purple-bright); color: var(--purple-bright); background: rgba(106,15,214,0.1); }
+    #open-note { max-width: 480px; font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 10px 0 4px; }
+    .conf-panel { margin-top: 16px; max-width: 480px; }
+    .conf-panel.open-wide { max-width: 480px; }
+      display: none; margin-top: 12px; padding: 8px 14px; background: transparent; border: 1px solid var(--purple);
+      color: var(--purple-bright); font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; cursor: pointer;
+    }
+    .conf-bracket-btn:hover { background: rgba(106,15,214,0.15); }
+    .bracket-row {
+      display: grid; grid-template-columns: 24px 26px 1fr 34px 1fr 26px 24px;
+      align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .bracket-seed { font-family: var(--font-condensed); font-size: 14px; color: var(--text-muted); text-align: center; }
+    .bracket-name { font-size: 14px; }
+    .bracket-name.right { text-align: right; }
+    .bracket-vs { font-family: var(--font-condensed); font-size: 12px; color: var(--text-muted); text-align: center; }
+    .bracket-scroll { overflow-x: auto; padding-bottom: 12px; }
+    .bracket-tree { position: relative; }
+    .bracket-lines { position: absolute; top: 0; left: 0; pointer-events: none; }
+    .bracket-lines line { stroke: rgba(255,255,255,0.22); stroke-width: 1.5; }
+    .b-match {
+      position: absolute; display: flex; align-items: center; gap: 6px;
+      background: var(--black-card); border: 1px solid rgba(106,15,214,0.3);
+      padding: 0 8px; font-size: 12px; color: var(--silver-light); white-space: nowrap; overflow: hidden;
+    }
+    .b-match .rank-logo { width: 18px; height: 18px; flex-shrink: 0; }
+    .b-seed {
+      font-family: var(--font-condensed); font-size: 12px; color: var(--purple-bright);
+      background: rgba(106,15,214,0.15); border-radius: 3px; padding: 1px 5px; flex-shrink: 0;
+      min-width: 18px; text-align: center; display: inline-block;
+    }
+    .b-match2 {
+      position: absolute; background: var(--black-card); border: 1px solid rgba(106,15,214,0.3);
+      font-size: 12px; color: var(--silver-light); overflow: hidden;
+    }
+    .b-match2 .b-row { display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; overflow: hidden; }
+    .b-match2 .b-row:last-child { border-bottom: none; }
+    .b-match2 .b-row span { overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+    .b-match2 .rank-logo { width: 16px; height: 16px; flex-shrink: 0; }
+    .b-match2 .b-row.pickable { cursor: pointer; }
+    .b-match2 .b-row.pickable:hover { background: rgba(106,15,214,0.18); }
+    .b-match2 .b-row.picked { background: rgba(106,15,214,0.28); }
+    .b-match2 .b-row.picked span { color: var(--purple-bright); }
+    #bracket-modal {
+      display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.82);
+      align-items: center; justify-content: center;
+    }
+    #bracket-modal.open { display: flex; }
+    .bracket-modal-inner {
+      position: relative; background: var(--black-card); border: 1px solid rgba(106,15,214,0.4);
+      max-width: 94vw; max-height: 90vh; padding: 28px; overflow: auto;
+    }
+    .bracket-modal-title { font-family: var(--font-condensed); letter-spacing: 2px; font-size: 18px; margin-bottom: 20px; display: inline-block; }
+    #bracket-clear-picks {
+      margin: 0 0 20px 16px; padding: 6px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text-muted); font-family: var(--font-body); font-size: 12px; cursor: pointer;
+    }
+    #bracket-clear-picks:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
+    .champion-box {
+      position: absolute; display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, rgba(106,15,214,0.25), rgba(139,47,255,0.1));
+      border: 1px solid var(--purple-bright); padding: 0 14px;
+    }
+    .champion-box .rank-logo { width: 30px; height: 30px; }
+    .champion-seed { font-family: var(--font-condensed); font-size: 11px; color: var(--purple-bright); letter-spacing: 1px; }
+    .champion-name { font-size: 14px; font-weight: 700; }
+    .champion-placeholder { font-size: 13px; color: var(--text-muted); margin: 0 auto; }
+    #bracket-modal-close {
+      position: absolute; top: 14px; right: 16px; background: transparent; border: none;
+      color: var(--silver-light); font-size: 26px; cursor: pointer; line-height: 1;
+    }
+    .b-match span { overflow: hidden; text-overflow: ellipsis; }
+    .conf-panel.bracket-mode { max-width: 100%; }
+    .bracket-quadrants { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .bracket-quadrant { border: 1px solid rgba(255,255,255,0.08); padding: 16px; overflow-x: auto; }
+    .bracket-quad-label { font-family: var(--font-condensed); letter-spacing: 2px; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+    .bracket-final-four { margin-top: 28px; max-width: 640px; }
+    @media (max-width: 800px) {
+      .bracket-quadrants { grid-template-columns: 1fr; }
+    }
+    .conf-bracket-btn {
+      display: none; margin-top: 12px; padding: 8px 14px; background: transparent; border: 1px solid var(--purple);
+      color: var(--purple-bright); font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; cursor: pointer;
+    }
+    .conf-bracket-btn:hover { background: rgba(106,15,214,0.15); }
+    .conf-panel:empty { margin-top: 0; }
+    .conf-col-title { display: none; }
+    .conf-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .conf-row .rank-logo { width: 26px; height: 26px; }
+    .conf-num { font-family: var(--font-condensed); font-size: 15px; color: var(--text-muted); width: 20px; }
+    .conf-name { font-size: 17px; font-weight: 600; flex: 1; }
+    .conf-state-rank { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1px; color: var(--text-muted); }
+    @media (max-width: 800px) {
+      .conf-tabs, .conf-panel { max-width: 100%; }
+    }
+  </style>
 
   <footer>
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
@@ -520,7 +657,7 @@
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep"];
+    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep"];
     const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
@@ -564,9 +701,11 @@
       const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
       if (lines.length < 2) return [];
       const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g,"").trim().toLowerCase());
-      // cell G1 on the Current tab holds the "last updated" date
-      if (keepDate !== false) LAST_UPDATED = (lines[0].split(",")[6] || "").replace(/^"|"$/g,"").trim();
-      const SHEET_DATE = (lines[0].split(",")[6] || "").replace(/^"|"$/g,"").trim();
+      // "last updated" date lives in the header row — scan for a date-shaped cell instead of a fixed column
+      const headerCells = lines[0].split(",").map(c => c.replace(/^"|"$/g,"").trim());
+      const dateCell = headerCells.find(c => /^\d{1,2}[\/\-]\d{1,2}([\/\-]\d{2,4})?$/.test(c)) || "";
+      if (keepDate !== false) LAST_UPDATED = dateCell;
+      const SHEET_DATE = dateCell;
       const idx = k => headers.findIndex(h => h.includes(k));
       const iRank = idx("rank"), iTeam = idx("team"), iConf = idx("conf"), iReg = idx("reg");
       const iMove = headers.findIndex(h => /chang|move|mvmt|\bdiff/.test(h));
@@ -639,7 +778,9 @@
     }
 
     // ── render ──
+    let ALL_TEAMS = [];
     function render(teams) {
+      ALL_TEAMS = teams;
       const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
       document.getElementById("rank-date").textContent =
         LAST_UPDATED ? "Last updated " + prettyDate(LAST_UPDATED) : "As of " + today;
@@ -682,6 +823,223 @@
           </div>
           ${moveHtml(t.move, t.rank || i + 2)}
         </div>`).join("");
+    }
+
+    // ── Top 10 By Conference (separate sheet tab: columns 6A | 5A | 4A, ranked top-to-bottom) ──
+    const CONF_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=532557529&single=true&output=csv";
+    const OPEN_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=662678664&single=true&output=csv";
+
+    function parseOpenCSV(text) {
+      const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
+      const teams = [], confMap = {};
+      const ELIGIBLE = new Set(["6A","5A","4A"]);
+      lines.forEach(line => {
+        const cells = []; let cur = "", inQ = false;
+        for (const ch of line) {
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ""; }
+          else cur += ch;
+        }
+        cells.push(cur.trim());
+        const [team, conf] = cells;
+        if (team && ELIGIBLE.has((conf || "").trim())) { teams.push(team); confMap[team] = conf || ""; }
+      });
+      return { teams, confMap };
+    }
+
+    function parseConfCSV(text) {
+      const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return {};
+      const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g,"").trim());
+      const cols = headers.map(() => []);
+      lines.slice(1).forEach(line => {
+        const cells = []; let cur = "", inQ = false;
+        for (const ch of line) {
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ""; }
+          else cur += ch;
+        }
+        cells.push(cur.trim());
+        cells.forEach((c, i) => { if (c) cols[i].push(c); });
+      });
+      const out = {};
+      headers.forEach((h, i) => out[h] = cols[i]);
+      return out;
+    }
+
+    let CONF_DATA = {};
+    let CONF_OPEN = null;
+
+    let BRACKET_VIEW = false;
+    let PICKS = {};
+    // consecutive pairs in SEED_ORDER are round-1 opponents (per Open bracket seeding; higher seed # listed first/top)
+    const SEED_ORDER = [32,1,17,16,24,9,25,8,28,5,21,12,20,13,29,4,30,3,19,14,22,11,27,6,26,7,23,10,18,15,31,2];
+
+    function pickWinner(r, i, slot, seed, name) {
+      if (!seed) return;
+      PICKS[`${r}-${i}`] = { seed, name };
+      Object.keys(PICKS).forEach(k => { const kr = parseInt(k.split("-")[0], 10); if (kr > r) delete PICKS[k]; });
+      renderBracketModal();
+    }
+
+    function buildFullBracket(teams) {
+      const t = teams.slice(0, 32);
+      const boxW = 200, rowInnerH = 22, boxH = rowInnerH * 2, colGap = 60, rowH0 = 58;
+      const matches0 = [];
+      for (let i = 0; i < 32; i += 2) matches0.push([SEED_ORDER[i], SEED_ORDER[i + 1]]);
+      const roundMatches = [matches0.map(([a, b]) => ({ seeds: [a, b], names: [t[a - 1] || "TBD", t[b - 1] || "TBD"] }))];
+      let n = 16, r = 0;
+      while (n > 1) {
+        n = n / 2; r++;
+        const prevRound = roundMatches[r - 1];
+        roundMatches.push(Array.from({ length: n }, (_, j) => {
+          const winA = PICKS[`${r - 1}-${2 * j}`], winB = PICKS[`${r - 1}-${2 * j + 1}`];
+          return { seeds: [winA ? winA.seed : null, winB ? winB.seed : null], names: [winA ? winA.name : "TBD", winB ? winB.name : "TBD"] };
+        }));
+      }
+      const containerH = 16 * rowH0;
+      const centers = [Array.from({ length: 16 }, (_, i) => containerH / 16 * (i + 0.5))];
+      for (let rr = 0; rr < roundMatches.length - 1; rr++) {
+        const prev = centers[rr], next = [];
+        for (let i = 0; i < prev.length; i += 2) next.push((prev[i] + prev[i + 1]) / 2);
+        centers.push(next);
+      }
+      const championBoxW = 210;
+      const totalWidth = roundMatches.length * boxW + (roundMatches.length - 1) * colGap + colGap + championBoxW;
+      let boxesHtml = "", linesHtml = "";
+      roundMatches.forEach((round, rr) => {
+        const x = rr * (boxW + colGap);
+        round.forEach((m, i) => {
+          const cy = centers[rr][i] - boxH / 2;
+          const pick = PICKS[`${rr}-${i}`];
+          boxesHtml += `<div class="b-match2" style="left:${x}px;top:${cy}px;width:${boxW}px;height:${boxH}px;">
+            ${[0, 1].map(slot => {
+              const seed = m.seeds[slot], name = m.names[slot];
+              const isPicked = pick && pick.seed === seed && seed != null;
+              const clickable = seed != null;
+              return `<div class="b-row${clickable ? " pickable" : ""}${isPicked ? " picked" : ""}" ${clickable ? `onclick="pickWinner(${rr},${i},${slot},${seed},'${esc(name).replace(/'/g, "\\'")}')"` : ""}>
+                ${seed ? `<span class="b-seed">${seed}</span>` : ""}${rr === 0 ? logoHtml(name, 'xs') : ""}<span>${esc(name)}</span>
+              </div>`;
+            }).join("")}
+          </div>`;
+        });
+        if (rr < roundMatches.length - 1) {
+          const leftEdge = x + boxW, nextX = leftEdge + colGap / 2, rightStart = x + boxW + colGap;
+          for (let i = 0; i < round.length; i += 2) {
+            const yTop = centers[rr][i], yBot = centers[rr][i + 1], yMid = centers[rr + 1][i / 2];
+            linesHtml += `
+              <line x1="${leftEdge}" y1="${yTop}" x2="${nextX}" y2="${yTop}" />
+              <line x1="${leftEdge}" y1="${yBot}" x2="${nextX}" y2="${yBot}" />
+              <line x1="${nextX}" y1="${yTop}" x2="${nextX}" y2="${yBot}" />
+              <line x1="${nextX}" y1="${yMid}" x2="${rightStart}" y2="${yMid}" />
+            `;
+          }
+        }
+      });
+      const lastR = roundMatches.length - 1;
+      const champCy = centers[lastR][0];
+      const champPick = PICKS[`${lastR}-0`];
+      const champX = lastR * (boxW + colGap) + boxW + colGap;
+      boxesHtml += `<div class="champion-box" style="left:${champX}px;top:${champCy - boxH / 2}px;width:${championBoxW}px;height:${boxH}px;">
+        ${champPick ? `${logoHtml(champPick.name, 'xs')}<div><div class="champion-seed">#${champPick.seed} SEED</div><div class="champion-name">${esc(champPick.name)}</div></div>` : `<span class="champion-placeholder">🏆 Champion</span>`}
+      </div>`;
+      linesHtml += `<line x1="${lastR * (boxW + colGap) + boxW}" y1="${champCy}" x2="${champX}" y2="${champCy}" />`;
+      return `<div class="bracket-tree" style="width:${totalWidth}px;height:${containerH}px;">
+        <svg class="bracket-lines" width="${totalWidth}" height="${containerH}">${linesHtml}</svg>
+        ${boxesHtml}
+      </div>`;
+    }
+
+    function clearPicks() { PICKS = {}; renderBracketModal(); }
+
+    function renderBracketModal() {
+      document.getElementById("bracket-modal-body").innerHTML = buildFullBracket(CONF_DATA["Open Projections"] || []);
+    }
+    function openBracketModal() {
+      renderBracketModal();
+      document.getElementById("bracket-modal").classList.add("open");
+    }
+    function closeBracketModal() { document.getElementById("bracket-modal").classList.remove("open"); }
+
+    function stateRank(name) {
+      const n = norm(name);
+      const t = ALL_TEAMS.find(t => norm(t.team) === n);
+      return t ? (t.rank || null) : null;
+    }
+
+    function renderConfPanel() {
+      const panel = document.getElementById("conf-panel");
+      if (!CONF_OPEN || !CONF_DATA[CONF_OPEN]) { panel.innerHTML = ""; panel.classList.remove("open-wide"); return; }
+      const isOpen = CONF_OPEN === "Open Projections";
+      panel.classList.toggle("open-wide", isOpen);
+      const bracketBtn = document.getElementById("conf-bracket-toggle");
+      bracketBtn.style.display = isOpen ? "inline-block" : "none";
+      panel.classList.remove("bracket-mode");
+      const note = document.getElementById("open-note");
+      note.style.display = isOpen ? "block" : "none";
+      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 10).map((team, i) => {
+        const sr = stateRank(team);
+        const conf = isOpen ? OPEN_CONF_MAP[team] : null;
+        return `
+        <div class="conf-row">
+          <div class="conf-num">${i + 1}</div>
+          ${logoHtml(team, 'xs')}
+          <div class="conf-name">${esc(team)}</div>
+          ${conf ? `<div class="conf-state-rank">${esc(conf)}</div>` : ""}
+          ${(!isOpen && sr) ? `<div class="conf-state-rank">#${sr} State</div>` : ""}
+        </div>
+      `;
+      }).join("");
+    }
+
+    function renderConf(data) {
+      CONF_DATA = data;
+      const classes = Object.keys(data).filter(k => data[k] && data[k].length);
+      const tabs = document.getElementById("conf-tabs");
+      if (!classes.length) { tabs.innerHTML = ""; return; }
+
+      tabs.innerHTML = classes.map(cls => `
+        <button class="conf-tab-btn${cls === CONF_OPEN ? " active" : ""}" data-cls="${esc(cls)}">${esc(cls)}</button>
+      `).join("");
+      tabs.querySelectorAll(".conf-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          CONF_OPEN = CONF_OPEN === btn.dataset.cls ? null : btn.dataset.cls;
+          tabs.querySelectorAll(".conf-tab-btn").forEach(b => b.classList.toggle("active", b.dataset.cls === CONF_OPEN));
+          renderConfPanel();
+        });
+      });
+      renderConfPanel();
+    }
+
+    document.getElementById("conf-bracket-toggle").addEventListener("click", openBracketModal);
+    document.getElementById("bracket-modal").addEventListener("click", (e) => {
+      if (e.target.id === "bracket-modal") closeBracketModal();
+    });
+    document.getElementById("bracket-modal-close").addEventListener("click", closeBracketModal);
+
+    document.getElementById("conf-hide-toggle").addEventListener("click", () => {
+      const body = document.getElementById("conf-body");
+      const collapsed = body.classList.toggle("collapsed");
+      document.getElementById("conf-hide-toggle").textContent = collapsed ? "Show" : "Hide";
+      localStorage.setItem("rk-conf-collapsed", collapsed ? "1" : "0");
+    });
+    if (localStorage.getItem("rk-conf-collapsed") === "1") {
+      document.getElementById("conf-body").classList.add("collapsed");
+      document.getElementById("conf-hide-toggle").textContent = "Show";
+    }
+
+    async function loadConf() {
+      try {
+        const csv = await tryFetch(CONF_SHEET_URL);
+        const data = parseConfCSV(csv);
+        try {
+          const openCsv = await tryFetch(OPEN_SHEET_URL);
+          const { teams, confMap } = parseOpenCSV(openCsv);
+          data["Open Projections"] = teams;
+          OPEN_CONF_MAP = confMap;
+        } catch (e) { /* Open Projections optional */ }
+        renderConf(data);
+      } catch (e) { /* silent — section just stays empty */ }
     }
 
     // ── fetch + load ──
@@ -734,7 +1092,7 @@
         const csv = await tryFetch(SHEET_URL);
         const teams = parseCSV(csv);
         if (!teams.length) throw new Error("Empty or unparseable CSV");
-        render(teams);
+        render(teams.slice(0, 32));
       } catch (e) {
         console.warn("Rankings load failed:", e.message);
         document.getElementById("rank-date").textContent = "Could not load";
@@ -743,6 +1101,7 @@
     }
 
     load();
+    loadConf();
   </script>
 
 
