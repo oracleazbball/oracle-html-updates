@@ -149,6 +149,18 @@
       color: var(--purple-bright);
       text-shadow: 0 0 30px rgba(139,47,255,0.6);
     }
+    .rk-hero h1 .h1-sub {
+      display: block;
+      font-size: 0.4em;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+    @media (max-width: 560px) {
+      .rk-hero h1 { line-height: 0.95; }
+      .rk-hero h1 .h1-sub { margin-top: 14px; }
+    }
     .rk-hero .sub {
       margin-top: 20px;
       max-width: 640px;
@@ -443,6 +455,8 @@
     }
     @media (max-width: 560px) {
       .rank-feature .logo-wrap { display: none; }
+      .rank-row { grid-template-columns: 34px 44px 1fr auto; gap: 10px 18px; padding: 18px 16px; }
+      .rank-num { font-size: 24px; }
     }
   </style>
 
@@ -481,7 +495,7 @@
 
   <header class="rk-hero">
     <p class="hero-eyebrow">Rankings</p>
-    <h1>The <em>Top 40,</em><br/>In the State.</h1>
+    <h1>The <em>Top 40</em> <span class="h1-sub">+ Open Projections</span></h1>
     <p class="sub">
       Statewide team rankings built on film study and stats — not recruiting hype.
       Updated regularly throughout the season.
@@ -657,8 +671,8 @@
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep"];
-    const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c","Paradise Valley":"#8b1a1a","Mountain View":"#0c4c91","Valley Christian":"#1a3a8f"};
+    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field"];
+    const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c","Paradise Valley":"#8b1a1a","Mountain View":"#0c4c91","Valley Christian":"#1a3a8f","Williams Field":"#c0392b"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
     LOGO_MAP[norm("Paradise Valley")] = "assets/team-logos/"+encodeURIComponent("paradise valley")+".png";
