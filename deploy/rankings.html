@@ -366,6 +366,21 @@
     }
     .rank-move.new-in { letter-spacing: 1px; }
     .rank-move.up { color: #46d17a; }    .rank-move.down { color: #e0556b; }
+    .wl-section { margin-top: 56px; }
+    .wl-head { display: flex; align-items: center; gap: 16px; }
+    .wl-line { flex: 1; height: 1px; background: rgba(139,47,255,0.45); }
+    .wl-title {
+      font-family: var(--font-condensed); font-size: 18px; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--purple-bright);
+    }
+    .wl-sub { text-align: center; color: var(--text-muted); font-size: 14px; margin: 10px 0 22px; }
+    .wl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    .wl-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      background: var(--black-card); border: 1px solid rgba(255,255,255,0.06);
+    }
+    .wl-name { font-size: 15px; font-weight: 600; }
+    @media (max-width: 560px) { .wl-grid { grid-template-columns: 1fr 1fr; } .wl-name { font-size: 13px; } }
     .rank-row.tier-break {
       border-bottom: 2px solid rgba(139,47,255,0.55);
       box-shadow: 0 1px 12px rgba(139,47,255,0.18);
@@ -505,7 +520,7 @@
   <main>
     <div class="conf-section">
       <div class="conf-header-row">
-        <h2 class="conf-title">Top 10 <em>By Conference</em></h2>
+        <h2 class="conf-title">Top 15 <em>By Conference</em></h2>
         <button id="conf-hide-toggle">Hide</button>
       </div>
       <div id="conf-body">
@@ -519,6 +534,15 @@
     <div class="date-badge" id="rank-date"></div>
     <div id="rank-feature"></div>
     <div class="rank-list" id="rank-list"></div>
+    <section class="wl-section" id="wl-section" style="display:none;">
+      <div class="wl-head">
+        <span class="wl-line"></span>
+        <span class="wl-title">Watch List</span>
+        <span class="wl-line"></span>
+      </div>
+      <p class="wl-sub">Teams outside the Top 50 we're tracking that could move into the rankings before the regular season starts. Listed alphabetically.</p>
+      <div class="wl-grid" id="wl-grid"></div>
+    </section>
   </main>
 
   <div id="bracket-modal">
@@ -671,7 +695,7 @@
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north"];
+    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north","marcos de niza","cortez","ala - west foothills","eastmark","buena","sunrise mountain","boulder creek","ironwood ridge","catalina foothills","coolidge","dobson","queen creek","salpointe catholic","seton catholic","valley vista","skyline","st. marys"];
     const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c","Paradise Valley":"#8b1a1a","Mountain View":"#0c4c91","Valley Christian":"#1a3a8f","Williams Field":"#c0392b"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
@@ -685,6 +709,32 @@
     COLOR_MAP[norm("La Joya")] = "#0d3b66";
     COLOR_MAP[norm("Palo Verde")] = "#0a5c36";
     COLOR_MAP[norm("Gilbert Christian")] = "#1a5c34";
+    COLOR_MAP[norm("Marcos de Niza")] = "#783808";
+    COLOR_MAP[norm("Cortez")] = "#e01010";
+    COLOR_MAP[norm("ALA - West Foothills")] = "#183868";
+    COLOR_MAP[norm("ALA West Foothills")] = "#183868";
+    COLOR_MAP[norm("Eastmark")] = "#d88828";
+    COLOR_MAP[norm("Buena")] = "#083878";
+    COLOR_MAP[norm("Sunrise Mountain")] = "#680888";
+    COLOR_MAP[norm("Boulder Creek")] = "#b82838";
+    COLOR_MAP[norm("Ironwood Ridge")] = "#0a1f4a";
+    COLOR_MAP[norm("Prescott")] = "#183878";
+    COLOR_MAP[norm("Catalina Foothills")] = "#083898";
+    COLOR_MAP[norm("Coolidge")] = "#183888";
+    COLOR_MAP[norm("Dobson")] = "#283868";
+    COLOR_MAP[norm("Queen Creek")] = "#582888";
+    COLOR_MAP[norm("Salpointe Catholic")] = "#e0a818";
+    COLOR_MAP[norm("Seton Catholic")] = "#c81848";
+    COLOR_MAP[norm("Valley Vista")] = "#884888";
+    COLOR_MAP[norm("Skyline")] = "#086838";
+    COLOR_MAP[norm("Palo Verde")] = "#d4b814";
+    COLOR_MAP[norm("Palo Verde Magnet")] = "#d4b814";
+    COLOR_MAP[norm("St. Mary's")] = "#086838";
+    COLOR_MAP[norm("St. Marys")] = "#086838";
+    LOGO_MAP[norm("Palo Verde Magnet")] = "assets/team-logos/"+encodeURIComponent("palo verde")+".png";
+    LOGO_MAP[norm("St. Mary's")] = "assets/team-logos/"+encodeURIComponent("st. marys")+".png";
+    LOGO_MAP[norm("Ironwood Ridge")] = "assets/team-logos/"+encodeURIComponent("ironwood ridge")+".png";
+    LOGO_MAP[norm("ALA West Foothills")] = "assets/team-logos/"+encodeURIComponent("ala - west foothills")+".png";
     function resolveTeam(name) {
       const n = norm(name);
       let lk = LOGO_MAP[n] ? n : null, ck = COLOR_MAP[n] ? n : null;
@@ -1002,7 +1052,7 @@
       panel.classList.remove("bracket-mode");
       const note = document.getElementById("open-note");
       note.style.display = isOpen ? "block" : "none";
-      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 10).map((team, i) => {
+      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 15).map((team, i) => {
         const sr = stateRank(team);
         const conf = isOpen ? OPEN_CONF_MAP[team] : null;
         return `
@@ -1098,7 +1148,9 @@
         const res = await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, 7000);
         if (res.ok) {
           const j = await res.json();
-          if (j.contents && j.contents.includes(',')) return j.contents;
+          if (j.contents && j.contents.startsWith('data:')) {
+            try { const t = decodeURIComponent(escape(atob(j.contents.split(',')[1]))); if (t.includes(',')) return t; } catch(_) {}
+          } else if (j.contents && j.contents.includes(',')) return j.contents;
         }
       } catch(_) {}
 
@@ -1125,8 +1177,39 @@
       }
     }
 
+    const WL_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1999156259&single=true&output=csv";
+    async function loadWatchList() {
+      try {
+        const csv = await tryFetch(WL_SHEET_URL);
+        const names = [];
+        let teamIdx = -1;
+        csv.trim().split("\n").forEach((line, li) => {
+          const cells = []; let cur = "", inQ = false;
+          for (const ch of line) {
+            if (ch === '"') inQ = !inQ;
+            else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ""; }
+            else cur += ch;
+          }
+          cells.push(cur.trim());
+          if (teamIdx < 0) {
+            const h = cells.findIndex(c => /^(team|school)$/i.test(c));
+            if (h >= 0) { teamIdx = h; return; }
+            if (li === 0) teamIdx = cells.length > 1 ? 1 : 0;
+          }
+          const nm = cells[teamIdx];
+          if (nm && !names.includes(nm)) names.push(nm);
+        });
+        if (!names.length) return;
+        names.sort((a, b) => a.localeCompare(b));
+        document.getElementById("wl-grid").innerHTML = names.map(n => `
+          <div class="wl-item">${logoHtml(n, 'xs')}<span class="wl-name">${esc(n)}</span></div>`).join("");
+        document.getElementById("wl-section").style.display = "block";
+      } catch (e) { /* hidden if sheet unavailable */ }
+    }
+
     load();
     loadConf();
+    loadWatchList();
   </script>
 
 
