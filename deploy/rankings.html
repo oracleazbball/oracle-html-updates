@@ -520,7 +520,7 @@
   <main>
     <div class="conf-section">
       <div class="conf-header-row">
-        <h2 class="conf-title">Top 15 <em>By Conference</em></h2>
+        <h2 class="conf-title">Top 20 <em>By Conference</em></h2>
         <button id="conf-hide-toggle">Hide</button>
       </div>
       <div id="conf-body">
@@ -695,7 +695,7 @@
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north","marcos de niza","cortez","ala - west foothills","eastmark","buena","sunrise mountain","boulder creek","ironwood ridge","catalina foothills","coolidge","dobson","queen creek","salpointe catholic","seton catholic","valley vista","skyline","st. marys"];
+    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north","marcos de niza","cortez","ala - west foothills","eastmark","buena","sunrise mountain","boulder creek","ironwood ridge","catalina foothills","coolidge","dobson","queen creek","salpointe catholic","seton catholic","valley vista","skyline","st. marys","crismon","rancho solano prep"];
     const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c","Paradise Valley":"#8b1a1a","Mountain View":"#0c4c91","Valley Christian":"#1a3a8f","Williams Field":"#c0392b"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
@@ -719,6 +719,10 @@
     COLOR_MAP[norm("Boulder Creek")] = "#b82838";
     COLOR_MAP[norm("Ironwood Ridge")] = "#0a1f4a";
     COLOR_MAP[norm("Prescott")] = "#183878";
+    COLOR_MAP[norm("Crismon")] = "#4a6a8a";
+    COLOR_MAP[norm("Rancho Solano Prep")] = "#081848";
+    LOGO_MAP[norm("Rancho Solano")] = "assets/team-logos/"+encodeURIComponent("rancho solano prep")+".png";
+    COLOR_MAP[norm("Rancho Solano")] = "#081848";
     COLOR_MAP[norm("Catalina Foothills")] = "#083898";
     COLOR_MAP[norm("Coolidge")] = "#183888";
     COLOR_MAP[norm("Dobson")] = "#283868";
@@ -1052,7 +1056,7 @@
       panel.classList.remove("bracket-mode");
       const note = document.getElementById("open-note");
       note.style.display = isOpen ? "block" : "none";
-      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 15).map((team, i) => {
+      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 20).map((team, i) => {
         const sr = stateRank(team);
         const conf = isOpen ? OPEN_CONF_MAP[team] : null;
         return `
