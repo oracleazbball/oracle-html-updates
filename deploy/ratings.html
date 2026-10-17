@@ -977,8 +977,7 @@
         <p class="hero-eyebrow" id="heroEyebrow">Ratings</p>
         <h1>Every Team,<br/><em>Rated.</em></h1>
         <p class="sub">
-          Power ratings for every team, plus the metrics behind them. Sort by any column,
-          search a team, or filter by state and bracket. These ratings reflect how a team performed at a specific event only. This isn't a preseason ranking or a projection of how good a team will be going forward. <a href="article.html?slug=how-the-oracle-s-ratings-actually-work" id="explainLink">See how the ratings work</a>.
+          Power ratings for every team over the past 10 seasons. Sort by any column, search a team, or filter by season and conference. Each rating is an opponent-adjusted scoring margin, built only from games that have actually been played — no polls, no preseason rankings, and no credit for a team’s record by itself. Because of how they’re built, they’re also predictive: tested on 10 seasons, they called 80.5% of playoff games correctly against AZPreps’ 77.1%. Event ratings, like Section 7 and Nevada Live, use a similar methodology, but reflect how teams performed at those events only.
         </p>
       </div>
       <aside class="explain-panel" id="explainPanel" aria-hidden="true">
@@ -1070,15 +1069,47 @@
     // To update a set's data: just edit its Google Sheet — no code changes.
     // ══════════════════════════════════════════════════════════════
     const DATASETS = [
+      // AIA season tabs: self-contained page (aia-ratings.html), data built in
+      { id: "aia2526", label: "25-26", eyebrow: "Ratings · AIA 25-26", csv: "embed", embed: "25-26" },
+      { id: "aia2425", label: "24-25", eyebrow: "Ratings · AIA 24-25", csv: "embed", embed: "24-25" },
+      { id: "aia2324", label: "23-24", eyebrow: "Ratings · AIA 23-24", csv: "embed", embed: "23-24" },
+      { id: "aia2223", label: "22-23", eyebrow: "Ratings · AIA 22-23", csv: "embed", embed: "22-23" },
+      { id: "aia2122", label: "21-22", eyebrow: "Ratings · AIA 21-22", csv: "embed", embed: "21-22" },
+      { id: "aia2021", label: "20-21", eyebrow: "Ratings · AIA 20-21", csv: "embed", embed: "20-21" },
+      { id: "aia1920", label: "19-20", eyebrow: "Ratings · AIA 19-20", csv: "embed", embed: "19-20" },
+      { id: "aia1819", label: "18-19", eyebrow: "Ratings · AIA 18-19", csv: "embed", embed: "18-19" },
+      { id: "aia1718", label: "17-18", eyebrow: "Ratings · AIA 17-18", csv: "embed", embed: "17-18" },
+      { id: "aia1617", label: "16-17", eyebrow: "Ratings · AIA 16-17", csv: "embed", embed: "16-17" },
+      { id: "overall", label: "S7+NLI", eyebrow: "Ratings · Overall (S7+NLI)", csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFE_Z3NL_4aEeb5uqUS87SjTNsIH7anA-4IeSNM-5X_bNnMzCAZrPjMdm8_0kYLNrk5IIhHLIrs4QR/pub?gid=752530610&single=true&output=csv" },
+      { id: "nli",     label: "Nevada Live",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVX08fXpXsyhiBD0NNJ_k_Xc_TqADH_avBR6UWgxOupQCey6xlsgCwye9BEih4mX2o2sOVnyS2l-Bt/pub?gid=2144519886&single=true&output=csv" },
       {
         id: "section7",
         label: "Section 7",
         eyebrow: "Ratings · Section 7",
         csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMHnOmx2_O5s3Y8jIZ4x8VE2fHrkrsgHhvIh_RfOZMMn9Zb31E0tTaiT8hk1Vj0HWON3A3ey_hEPNb/pub?output=csv"
-      },
-      { id: "nli",     label: "Nevada Live Invitational",     eyebrow: "Ratings · Nevada Live Invitational",     csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVX08fXpXsyhiBD0NNJ_k_Xc_TqADH_avBR6UWgxOupQCey6xlsgCwye9BEih4mX2o2sOVnyS2l-Bt/pub?gid=2144519886&single=true&output=csv" },
-      { id: "overall", label: "Overall (S7+NLI)", eyebrow: "Ratings · Overall (S7+NLI)", csv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFE_Z3NL_4aEeb5uqUS87SjTNsIH7anA-4IeSNM-5X_bNnMzCAZrPjMdm8_0kYLNrk5IIhHLIrs4QR/pub?gid=752530610&single=true&output=csv" }
+      }
     ];
+    const NATIVE_PARTS = [".controls", "#legend", ".mobile-sort", ".table-wrap", "#rcards"];
+    function showEmbed(on) {
+      NATIVE_PARTS.forEach(s => { const el = document.querySelector(s); if (el) el.style.display = on ? "none" : ""; });
+      let f = document.getElementById("aiaFrame");
+      if (on) {
+        if (!f) {
+          f = document.createElement("iframe");
+          f.id = "aiaFrame";
+          f.title = "AIA season ratings";
+          f.style.cssText = "width:100%;border:0;display:block;min-height:900px;background:transparent;";
+          document.getElementById("setTabs").after(f);
+        }
+        f.style.display = "block";
+        f.src = "aia-ratings.html?season=" + activeSet.embed + "&v=" + Date.now();
+        const eb = document.getElementById("heroEyebrow"); if (eb) eb.textContent = activeSet.eyebrow;
+      } else if (f) f.style.display = "none";
+    }
+    window.addEventListener("message", e => {
+      const f = document.getElementById("aiaFrame");
+      if (f && e.data && e.data.aiaHeight) f.style.height = (e.data.aiaHeight + 20) + "px";
+    });
     let activeSet = DATASETS[0];
 
     // ── GAME LOG source (one sheet, shared across all rating sets) ──
@@ -1093,6 +1124,7 @@
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     // aliases: sheet/API name -> logo file name (normalized)
     const TEAM_ALIASES = {
+      "heritageacadlaveen":"heritageacademylaveen",
       "azcollegeprep":"arizonacollegeprep","azlutheran":"arizonalutheran","oconnor":"sandradayoconnor",
       "brophyprep":"brophy","brophycollegeprep":"brophy","cactusshawdows":"cactusshadows",
       "sandradayoconnor":"sandradayoconnor","stmaryscatholic":"stmarys","stmarys":"stmarys",
@@ -1496,6 +1528,8 @@
           document.getElementById("search").value = "";
           sortKey = "rank"; sortDir = "asc";
           renderTabs();
+          if (activeSet.embed) { showEmbed(true); return; }
+          showEmbed(false);
           load();
         };
       });
@@ -1677,7 +1711,7 @@
       document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
     })();
 
-    load();
+    if (activeSet.embed) { renderTabs(); showEmbed(true); } else load();
   </script>
 
 
