@@ -877,8 +877,13 @@
     @media (max-width: 1000px) {
       nav { padding: 0 20px; }
       .nav-links { display: none; }
-      .rt-hero { padding: 104px 22px 8px; }
-      main { padding: 22px 22px 64px; }
+      .rt-hero { padding: 104px 22px 0; }
+      .rt-hero .sub { margin-bottom: 0; }
+      .hero-row { gap: 0; }
+      main { padding: 18px 22px 64px; }
+      .set-tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 18px; }
+      .set-tabs::-webkit-scrollbar { display: none; }
+      .set-tab { flex-shrink: 0; }
       .table-wrap { overflow: auto; }
       .podium { grid-template-columns: 1fr; }
       .count-pill { margin-left: 0; }
