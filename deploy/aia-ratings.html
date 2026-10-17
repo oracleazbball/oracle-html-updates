@@ -179,6 +179,50 @@ th button{font-size:13px!important;letter-spacing:1.5px!important}
 .lo-head{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#e8e8e8;margin:36px 0 4px;font-weight:400}
 .lo-sub{color:#888;font-size:13px;margin:0 0 12px;max-width:70ch}
 .lo-table{min-width:0!important;width:100%}
+#mcards,.msort,.mkey{display:none}
+.cgrp{display:flex;align-items:center;gap:inherit;min-width:0}
+.cgrp .lbl{flex-shrink:0}
+@media (max-width:760px){
+  .tablebox:has(#tb){display:none!important}
+  .msort{display:flex;align-items:center;gap:8px;margin:12px 0}
+  .msort label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:#888}
+  .msort select{flex:1;-webkit-appearance:none;appearance:none;background:#0d0d0d url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238b2fff' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right 16px center;border:1px solid rgba(106,15,214,0.3);border-radius:0;color:#e8e8e8;font:15px 'Bebas Neue',sans-serif;letter-spacing:1px;padding:10px 44px 10px 12px;outline:none}
+  .msort select:focus{border-color:#8b2fff}
+  #mcards{display:flex;flex-direction:column;gap:10px}
+  .mkey{display:block!important;margin:14px 0 0;background:#0d0d0d;border:1px solid rgba(106,15,214,0.3)}
+  .mkey summary{cursor:pointer;list-style:none;padding:11px 14px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;color:#8b2fff;display:flex;align-items:center;gap:8px}
+  .mkey summary::-webkit-details-marker{display:none}
+  .mkey summary::before{content:'i';display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid rgba(139,47,255,0.6);font:italic 700 11px Barlow,sans-serif}
+  .mkey summary::after{content:'+';margin-left:auto;font-size:18px;color:#888}
+  .mkey[open] summary::after{content:'\2013'}
+  .mk-row{display:grid;grid-template-columns:84px 1fr;gap:10px;padding:10px 14px;border-top:1px solid rgba(106,15,214,0.15);font:14px/1.45 Barlow,sans-serif;color:#c0c0c0}
+  .mk-row b{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:15px;letter-spacing:1px;color:#e8e8e8}
+  .mc{background:#0d0d0d;border:1px solid rgba(106,15,214,0.2);border-left:3px solid rgba(139,47,255,0.55);padding:14px 15px}
+  .mc-head{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:12px}
+  .mc-seed{font-family:'Cinzel',serif;font-weight:800;font-size:20px;color:#888;min-width:22px;text-align:center}
+  .mc-logo{width:40px!important;height:40px!important}
+  .mc-id{min-width:0}
+  .mc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.5px;color:#e8e8e8;line-height:1.05}
+  .mc-sub{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:#888;margin-top:2px}
+  .mc-open{color:#8b2fff}
+  .mc-rate{font:600 22px Barlow,sans-serif;text-align:right;color:#e8e8e8}
+  .mc-rate.pos,.mc-stat .v.pos{color:#46d17a}.mc-rate.neg,.mc-stat .v.neg{color:#e0556b}
+  .mc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:13px;background:rgba(106,15,214,0.15);border:1px solid rgba(106,15,214,0.18)}
+  .mc-stat{background:#0d0d0d;padding:8px 10px}
+  .mc-stat .l{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;color:#888}
+  .mc-stat .v{font:600 16px Barlow,sans-serif;margin-top:2px;color:#e8e8e8}
+  .mc-fin{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(106,15,214,0.15)}
+  .mc-none{padding:40px 0;text-align:center;font-family:'Bebas Neue',sans-serif;letter-spacing:3px;color:#888}
+  .controls{position:static!important;flex-wrap:wrap}
+  .seg{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .seg::-webkit-scrollbar{display:none}
+  .cgrp{width:100%;gap:12px}
+  .cgrp .lbl{width:44px}
+  .cgrp .seg{flex:0 1 auto}
+  .controls input[type=search]{flex:1 1 100%}
+  #leftout .tablebox{overflow-x:auto!important}
+  .lo-table{min-width:620px!important}
+}
 #leftout .tablebox{max-height:none!important;overflow-y:visible!important}
 .lo-table th,.lo-table td{white-space:nowrap;padding:9px 12px!important}
 .lo-table th:nth-child(n+6),.lo-table td:nth-child(n+6){text-align:left!important}
@@ -247,12 +291,12 @@ th button .th-info{margin-left:0}
   <div class="confrow" id="confrow"></div>
 
   <div class="controls">
-    <span class="lbl">Basis</span>
+    <div class="cgrp"><span class="lbl">Basis</span>
     <div class="seg" id="basis">
       <button data-v="reg" aria-pressed="true">Regular Season</button>
       <button data-v="full" aria-pressed="false">Full season</button>
-    </div>
-    <span class="lbl">Field</span>
+    </div></div>
+    <div class="cgrp"><span class="lbl">Field</span>
     <div class="seg" id="field">
       <button data-v="open" aria-pressed="true">Open</button>
       <button data-v="6A" aria-pressed="false">6A</button>
@@ -262,7 +306,7 @@ th button .th-info{margin-left:0}
       <button data-v="3A" aria-pressed="false">3A</button>
       <button data-v="2A" aria-pressed="false">2A</button>
       <button data-v="1A" aria-pressed="false">1A</button>
-    </div>
+    </div></div>
     <input type="search" id="q" placeholder="Find a team" aria-label="Find a team">
   </div>
   <p class="count" id="count"></p>
@@ -285,6 +329,9 @@ th button .th-info{margin-left:0}
     </table>
   </div>
 
+  <details class="mkey" id="mkey"><summary>What the stats mean</summary><div id="mkeyBody"></div></details>
+  <div class="msort"><label for="msort">Sort</label><select id="msort"><option value="seed|1">Seed</option><option value="rating|-1">Rating</option><option value="az|-1">AIA rating</option><option value="delta|-1">&Delta; AIA</option><option value="team|1">Team A&ndash;Z</option></select></div>
+  <div id="mcards"></div>
   <div id="leftout"></div>
 
   <div class="ledger" id="ledger">
@@ -360,6 +407,30 @@ function oracleOpen(){
   s.filter(r=>!pick.has(r)).sort((x,y)=>y[col]-x[col]).slice(0,8).forEach(r=>pick.add(r));
   return pick;
 }
+function renderMCards(rows,seed){
+  const box=document.getElementById('mcards'); if(!box) return;
+  const col=COL();
+  box.innerHTML=rows.length?rows.map(r=>{const s=seed.get(r), rec=basis==='full'?r.overall:r.reg, az=AZR(r), d=az?az-s:null;
+    const rt=r[col], rcls=rt>0?'pos':rt<0?'neg':'';
+    const dv=d===null?'&ndash;':d>0?'+'+d:String(d), dcls=d>0?'pos':d<0?'neg':'';
+    return `<div class="mc">
+      <div class="mc-head">
+        <div class="mc-seed">${s??'&ndash;'}</div>
+        <span class="tlogo mc-logo">${tlogo(r.team).replace(/^<span class="tlogo">|<\/span>$/g,'')}</span>
+        <div class="mc-id"><div class="mc-name">${r.team}</div><div class="mc-sub">${r.conf} &middot; ${rec}${r.open_q?' &middot; <span class="mc-open">AIA Open</span>':''}</div></div>
+        <div class="mc-rate ${rcls}">${rt>0?'+':''}${rt.toFixed(2)}</div>
+      </div>
+      <div class="mc-stats">
+        <div class="mc-stat"><div class="l">AIA</div><div class="v">${r.az==null?'&ndash;':r.az.toFixed(2)}</div></div>
+        <div class="mc-stat"><div class="l">AIA rk</div><div class="v">${az??'&ndash;'}</div></div>
+        <div class="mc-stat"><div class="l">&Delta; AIA</div><div class="v ${dcls}">${dv}</div></div>
+      </div>
+      ${(r.ofin||r.cfin)?`<div class="mc-fin">${r.ofin?finCell(r.ofin):''}${r.cfin?finCell(r.cfin):''}</div>`:''}
+    </div>`;}).join(''):'<div class="mc-none">No teams match</div>';
+}
+document.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('mkeyBody');if(!b)return;
+  b.innerHTML=[...document.querySelectorAll('#tb')].length?[...document.getElementById('tb').closest('table').querySelectorAll('thead th')].map(th=>{const t=th.querySelector('.th-info');if(!t)return '';const name=th.querySelector('button').childNodes[0].textContent.trim();return '<div class="mk-row"><b>'+name+'</b><span>'+t.dataset.tip+'</span></div>';}).join(''):'';});
+document.addEventListener('change',e=>{if(e.target.id!=='msort')return;const[k,d]=e.target.value.split('|');sortKey=k;sortDir=+d;render();});
 function oracleCopper(){
   const col=COL();
   return new Set(DATA.filter(r=>r.season===season && ['3A','2A','1A'].includes(r.conf)).sort((x,y)=>y[col]-x[col]).slice(0,16));
@@ -443,6 +514,7 @@ function render(){
       <td>${finCell(r.cfin)}</td>
     </tr>`;
   }).join('');
+  renderMCards(rows,seed);
   document.getElementById('count').textContent =
     `${rows.length} teams \u00b7 seeds recomputed within `+
     (field==='all'?'each conference':field==='open'?"Oracle's projected Open field (top 8 from 6A, 5A and 4A plus the next 8 best)":field)+
