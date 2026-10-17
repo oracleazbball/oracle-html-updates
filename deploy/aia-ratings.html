@@ -220,8 +220,26 @@ th button{font-size:13px!important;letter-spacing:1.5px!important}
   .cgrp .lbl{width:44px}
   .cgrp .seg{flex:0 1 auto}
   .controls input[type=search]{flex:1 1 100%}
-  #leftout .tablebox{overflow-x:auto!important}
-  .lo-table{min-width:620px!important}
+  #leftout .tablebox{overflow-x:visible!important}
+  .lo-table{min-width:0!important;width:100%;table-layout:auto}
+  .lo-table th:nth-child(3),.lo-table td:nth-child(3),.lo-table th:nth-child(n+7),.lo-table td:nth-child(n+7){display:none}
+  .lo-table th,.lo-table td{padding:9px 6px!important;font-size:13px}
+  .lo-table .lo-th{font-size:11px;letter-spacing:1px;white-space:normal}
+  .lo-table td:nth-child(2){white-space:normal}
+  .lo-table .tlogo{width:24px;height:24px}
+  .lo-table td:nth-child(6){white-space:normal!important;width:74px}
+  .lo-table td:nth-child(6) *{white-space:normal!important;display:inline-block;line-height:1.25;font-size:11px;padding:3px 6px;text-align:center}
+  .lo-table th:nth-child(1),.lo-table td:nth-child(1){padding-left:10px!important}
+  .lo-table .tcell{gap:7px}
+  #leftout{overflow-x:hidden;max-width:100%}
+  html,body{overflow-x:hidden}
+  .controls{position:static!important;top:auto!important}
+  #field.seg{display:grid!important;grid-template-columns:repeat(4,1fr);overflow:visible;flex:1}
+  #field.seg button{text-align:center;padding:9px 4px;border-left:0!important;border-top:1px solid var(--line)}
+  #field.seg button:nth-child(-n+4){border-top:0}
+  #field.seg button:not(:nth-child(4n+1)){border-left:1px solid var(--line)!important}
+  .cgrp:has(#field){align-items:flex-start}
+  .cgrp:has(#field) .lbl{padding-top:10px}
 }
 #leftout .tablebox{max-height:none!important;overflow-y:visible!important}
 .lo-table th,.lo-table td{white-space:nowrap;padding:9px 12px!important}
