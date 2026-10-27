@@ -12,27 +12,28 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rankings · The Oracle</title>
+  <title>Preseason Rankings · The Oracle</title>
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="The Oracle" />
-  <meta property="og:title" content="Rankings · The Oracle" />
+  <meta property="og:title" content="Preseason Rankings · The Oracle" />
   <meta property="og:description" content="The top 50 high school basketball teams in Arizona, updated by The Oracle." />
   <meta property="og:url" content="https://oraclebasketball.com/rankings" />
   <meta property="og:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rankings · The Oracle" />
+  <meta name="twitter:title" content="Preseason Rankings · The Oracle" />
   <meta name="twitter:description" content="The top 50 high school basketball teams in Arizona, updated by The Oracle." />
   <meta name="twitter:image" content="https://oraclebasketball.com/assets/oracle-og-rankings.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --font-display: 'Cinzel', serif;
       --font-condensed: 'Bebas Neue', sans-serif;
       --font-body: 'Barlow', system-ui, sans-serif;
+      --font-team: 'Barlow Condensed', 'Barlow', sans-serif;
       --purple: #6a0fd6;
       --purple-bright: #8b2fff;
       --purple-dark: #3b0075;
@@ -374,13 +375,16 @@
       text-transform: uppercase; color: var(--purple-bright);
     }
     .wl-sub { text-align: center; color: var(--text-muted); font-size: 14px; margin: 10px 0 22px; }
-    .wl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    .wl-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .wl-item { min-width: 0; }
+    .wl-name { overflow: hidden; text-overflow: ellipsis; }
+    @media (max-width: 1000px) { .wl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     .wl-item {
       display: flex; align-items: center; gap: 12px; padding: 12px 14px;
       background: var(--black-card); border: 1px solid rgba(255,255,255,0.06);
     }
     .wl-name { font-size: 15px; font-weight: 600; }
-    @media (max-width: 560px) { .wl-grid { grid-template-columns: 1fr 1fr; } .wl-name { font-size: 13px; } }
+    @media (max-width: 560px) { .wl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .wl-item { padding: 10px 10px; gap: 9px; } .wl-name { font-size: 13px; white-space: normal; line-height: 1.2; } }
     .rank-row.tier-break {
       border-bottom: 2px solid rgba(139,47,255,0.55);
       box-shadow: 0 1px 12px rgba(139,47,255,0.18);
@@ -464,14 +468,18 @@
       .rank-move { min-width: 0; font-size: 15px; }
       .rank-move-cell { min-width: 0; }
       .rank-prev { font-size: 10px; letter-spacing: 0.5px; margin-top: 2px; }
-      .rank-name { overflow-wrap: break-word; }
+      .rank-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(15px, 4.8vw, 22px); letter-spacing: 0.5px; }
       .rank-tags .conf-inline { display: inline; }
       footer { flex-direction: column; align-items: flex-start; padding: 40px 24px; }
     }
     @media (max-width: 560px) {
       .rank-feature .logo-wrap { display: none; }
-      .rank-row { grid-template-columns: 34px 44px 1fr auto; gap: 10px 18px; padding: 18px 16px; }
-      .rank-num { font-size: 24px; }
+      .rank-row { grid-template-columns: 30px 40px minmax(0,1fr) auto; gap: 8px 10px; padding: 16px 12px; }
+      .rank-num { font-size: 22px; }
+      .rank-row .rank-logo { width: 40px; height: 40px; }
+      .rank-name { font-size: clamp(16px, 5.2vw, 23px); letter-spacing: 0.3px; }
+      .rank-move-cell { font-size: 11px; }
+      .rank-prev { display: none; }
     }
   </style>
 
@@ -489,6 +497,7 @@
       nav .nav-links a::after{display:none !important;}
     }
   </style>
+  <script src="logos.js"></script>
 </head>
 <body>
 
@@ -498,7 +507,7 @@
       <span>The <span style="color:var(--purple-bright);">Oracle</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="rankings.html" class="active">Rankings</a></li>
+      <li><a href="rankings.html" class="active">Preseason Rankings</a></li>
       <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
@@ -509,18 +518,30 @@
   </nav>
 
   <header class="rk-hero">
-    <p class="hero-eyebrow">Rankings</p>
-    <h1>The <em>Top 50</em> <span class="h1-sub">+ Open Projections</span></h1>
+    <p class="hero-eyebrow">Preseason Rankings</p>
+    <h1>The <em>Top 50</em> <span class="h1-sub">Open + Copper Projections</span></h1>
     <p class="sub">
-      Statewide team rankings built on film study and stats — not recruiting hype.
-      Updated regularly throughout the season.
+      Preseason team rankings built on in-person evaluation and stats, not recruiting hype.
+      Once the season tips off, follow along with our <a href="ratings.html" style="color:var(--purple-bright);text-decoration:underline;text-underline-offset:3px;">ratings</a>, updated daily throughout the regular season.
     </p>
+    <div data-countdown data-size="sm" data-align="left" style="margin-top:26px;"></div>
   </header>
 
   <main>
+    <div id="explore" data-mode="">
+    <div class="explore-bar">
+      <span class="explore-lbl">Explore</span>
+      <div class="explore-opts" id="explore-opts">
+        <button class="explore-opt" data-x="conf">Top 25 By Conference<span class="explore-caret">▾</span></button>
+        <button class="explore-opt" data-x="region">Region Rankings<span class="explore-caret">▾</span></button>
+        <button class="explore-opt" data-x="Open Projections">Open<span class="explore-caret">▾</span></button>
+        <button class="explore-opt" data-x="Copper Projections">Copper<span class="explore-caret">▾</span></button>
+      </div>
+      <button class="explore-hide" id="explore-hide" type="button">Hide ✕</button>
+    </div>
     <div class="conf-section">
       <div class="conf-header-row">
-        <h2 class="conf-title">Top 20 <em>By Conference</em></h2>
+        <h2 class="conf-title">Top 25 <em>By Conference</em></h2>
         <button id="conf-hide-toggle">Hide</button>
       </div>
       <div id="conf-body">
@@ -529,6 +550,19 @@
         <p id="open-note" style="display:none;">The top eight (8) highest rated teams from the 4A-6A conferences, along with the next eight (8) highest rated teams combined from the 4A-6A conferences, will qualify for the Open playoffs.</p>
         <div class="conf-panel" id="conf-panel"></div>
       </div>
+    </div>
+
+    <div class="conf-section" id="region-section" style="display:none;">
+      <div class="conf-header-row">
+        <h2 class="conf-title">Rankings <em>By Region</em></h2>
+        <button id="region-hide-toggle" class="conf-hide-btn">Hide</button>
+      </div>
+      <div id="region-body">
+        <div class="conf-tabs" id="region-tabs"></div>
+        <div class="region-grid" id="region-grid"></div>
+      </div>
+    </div>
+
     </div>
 
     <div class="date-badge" id="rank-date"></div>
@@ -558,6 +592,42 @@
 
   <style>
     .conf-section { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    #explore { margin-bottom: 28px; }
+    .explore-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .explore-lbl { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+    .explore-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+    .explore-opt {
+      padding: 8px 16px; background: transparent; border: 1px solid rgba(106,15,214,0.35);
+      color: var(--silver-light); font-family: var(--font-condensed); font-size: 14px; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+    }
+    .explore-opt:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
+    .explore-opt.active { background: rgba(106,15,214,0.18); border-color: var(--purple-bright); color: var(--purple-bright); }
+    .explore-caret { display: none; }
+    .explore-hide {
+      margin-left: auto; padding: 7px 14px; background: transparent; border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-muted); font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; display: none;
+    }
+    .explore-hide:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
+    #explore:not([data-mode=""]) .explore-hide { display: inline-block; }
+    #explore #conf-body.collapsed, #explore #region-body.collapsed { display: block !important; }
+    #explore .conf-header-row { display: none; }
+    #explore .conf-section { margin: 18px 0 0; padding-bottom: 20px; }
+    #explore[data-mode=""] .conf-section { display: none !important; }
+    #explore[data-mode="conf"] #region-section,
+    #explore[data-mode="region"] .conf-section:not(#region-section),
+    #explore[data-mode="proj"] #region-section { display: none !important; }
+    #explore[data-mode="region"] #region-section { display: block !important; }
+    #explore[data-mode="proj"] #conf-tabs { display: none; }
+    #explore[data-mode="conf"] #conf-tabs .conf-tab-btn.proj { display: none; }
+    @media (max-width: 560px) {
+      .explore-bar { gap: 10px; }
+      .explore-lbl { width: 100%; }
+      .explore-opts { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .explore-opt { text-align: center; padding: 10px 8px; }
+      .explore-hide { width: 100%; margin-left: 0; padding: 10px 8px; }
+    }
     .conf-title { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; margin: 0; color: var(--text-muted); }
     .conf-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     #conf-hide-toggle {
@@ -565,7 +635,22 @@
       color: var(--text-muted); font-family: var(--font-body); font-size: 12px; cursor: pointer;
     }
     #conf-hide-toggle:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
-    #conf-body.collapsed { display: none; }
+    #conf-body.collapsed, #region-body.collapsed { display: none; }
+    #region-hide-toggle {
+      padding: 5px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-muted); font-family: var(--font-body); font-size: 12px; cursor: pointer;
+    }
+    #region-hide-toggle:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
+    #region-tabs { max-width: 300px; }
+    .region-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .region-grid:empty { margin-top: 0; }
+    .region-card { background: var(--black-card); border: 1px solid rgba(106,15,214,0.25); padding: 14px 16px 6px; min-width: 0; }
+    .region-name { font-family: var(--font-team); font-weight: 600; font-size: 17px; letter-spacing: 0.5px; color: var(--purple-bright); text-transform: none; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .region-card .conf-row:last-child { border-bottom: none; }
+    .region-card .conf-name { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .region-card .conf-row .rank-logo { width: 24px; height: 24px; flex-shrink: 0; }
+    @media (max-width: 1000px) { .region-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .region-grid { grid-template-columns: 1fr; } .region-card .conf-name { white-space: normal; } }
     .conf-title em { color: var(--purple-bright); font-style: normal; }
     .conf-tabs { display: flex; gap: 10px; max-width: 560px; flex-wrap: wrap; }
     .conf-tab-btn {
@@ -674,7 +759,7 @@
   <footer>
     <div class="footer-brand">The <span>Oracle</span> | AZ Hoops</div>
     <ul class="footer-links">
-      <li><a href="rankings.html">Rankings</a></li>
+      <li><a href="rankings.html">Preseason Rankings</a></li>
       <li><a href="ratings.html">Ratings</a></li>
       <li><a href="articles.html">Articles</a></li>
       <li><a href="podcasts.html">Podcasts</a></li>
@@ -695,7 +780,7 @@
     const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
 
     // ── logo + color helpers (same as rest of site) ──
-    const LOGO_FILES = ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north","marcos de niza","cortez","ala - west foothills","eastmark","buena","sunrise mountain","boulder creek","ironwood ridge","catalina foothills","coolidge","dobson","queen creek","salpointe catholic","seton catholic","valley vista","skyline","st. marys","crismon","rancho solano prep","tempe","mingus union","washington","estrella foothills"];
+    const LOGO_FILES = (window.ORACLE_LOGO_FILES && window.ORACLE_LOGO_FILES.length) ? window.ORACLE_LOGO_FILES : ["prescott","san tan charter","ala - qc","apollo","mesquite","arcadia","basha","brophy","cactus shadows","campo verde","canyon view","carl hayden","casteel","centennial","central","chandler","chaparral","cienega","deer valley","desert edge","desert mountain","desert vista","dysart","gilbert","hamilton","highland","higley","horizon","ironwood","liberty","maryvale","mesa","mica mountain","millennium","mountain pointe","notre dame","perry","pinnacle","red mountain","saguaro","sahuaro","sandra day oconnor","st. marys","sunnyslope","tucson","verrado","west point","westview","willow canyon","skyline prep","williams field","arizona college prep","corona del sol","la joya","cactus canyon","palo verde","gilbert christian","gilbert classical","ala - gilbert north","marcos de niza","cortez","ala - west foothills","eastmark","buena","sunrise mountain","boulder creek","ironwood ridge","catalina foothills","coolidge","dobson","queen creek","salpointe catholic","seton catholic","valley vista","skyline","st. marys","crismon","rancho solano prep","tempe","mingus union","washington","estrella foothills","agua fria","ala - anthem south","ala - ironwood","ala - mesa north","ala - radiance","ala - sierra vista","ala - vistancia","alchesay","alhambra","amphitheater","andrada polytechnic","antelope union","anthem prep","apache junction","arete prep","arizona lutheran","asdb","ash fork","az compass prep","baboquivari","bagdad","barry goldwater","basis flagstaff","bella vista","benjamin franklin","benson","betty h. fairfax","bisbee","blue ridge","bourgade catholic","bradshaw mountain","buckeye union","cactus","camelback","camp verde","canyon del oro","casa grande","catalina","chandler prep","chinle","chino valley","cholla","cibola","cicero prep","coconino","combs","copper canyon","coronado","desert christian","desert heights prep","desert ridge","desert star","desert sunrise","desert view","dishchiibikoh","douglas","dream city","duncan","eduprize","el capitan","elite sports academy","empire","flagstaff","florence","flowing wells","fort thomas","fountain hills","franklin","fredonia","ganado","gila ridge","glendale prep","glendale","globe","goodyear","grand canyon","greenway","greyhills academy","hayden","heritage acad gateway","heritage acad maricopa","heritage acad mesa","heritage academy - laveen","hillcrest prep","holbrook","hopi","horizon honors","independence","joseph city","kingman academy","kingman","kofa","lake havasu","lee williams","lincoln prep","lourdes catholic","madison highland prep","many farms","marana","maricopa","maryvale prep","mayer","mcclintock","metro tech","miami","mogollon","mohave","monument valley","moon valley","morenci","mountain ridge","mountain view (marana)","mountain view (mesa)","mountainside","music mountain","nfl yet","nogales","north canyon","north phoenix preparatory","north valley christian","north","northland prep","northwest christian","odyssey institute","page","paradise honors","paradise valley","parker","patagonia union","payson","pdsd","peoria","phh prep","phoenix christian","phoenix country day","pima","pinon","poston butte","pueblo","pusch ridge","ray","raymond s. kellis","red mesa","rincon-university","rio rico","river valley","rock point","rough rock","round valley","sabino","safford","sahuarita","salome","san carlos","san luis","san manuel","san miguel","san pasqual","san simon","san tan foothills","santa cruz valley","santa rita","scottsdale christian","scottsdale prep","sedona red rock","seligman","sequoia charter","sequoia prep","shadow mountain","shadow ridge","shonto prep","show low","sierra linda","snowflake","somerton","south mountain","st. augustine","st. david","st. john paul ii","st. johns","st. michael","sunnyside","superior","tanque verde","tempe prep","thatcher","the gregory school","thunderbird","tolleson union","tombstone","tonopah valley","trevor g. browne","trivium prep","tuba city","valley (sanders)","valley christian","valley lutheran","valley union","veritas prep","vista grande","walden grove","westwood","wickenburg","willcox","williams","window rock","winslow","xavier","youngker","yuma catholic","yuma","highland prep","highland prep west","mohave accelerated"];
     const TEAM_COLORS = {"San Tan Charter":"#6d6d18","ALA - QC":"#102841","Apollo":"#323f4c","Arcadia":"#ee3b33","Basha":"#004a2c","Brophy Prep":"#690d11","Cactus Shadows":"#010940","Campo Verde":"#144733","Canyon View":"#0c4c91","Carl Hayden":"#fcb937","Casteel":"#1d2842","Centennial":"#080f53","Central":"#530b09","Chandler":"#102388","Chaparral":"#9d8424","Cienega":"#9d664f","Deer Valley":"#11248c","Desert Edge":"#c25911","Desert Mountain":"#c4043f","Desert Vista":"#01014c","Dysart":"#eb1f24","Gilbert":"#f1b619","Hamilton":"#701a2c","Highland":"#005f61","Higley":"#07255a","Horizon":"#f8c209","Ironwood":"#ed3c45","Liberty":"#e30c29","Maryvale":"#fdb813","Mesa":"#462e8d","Mica Mountain":"#99bbda","Millennium":"#713990","Mountain Pointe":"#742438","Notre Dame":"#532d6d","Perry":"#001249","Pinnacle":"#061943","Red Mountain":"#e51a38","Saguaro":"#fcd21b","Sahuaro":"#e91b2e","Sandra Day":"#274192","St. Marys":"#026231","Sunnyslope":"#056b43","Tucson":"#e21f29","Verrado":"#e3bb5b","West Point":"#b60a1c","Westview":"#6a86b2","Willow Canyon":"#17244c","Paradise Valley":"#8b1a1a","Mountain View":"#0c4c91","Valley Christian":"#1a3a8f","Williams Field":"#c0392b"};
     const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
     const LOGO_MAP = {}; LOGO_FILES.forEach(f => { LOGO_MAP[norm(f)] = "assets/team-logos/"+encodeURIComponent(f)+".png"; });
@@ -743,11 +828,24 @@
     LOGO_MAP[norm("St. Mary's")] = "assets/team-logos/"+encodeURIComponent("st. marys")+".png";
     LOGO_MAP[norm("Ironwood Ridge")] = "assets/team-logos/"+encodeURIComponent("ironwood ridge")+".png";
     LOGO_MAP[norm("ALA West Foothills")] = "assets/team-logos/"+encodeURIComponent("ala - west foothills")+".png";
+    const EXTRA_COLORS = {"agua fria":"#8a8a8a","ala - anthem south":"#485878","ala - ironwood":"#c81828","ala - mesa north":"#183868","ala - radiance":"#885858","ala - sierra vista":"#183868","ala - vistancia":"#183868","alchesay":"#0898d8","alhambra":"#086828","amphitheater":"#088848","andrada polytechnic":"#1858a8","antelope union":"#8a8a8a","anthem prep":"#883848","apache junction":"#c89828","arete prep":"#8a8a8a","arizona lutheran":"#f8a818","asdb":"#283888","ash fork":"#f8a828","az compass prep":"#186838","baboquivari":"#082878","bagdad":"#085898","barry goldwater":"#f8d858","basis flagstaff":"#582878","bella vista":"#183848","benjamin franklin":"#c8b878","benson":"#f80808","betty h. fairfax":"#181868","bisbee":"#d8a8a8","blue ridge":"#f8d808","bourgade catholic":"#283868","bradshaw mountain":"#e83828","buckeye union":"#084898","cactus":"#68a8c8","camelback":"#e84828","camp verde":"#080898","canyon del oro":"#083818","casa grande":"#f8b838","catalina":"#182888","chandler prep":"#a82828","chinle":"#f8b858","chino valley":"#181898","cholla":"#f88818","cibola":"#f8b838","cicero prep":"#886848","coconino":"#c82838","combs":"#c82828","copper canyon":"#c86828","coronado":"#082858","desert christian":"#0858a8","desert heights prep":"#581818","desert ridge":"#8a8a8a","desert star":"#485878","desert sunrise":"#a8b8c8","desert view":"#a83838","dishchiibikoh":"#0858a8","douglas":"#c8b878","dream city":"#081848","duncan":"#e81828","eduprize":"#8a8a8a","el capitan":"#283888","elite sports academy":"#281848","empire":"#f81828","flagstaff":"#285838","florence":"#f81828","flowing wells":"#082858","fort thomas":"#082878","fountain hills":"#084888","franklin":"#f8c848","fredonia":"#586888","ganado":"#8a8a8a","gila ridge":"#7898a8","glendale prep":"#f8c808","glendale":"#a80808","globe":"#f8a838","goodyear":"#082848","grand canyon":"#d81848","mesquite":"#183888","brophy":"#8a8a8a","sandra day oconnor":"#284898","skyline prep":"#f88828","arizona college prep":"#8878a8","cactus canyon":"#786898","gilbert classical":"#f8c818","ala - gilbert north":"#283868","greenway":"#587828","greyhills academy":"#088878","hayden":"#6878b8","heritage acad gateway":"#c82828","heritage acad maricopa":"#081848","heritage acad mesa":"#880818","heritage academy - laveen":"#b80808","hillcrest prep":"#284868","holbrook":"#182888","hopi":"#183868","horizon honors":"#98b8c8","independence":"#c82838","joseph city":"#283848","kingman academy":"#082878","kingman":"#e8b818","kofa":"#d80828","lake havasu":"#f8a848","lee williams":"#a81838","lincoln prep":"#282858","lourdes catholic":"#3858a8","madison highland prep":"#082848","many farms":"#d81848","marana":"#f8c828","maricopa":"#a87808","maryvale prep":"#781828","mayer":"#e83838","mcclintock":"#084888","metro tech":"#680818","miami":"#489828","mogollon":"#c81828","mohave":"#083818","monument valley":"#b81828","moon valley":"#081868","morenci":"#e82828","mountain ridge":"#581818","mountain view (marana)":"#8a8a8a","mountain view (mesa)":"#8a8a8a","mountainside":"#5878b8","music mountain":"#083858","nfl yet":"#d8c828","nogales":"#b82838","north canyon":"#680898","north phoenix preparatory":"#885828","north valley christian":"#182858","north":"#e83838","northland prep":"#880808","northwest christian":"#583888","odyssey institute":"#882838","page":"#e83838","paradise honors":"#0878d8","parker":"#c8b858","patagonia union":"#f89838","payson":"#582888","pdsd":"#68a8d8","peoria":"#8a8a8a","phh prep":"#680868","phoenix christian":"#689828","phoenix country day":"#082848","pima":"#183888","pinon":"#088888","poston butte":"#283868","pueblo":"#081838","pusch ridge":"#c89818","ray":"#581828","raymond s. kellis":"#282848","red mesa":"#8a8a8a","rincon-university":"#582858","rio rico":"#e81828","river valley":"#e81828","rock point":"#a80858","rough rock":"#a80848","round valley":"#f8a838","sabino":"#c89838","safford":"#184888","sahuarita":"#082868","salome":"#88b8a8","san carlos":"#8a8a8a","san luis":"#8a8a8a","san manuel":"#c80838","san miguel":"#d82828","san pasqual":"#0828a8","san simon":"#8a8a8a","san tan foothills":"#8a8a8a","santa cruz valley":"#c80808","santa rita":"#f8b838","scottsdale christian":"#f80808","scottsdale prep":"#083868","sedona red rock":"#680898","seligman":"#e81828","sequoia charter":"#284888","sequoia prep":"#284888","shadow mountain":"#183878","shadow ridge":"#780818","shonto prep":"#f8b828","show low":"#086838","sierra linda":"#980838","snowflake":"#0848a8","somerton":"#482868","south mountain":"#c8b878","st. augustine":"#e81838","st. david":"#0858a8","st. john paul ii":"#087888","st. johns":"#780808","st. michael":"#e82828","sunnyside":"#084898","superior":"#f8a838","tanque verde":"#186838","tempe prep":"#f8e828","thatcher":"#086848","the gregory school":"#286898","thunderbird":"#e88838","tolleson union":"#e8a818","tombstone":"#c8b858","tonopah valley":"#f80818","trevor g. browne":"#886858","trivium prep":"#780828","tuba city":"#084828","valley (sanders)":"#8a8a8a","valley lutheran":"#e80808","valley union":"#082868","veritas prep":"#282868","vista grande":"#685838","walden grove":"#981828","westwood":"#e85828","wickenburg":"#883898","willcox":"#8a8a8a","williams":"#785838","window rock":"#2888b8","winslow":"#680808","xavier":"#0858a8","youngker":"#084828","yuma catholic":"#087838","yuma":"#383868","highland prep":"#d9a514","highland prep west":"#1f9a3a"};
+    Object.entries(EXTRA_COLORS).forEach(([k,v])=>{ if(!COLOR_MAP[norm(k)]) COLOR_MAP[norm(k)]=v; });
+    LOGO_MAP[norm("Gregory School")] = "assets/team-logos/"+encodeURIComponent("the gregory school")+".png";
+    if (EXTRA_COLORS["the gregory school"]) COLOR_MAP[norm("Gregory School")] = EXTRA_COLORS["the gregory school"];
+    LOGO_MAP[norm("Heritage Acad Laveen")] = "assets/team-logos/"+encodeURIComponent("heritage academy - laveen")+".png";
+    COLOR_MAP[norm("Highland Prep")] = "#d9a514";
+    COLOR_MAP[norm("Highland Prep West")] = "#1f9a3a";
+    LOGO_MAP[norm("Betty Fairfax")] = LOGO_MAP[norm("Betty H. Fairfax")];
+    COLOR_MAP[norm("Betty Fairfax")] = COLOR_MAP[norm("Betty H. Fairfax")] || "#181868";
+    COLOR_MAP[norm("Mohave Accelerated")] = "#c8102e";
+    COLOR_MAP[norm("Heritage Acad Laveen")] = "#b81414";
+    COLOR_MAP[norm("Heritage Academy - Laveen")] = "#b81414";
+    const NO_FUZZY = new Set(["highlandprep","highlandprepwest","mohaveaccelerated","northpointeprep"]);
     function resolveTeam(name) {
       const n = norm(name);
       let lk = LOGO_MAP[n] ? n : null, ck = COLOR_MAP[n] ? n : null;
       if (!lk) for (const k of Object.keys(LOGO_MAP)) { if (n===k) { lk=k; break; } }
-      if (!lk) for (const k of Object.keys(LOGO_MAP)) { if (n.startsWith(k)||k.startsWith(n)) { lk=k; break; } }
+      if (!lk && !NO_FUZZY.has(n)) for (const k of Object.keys(LOGO_MAP)) { if (n.length>4 && (n.startsWith(k)||k.startsWith(n))) { lk=k; break; } }
       if (!ck) for (const k of Object.keys(COLOR_MAP)) { if (n===k) { ck=k; break; } }
       if (!ck) for (const k of Object.keys(COLOR_MAP)) { if (n.startsWith(k)||k.startsWith(n)) { ck=k; break; } }
       return { logo: lk ? LOGO_MAP[lk] : null, color: ck ? COLOR_MAP[ck] : "#8b2fff" };
@@ -911,11 +1009,20 @@
     // ── Top 10 By Conference (separate sheet tab: columns 6A | 5A | 4A, ranked top-to-bottom) ──
     const CONF_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=532557529&single=true&output=csv";
     const OPEN_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=662678664&single=true&output=csv";
+    const COPPER_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=2084239434&single=true&output=csv";
+    const PROJ = {
+      "Open Projections":   { size: 32, title: "Open Projections — Hypothetical Bracket",
+        note: "The top eight (8) highest rated teams from the 4A-6A conferences, along with the next eight (8) highest rated teams combined from the 4A-6A conferences, will qualify for the Open playoffs." },
+      "Copper Projections": { size: 16, title: "Copper Projections — Hypothetical Bracket",
+        note: "The sixteen (16) highest rated teams combined from the 1A-3A conferences will qualify for the Copper playoffs." }
+    };
+    const PROJ_CONF_MAP = {};
+    let BRACKET_KEY = "Open Projections";
 
-    function parseOpenCSV(text) {
+    function parseOpenCSV(text, eligible) {
       const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
       const teams = [], confMap = {};
-      const ELIGIBLE = new Set(["6A","5A","4A"]);
+      const ELIGIBLE = new Set(eligible || ["6A","5A","4A"]);
       lines.forEach(line => {
         const cells = []; let cur = "", inQ = false;
         for (const ch of line) {
@@ -956,7 +1063,10 @@
     let BRACKET_VIEW = false;
     let PICKS = {};
     // consecutive pairs in SEED_ORDER are round-1 opponents (per Open bracket seeding; higher seed # listed first/top)
-    const SEED_ORDER = [32,1,17,16,24,9,25,8,28,5,21,12,20,13,29,4,30,3,19,14,22,11,27,6,26,7,23,10,18,15,31,2];
+    const SEED_ORDERS = {
+      32: [32,1,17,16,24,9,25,8,28,5,21,12,20,13,29,4,30,3,19,14,22,11,27,6,26,7,23,10,18,15,31,2],
+      16: [16,1,9,8,12,5,13,4,14,3,11,6,10,7,15,2]
+    };
 
     function pickWinner(r, i, slot, seed, name) {
       if (!seed) return;
@@ -965,13 +1075,15 @@
       renderBracketModal();
     }
 
-    function buildFullBracket(teams) {
-      const t = teams.slice(0, 32);
+    function buildFullBracket(teams, size) {
+      size = size || 32;
+      const SEED_ORDER = SEED_ORDERS[size];
+      const t = teams.slice(0, size);
       const boxW = 200, rowInnerH = 22, boxH = rowInnerH * 2, colGap = 60, rowH0 = 58;
       const matches0 = [];
-      for (let i = 0; i < 32; i += 2) matches0.push([SEED_ORDER[i], SEED_ORDER[i + 1]]);
+      for (let i = 0; i < size; i += 2) matches0.push([SEED_ORDER[i], SEED_ORDER[i + 1]]);
       const roundMatches = [matches0.map(([a, b]) => ({ seeds: [a, b], names: [t[a - 1] || "TBD", t[b - 1] || "TBD"] }))];
-      let n = 16, r = 0;
+      let n = size / 2, r = 0;
       while (n > 1) {
         n = n / 2; r++;
         const prevRound = roundMatches[r - 1];
@@ -980,8 +1092,9 @@
           return { seeds: [winA ? winA.seed : null, winB ? winB.seed : null], names: [winA ? winA.name : "TBD", winB ? winB.name : "TBD"] };
         }));
       }
-      const containerH = 16 * rowH0;
-      const centers = [Array.from({ length: 16 }, (_, i) => containerH / 16 * (i + 0.5))];
+      const m0 = size / 2;
+      const containerH = m0 * rowH0;
+      const centers = [Array.from({ length: m0 }, (_, i) => containerH / m0 * (i + 0.5))];
       for (let rr = 0; rr < roundMatches.length - 1; rr++) {
         const prev = centers[rr], next = [];
         for (let i = 0; i < prev.length; i += 2) next.push((prev[i] + prev[i + 1]) / 2);
@@ -1036,9 +1149,12 @@
     function clearPicks() { PICKS = {}; renderBracketModal(); }
 
     function renderBracketModal() {
-      document.getElementById("bracket-modal-body").innerHTML = buildFullBracket(CONF_DATA["Open Projections"] || []);
+      const p = PROJ[BRACKET_KEY];
+      document.querySelector(".bracket-modal-title").textContent = p.title;
+      document.getElementById("bracket-modal-body").innerHTML = buildFullBracket(CONF_DATA[BRACKET_KEY] || [], p.size);
     }
     function openBracketModal() {
+      if (BRACKET_KEY !== CONF_OPEN) { BRACKET_KEY = CONF_OPEN; PICKS = {}; }
       renderBracketModal();
       document.getElementById("bracket-modal").classList.add("open");
     }
@@ -1053,16 +1169,18 @@
     function renderConfPanel() {
       const panel = document.getElementById("conf-panel");
       if (!CONF_OPEN || !CONF_DATA[CONF_OPEN]) { panel.innerHTML = ""; panel.classList.remove("open-wide"); return; }
-      const isOpen = CONF_OPEN === "Open Projections";
+      const proj = PROJ[CONF_OPEN];
+      const isOpen = !!proj;
       panel.classList.toggle("open-wide", isOpen);
       const bracketBtn = document.getElementById("conf-bracket-toggle");
       bracketBtn.style.display = isOpen ? "inline-block" : "none";
       panel.classList.remove("bracket-mode");
       const note = document.getElementById("open-note");
       note.style.display = isOpen ? "block" : "none";
-      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? 32 : 20).map((team, i) => {
+      if (proj) note.textContent = proj.note;
+      panel.innerHTML = CONF_DATA[CONF_OPEN].slice(0, isOpen ? proj.size : 25).map((team, i) => {
         const sr = stateRank(team);
-        const conf = isOpen ? OPEN_CONF_MAP[team] : null;
+        const conf = isOpen ? (PROJ_CONF_MAP[CONF_OPEN] || {})[team] : null;
         return `
         <div class="conf-row">
           <div class="conf-num">${i + 1}</div>
@@ -1077,12 +1195,15 @@
 
     function renderConf(data) {
       CONF_DATA = data;
-      const classes = Object.keys(data).filter(k => data[k] && data[k].length);
+      const keys = Object.keys(data).filter(k => !PROJ[k]);
+      const oi = keys.length;
+      const ordered = keys.slice(0, oi).concat(Object.keys(PROJ).filter(k => data[k]));
+      const classes = ordered.filter(k => data[k] && data[k].length);
       const tabs = document.getElementById("conf-tabs");
       if (!classes.length) { tabs.innerHTML = ""; return; }
 
       tabs.innerHTML = classes.map(cls => `
-        <button class="conf-tab-btn${cls === CONF_OPEN ? " active" : ""}" data-cls="${esc(cls)}">${esc(cls)}</button>
+        <button class="conf-tab-btn${PROJ[cls] ? " proj" : ""}${cls === CONF_OPEN ? " active" : ""}" data-cls="${esc(cls)}">${esc(PROJ[cls] ? cls.replace(" Projections","") : cls)}</button>
       `).join("");
       tabs.querySelectorAll(".conf-tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1095,6 +1216,39 @@
     }
 
     document.getElementById("conf-bracket-toggle").addEventListener("click", openBracketModal);
+
+    (function initExplore() {
+      const wrap = document.getElementById("explore");
+      const btns = document.querySelectorAll("#explore-opts .explore-opt");
+      let current = "";
+      function close() { current = ""; btns.forEach(b => b.classList.remove("active")); wrap.dataset.mode = ""; }
+      document.getElementById("explore-hide").addEventListener("click", close);
+      function setConf(key) {
+        CONF_OPEN = key;
+        document.querySelectorAll("#conf-tabs .conf-tab-btn").forEach(b => b.classList.toggle("active", b.dataset.cls === CONF_OPEN));
+        renderConfPanel();
+      }
+      btns.forEach(btn => btn.addEventListener("click", () => {
+        const x = btn.dataset.x;
+        if (current === x) { close(); return; }
+        current = x;
+        btns.forEach(b => b.classList.toggle("active", b.dataset.x === current));
+        ["conf-body","region-body"].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove("collapsed"); });
+        if (x === "conf") {
+          wrap.dataset.mode = "conf";
+          const first = document.querySelector("#conf-tabs .conf-tab-btn:not(.proj)");
+          setConf(first ? first.dataset.cls : null);
+        } else if (x === "region") {
+          wrap.dataset.mode = "region";
+          if (!REGION_OPEN) { const first = document.querySelector("#region-tabs .conf-tab-btn"); if (first) { REGION_OPEN = first.dataset.cls; renderRegions(); } }
+        } else {
+          wrap.dataset.mode = "proj";
+          setConf(x);
+        }
+      }));
+    })();
+
+
     document.getElementById("bracket-modal").addEventListener("click", (e) => {
       if (e.target.id === "bracket-modal") closeBracketModal();
     });
@@ -1120,7 +1274,13 @@
           const { teams, confMap } = parseOpenCSV(openCsv);
           data["Open Projections"] = teams;
           OPEN_CONF_MAP = confMap;
+          PROJ_CONF_MAP["Open Projections"] = confMap;
         } catch (e) { /* Open Projections optional */ }
+        try {
+          const { teams, confMap } = parseOpenCSV(await tryFetch(COPPER_SHEET_URL), ["3A","2A","1A"]);
+          data["Copper Projections"] = teams;
+          PROJ_CONF_MAP["Copper Projections"] = confMap;
+        } catch (e) { /* Copper optional */ }
         renderConf(data);
       } catch (e) { /* silent — section just stays empty */ }
     }
@@ -1215,8 +1375,85 @@
       } catch (e) { /* hidden if sheet unavailable */ }
     }
 
+    const REGION_SHEETS = {
+      "6A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1564231141&single=true&output=csv",
+      "5A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1051213411&single=true&output=csv",
+      "4A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=643805913&single=true&output=csv",
+      "3A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=980110363&single=true&output=csv",
+      "2A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1684109104&single=true&output=csv",
+      "1A": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5A2RbWfX9Z5ZwkkP5ltuLHZKKUuJ317ljaYo1bbh5Gwn431WJ85JHz_g1M8E4CyxzzFuEwgKow0id/pub?gid=1673275297&single=true&output=csv"
+    };
+    const REGION_DATA = {};
+    const REGION_SHORT = { "North Phoenix Preparatory": "North Phoenix Prep" };
+    let REGION_OPEN = null;
+    function splitCSVLine(line) {
+      const cells = []; let cur = "", q = false;
+      for (const ch of line) {
+        if (ch === '"') q = !q;
+        else if (ch === "," && !q) { cells.push(cur.trim()); cur = ""; }
+        else cur += ch;
+      }
+      cells.push(cur.trim());
+      return cells;
+    }
+    function parseRegionCSV(text) {
+      const lines = text.replace(/\r/g, "").trim().split("\n").filter(l => l.trim());
+      if (!lines.length) return [];
+      const heads = splitCSVLine(lines[0]);
+      const rows = lines.slice(1).map(splitCSVLine);
+      return heads.map((name, c) => ({ name, teams: rows.map(row => row[c] || "").filter(Boolean) }))
+                  .filter(g => g.name && g.teams.length);
+    }
+    function renderRegions() {
+      document.querySelectorAll("#region-tabs .conf-tab-btn").forEach(b => b.classList.toggle("active", b.dataset.cls === REGION_OPEN));
+      const grid = document.getElementById("region-grid");
+      const regions = REGION_OPEN ? REGION_DATA[REGION_OPEN] : null;
+      if (!regions) { grid.innerHTML = ""; return; }
+      grid.innerHTML = regions.map(g => `
+        <div class="region-card">
+          <div class="region-name">${esc(g.name)}</div>
+          ${g.teams.map((t, i) => {
+            const sr = stateRank(t);
+            return `<div class="conf-row"><div class="conf-num">${i + 1}</div>${logoHtml(t, 'xs')}<div class="conf-name">${esc(REGION_SHORT[t] || t)}</div>${sr ? `<div class="conf-state-rank">#${sr}</div>` : ""}</div>`;
+          }).join("")}
+        </div>`).join("");
+    }
+    async function loadRegions() {
+      const order = Object.keys(REGION_SHEETS);
+      const section = document.getElementById("region-section");
+      const tabs = document.getElementById("region-tabs");
+      function drawTabs() {
+        const classes = order.filter(c => REGION_DATA[c]);
+        if (!classes.length) return;
+        section.style.display = "";
+        tabs.innerHTML = classes.map(c => `<button class="conf-tab-btn" data-cls="${esc(c)}">${esc(c)}</button>`).join("");
+        tabs.querySelectorAll(".conf-tab-btn").forEach(b => b.addEventListener("click", () => {
+          REGION_OPEN = REGION_OPEN === b.dataset.cls ? null : b.dataset.cls;
+          renderRegions();
+        }));
+        renderRegions();
+      }
+      async function fetchOne(cls, url) {
+        for (let attempt = 0; attempt < 5; attempt++) {
+          try {
+            const sep = url.includes("?") ? "&" : "?";
+            const d = parseRegionCSV(await tryFetch(attempt ? url + sep + "cb=" + Date.now() : url));
+            if (d.length) { REGION_DATA[cls] = d; drawTabs(); return; }
+          } catch (e) {}
+          await new Promise(res => setTimeout(res, 1500 * (attempt + 1)));
+        }
+      }
+      document.getElementById("region-hide-toggle").addEventListener("click", e => {
+        const body = document.getElementById("region-body");
+        const hidden = body.classList.toggle("collapsed");
+        e.target.textContent = hidden ? "Show" : "Hide";
+      });
+      await Promise.allSettled(order.map(c => fetchOne(c, REGION_SHEETS[c])));
+    }
+
     load();
     loadConf();
+    loadRegions();
     loadWatchList();
   </script>
 
@@ -1228,5 +1465,6 @@
         l.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');l.classList.remove('open');});}); }
     })();
   </script>
+  <script src="countdown.js"></script>
 </body>
 </html>
