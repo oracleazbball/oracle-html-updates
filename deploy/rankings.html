@@ -559,6 +559,7 @@
       </div>
       <div id="region-body">
         <div class="conf-tabs" id="region-tabs"></div>
+        <p class="region-note" id="region-note" style="display:none;">Regions ranked toughest to easiest, based on Oracle's view of talent.</p>
         <div class="region-grid" id="region-grid"></div>
       </div>
     </div>
@@ -641,12 +642,16 @@
       color: var(--text-muted); font-family: var(--font-body); font-size: 12px; cursor: pointer;
     }
     #region-hide-toggle:hover { border-color: var(--purple-bright); color: var(--purple-bright); }
-    #region-tabs { max-width: 300px; }
+    #region-tabs { max-width: 480px; flex-wrap: nowrap; }
+    #region-tabs .conf-tab-btn { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; }
     .region-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
     .region-grid:empty { margin-top: 0; }
     .region-card { background: var(--black-card); border: 1px solid rgba(106,15,214,0.25); padding: 14px 16px 6px; min-width: 0; }
     .region-name { font-family: var(--font-team); font-weight: 600; font-size: 17px; letter-spacing: 0.5px; color: var(--purple-bright); text-transform: none; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .region-card .conf-row:last-child { border-bottom: none; }
+    .region-name { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .region-rk { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+    .region-note { color: var(--text-muted); font-size: 14px; margin: 14px 0 0; }
     .region-card .conf-name { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .region-card .conf-row .rank-logo { width: 24px; height: 24px; flex-shrink: 0; }
     @media (max-width: 1000px) { .region-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -1404,14 +1409,21 @@
       return heads.map((name, c) => ({ name, teams: rows.map(row => row[c] || "").filter(Boolean) }))
                   .filter(g => g.name && g.teams.length);
     }
+    // Region ranking = column order in each region sheet tab (leftmost = toughest).
     function renderRegions() {
       document.querySelectorAll("#region-tabs .conf-tab-btn").forEach(b => b.classList.toggle("active", b.dataset.cls === REGION_OPEN));
       const grid = document.getElementById("region-grid");
       const regions = REGION_OPEN ? REGION_DATA[REGION_OPEN] : null;
       if (!regions) { grid.innerHTML = ""; return; }
-      grid.innerHTML = regions.map(g => `
+      const rkMap = new Map(regions.map((g, i) => [g, i + 1]));
+      const rk = g => rkMap.get(g) ?? null;
+      const sorted = regions;
+      document.getElementById("region-note").style.display = "";
+      const ord = n => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+      const rkLabel = n => n === 1 ? "Toughest region" : ord(n) + " toughest";
+      grid.innerHTML = sorted.map(g => `
         <div class="region-card">
-          <div class="region-name">${esc(g.name)}</div>
+          <div class="region-name"><span>${esc(g.name)}</span>${rk(g) ? `<span class="region-rk">${rkLabel(rk(g))}</span>` : ""}</div>
           ${g.teams.map((t, i) => {
             const sr = stateRank(t);
             return `<div class="conf-row"><div class="conf-num">${i + 1}</div>${logoHtml(t, 'xs')}<div class="conf-name">${esc(REGION_SHORT[t] || t)}</div>${sr ? `<div class="conf-state-rank">#${sr}</div>` : ""}</div>`;

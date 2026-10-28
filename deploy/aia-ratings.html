@@ -341,7 +341,7 @@ th button .th-info{margin-left:0}
         <th><button data-k="az">AIA<span class="th-info" data-tip="The final regular-season rating published on AZPreps365, the one the brackets are seeded from.">i</span></button></th>
         <th><button data-k="az_rank"><span id="azrLbl">AIA&nbsp;rk</span><span class="th-info" id="azrTip" data-tip="Where AZPreps ranked the team in the field you’ve selected: their conference, Open, or Copper.">i</span></button></th>
         <th><button data-k="delta">&Delta;&nbsp;AIA<span class="th-info" data-tip="Rank gap between Oracle and AZPreps. Green means Oracle had a team higher than the AIA did.">i</span></button></th>
-        <th><button data-k="ofin"><span id="ofinLbl">Open finish</span><span class="th-info" id="ofinTip" data-tip="How far a team went in the Open tournament">i</span></button></th>
+        <th id="ofinTh"><button data-k="ofin"><span id="ofinLbl">Open finish</span><span class="th-info" id="ofinTip" data-tip="How far a team went in the Open tournament">i</span></button></th>
         <th><button data-k="cfin">Conf finish<span class="th-info" data-tip="How far a team went in their conference tournament">i</span></button></th>
       </tr></thead>
       <tbody id="tb"></tbody>
@@ -462,11 +462,11 @@ function renderMCards(rows,seed){
         <div class="mc-stat"><div class="l">AIA rk</div><div class="v">${az??'&ndash;'}</div></div>
         <div class="mc-stat"><div class="l">&Delta; AIA</div><div class="v ${dcls}">${dv}</div></div>
       </div>
-      ${(FIN(r)||r.cfin)?`<div class="mc-fin">${FIN(r)?finCell(FIN(r)):''}${r.cfin?finCell(r.cfin):''}</div>`:''}
+      ${((showFinCol()&&FIN(r))||r.cfin)?`<div class="mc-fin">${(showFinCol()&&FIN(r))?finCell(FIN(r)):''}${r.cfin?finCell(r.cfin):''}</div>`:''}
     </div>`;}).join(''):'<div class="mc-none">No teams match</div>';
 }
 function buildMkey(){const b=document.getElementById('mkeyBody');if(!b)return;
-  b.innerHTML=[...document.querySelectorAll('#tb')].length?[...document.getElementById('tb').closest('table').querySelectorAll('thead th')].map(th=>{const t=th.querySelector('.th-info');if(!t)return '';const name=th.querySelector('button').childNodes[0].textContent.trim();return '<div class="mk-row"><b>'+name+'</b><span>'+t.dataset.tip+'</span></div>';}).join(''):'';}
+  b.innerHTML=[...document.querySelectorAll('#tb')].length?[...document.getElementById('tb').closest('table').querySelectorAll('thead th')].map(th=>{const t=th.querySelector('.th-info');if(!t)return '';if(th.id==='ofinTh')return '<div class="mk-row"><b>Open finish</b><span>How far a team went in the Open tournament</span></div><div class="mk-row"><b>Copper finish</b><span>How far a team went in the Copper tournament</span></div>';const name=th.querySelector('button').childNodes[0].textContent.trim();return '<div class="mk-row"><b>'+name+'</b><span>'+t.dataset.tip+'</span></div>';}).join(''):'';}
 document.addEventListener('DOMContentLoaded',buildMkey);
 document.addEventListener('change',e=>{if(e.target.id!=='msort')return;const[k,d]=e.target.value.split('|');sortKey=k;sortDir=+d;render();});
 function oracleCopper(){
@@ -529,8 +529,18 @@ function seedBy(col){
     .forEach((r,i)=>seed.set(r,i+1));
   return seed;
 }
+const SEASON_START = s => parseInt(String(s).slice(0,2),10);
+function showFinCol(){
+  const y = SEASON_START(season);
+  if(isNaN(y)) return true;
+  const cu = field==='copper' || ['3A','2A','1A'].includes(field);
+  return cu ? y >= 24 : y >= 22;
+}
 function render(){
-  { const cu = field==='copper' || ['3A','2A','1A'].includes(field);
+  if(!LIVE_DONE){ showLoading(); return; }
+  { const showF = showFinCol();
+    const th=document.getElementById('ofinTh'); if(th) th.style.display = showF ? '' : 'none';
+    const cu = field==='copper' || ['3A','2A','1A'].includes(field);
     const l=document.getElementById('ofinLbl'), tp=document.getElementById('ofinTip');
     if(l) l.textContent = cu ? 'Copper finish' : 'Open finish';
     if(tp) tp.dataset.tip = cu ? 'How far a team went in the Copper tournament' : 'How far a team went in the Open tournament';
@@ -576,7 +586,7 @@ function render(){
       <td class="num">${r.az==null?'&ndash;':r.az.toFixed(2)}</td>
       <td class="num dim">${az ?? '&ndash;'}</td>
       <td>${chip}</td>
-      <td>${finCell(FIN(r))}</td>
+      ${showFinCol() ? `<td>${finCell(FIN(r))}</td>` : ''}
       <td>${finCell(r.cfin)}</td>
     </tr>`;
   }).join('');
@@ -673,8 +683,18 @@ document.querySelectorAll('#ltbl th button').forEach(b=>{
     b.setAttribute('data-on','1'); drawLedger();
   });
 });
-const _cards=cards; cards=function(){_cards(); fillLedger();};
-cards(); render();
+const _cards=cards; cards=function(){ try{_cards();}catch(e){} try{fillLedger();}catch(e){} };
+let LIVE_DONE=false;
+function showLoading(){
+  const tb=document.getElementById('tb');
+  if(tb) tb.innerHTML='<tr><td colspan="20" style="text-align:center;padding:40px 0;color:var(--muted,#8a8a8a)">Loading ratings&hellip;</td></tr>';
+  const mc=document.getElementById('mcards');
+  if(mc) mc.innerHTML='<div style="text-align:center;padding:32px 0;color:var(--muted,#8a8a8a)">Loading ratings&hellip;</div>';
+}
+showLoading();
+// fallback: if the sheet hasn't loaded in 8s, show the built-in data
+setTimeout(()=>{ if(!LIVE_DONE){ LIVE_DONE=true; cards(); render(); } },8000);
+cards();
 
 // ── Live data: Google Sheet replaces the built-in data when it loads ──
 // Built-in DATA above stays as a backup if the sheet can't be reached.
@@ -719,10 +739,11 @@ function sheetToData(text){
       const ctl=new AbortController(); const tm=setTimeout(()=>ctl.abort(),9000);
       const url=RATINGS_SHEET_URL+(attempt?"&cb="+Date.now():"");
       const res=await fetch(url,{signal:ctl.signal}); clearTimeout(tm);
-      if(res.ok){ const d=sheetToData(await res.text()); if(d&&d.length>50){ DATA=d; cards(); render(); return; } }
+      if(res.ok){ const d=sheetToData(await res.text()); if(d&&d.length>50){ DATA=d; LIVE_DONE=true; cards(); render(); return; } }
     }catch(e){}
     await new Promise(r=>setTimeout(r,1200*(attempt+1)));
   }
+  if(!LIVE_DONE){ LIVE_DONE=true; cards(); render(); }
 })();
 </script>
 </body></html>
